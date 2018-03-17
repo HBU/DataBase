@@ -13,13 +13,14 @@ INSERT INTO [dbo].[usertable] ([userid] ,[password])
 ```
 例如：Data Source=.;Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=sql
 ```
-3.  写dataset的相关函数
+3.  写tableadapter的相关函数
 
  ![](https://github.com/HBU/DataBase/blob/master/CsharpDB/LoginDemo/picture/dataset.jpg)
  
 4.  编写代码，打开数据库，完成登录验证，关闭数据库。
 
-5.  调用dataset的函数，完成增\删\改\查。
+5.  写tableadapter的相关函数，完成增\删\改\查。
+
 
 # 界面：
 
