@@ -1,6 +1,6 @@
-# Ê¹ÓÃËµÃ÷
-1. ÔÚÊı¾İ¿âĞÂ½¨±í£¬²¢²åÈëÒ»ÌõÊı¾İ
-'''
+# ä½¿ç”¨è¯´æ˜
+1.  åœ¨æ•°æ®åº“æ–°å»ºè¡¨ï¼Œå¹¶æ’å…¥ä¸€æ¡æ•°æ®
+```
 CREATE TABLE [dbo].[usertable](
 	[userid] [nchar](10) NOT NULL,
 	[password] [nchar](10) NOT NULL
@@ -8,10 +8,10 @@ CREATE TABLE [dbo].[usertable](
 
 INSERT INTO [dbo].[usertable] ([userid] ,[password])
      VALUES   ('abc' ,'123')
-'''
-2. ¸ü¸ÄÊı¾İ¿âÁ¬½ÓÎª×Ô¼ºµÄÊı¾İ¿â
-ÀıÈç£ºData Source=.;Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=sql
-3. Ğ´datasetµÄÏà¹Øº¯Êı
+```
+2.  æ›´æ”¹æ•°æ®åº“è¿æ¥ä¸ºè‡ªå·±çš„æ•°æ®åº“
+ä¾‹å¦‚ï¼šData Source=.;Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=sql
+3.  å†™datasetçš„ç›¸å…³å‡½æ•°
  ![]()
-4. ±àĞ´´úÂë£¬´ò¿ªÊı¾İ¿â£¬Íê³ÉµÇÂ¼ÑéÖ¤£¬¹Ø±ÕÊı¾İ¿â¡£
-5. µ÷ÓÃdatasetµÄº¯Êı£¬Íê³ÉÔöÉ¾¸Ä²é¡£
+4.  ç¼–å†™ä»£ç ï¼Œæ‰“å¼€æ•°æ®åº“ï¼Œå®Œæˆç™»å½•éªŒè¯ï¼Œå…³é—­æ•°æ®åº“ã€‚
+5.  è°ƒç”¨datasetçš„å‡½æ•°ï¼Œå®Œæˆå¢åˆ æ”¹æŸ¥ã€‚
