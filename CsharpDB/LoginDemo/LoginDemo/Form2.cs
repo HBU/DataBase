@@ -21,7 +21,6 @@ namespace LoginDemo
         {
             // TODO: 这行代码将数据加载到表“testDataSet.user”中。您可以根据需要移动或删除它。
             this.userTableAdapter.Fill(this.testDataSet.user);
-
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -47,10 +46,7 @@ namespace LoginDemo
             {
                 this.userTableAdapter.DeleteQuery(userID);
                 this.userTableAdapter.Fill(this.testDataSet.user);
-            }
-
-                
-
+            }        
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -70,7 +66,6 @@ namespace LoginDemo
             string userID = this.dataGridView1.Rows[r].Cells[0].Value.ToString();
             Form4 form4 = new Form4(userID);            
             form4.Show();
-
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
