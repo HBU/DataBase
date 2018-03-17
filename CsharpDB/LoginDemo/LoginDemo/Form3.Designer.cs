@@ -78,7 +78,8 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Name = "Form3";
-            this.Text = "Form3";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "插入";
             ((System.ComponentModel.ISupportInitialize)(this.testDataSet1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -71,7 +71,8 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Name = "Form4";
-            this.Text = "Form4";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "更新";
             this.ResumeLayout(false);
             this.PerformLayout();
 

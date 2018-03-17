@@ -54,7 +54,7 @@
             this.useridDataGridViewTextBoxColumn,
             this.passwordDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.userBindingSource;
-            this.dataGridView1.Location = new System.Drawing.Point(97, 31);
+            this.dataGridView1.Location = new System.Drawing.Point(43, 31);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(243, 320);
@@ -62,7 +62,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(407, 83);
+            this.button1.Location = new System.Drawing.Point(332, 31);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -72,7 +72,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(407, 129);
+            this.button2.Location = new System.Drawing.Point(332, 77);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -82,7 +82,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(407, 176);
+            this.button3.Location = new System.Drawing.Point(332, 124);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 3;
@@ -92,7 +92,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(407, 268);
+            this.button4.Location = new System.Drawing.Point(332, 237);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 4;
@@ -102,7 +102,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(407, 328);
+            this.button5.Location = new System.Drawing.Point(332, 328);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 5;
@@ -112,7 +112,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(407, 241);
+            this.textBox1.Location = new System.Drawing.Point(332, 210);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(75, 21);
             this.textBox1.TabIndex = 6;
@@ -147,7 +147,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(554, 385);
+            this.ClientSize = new System.Drawing.Size(463, 385);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -156,6 +156,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "Form2";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form2";
             this.Activated += new System.EventHandler(this.Form2_Load);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
