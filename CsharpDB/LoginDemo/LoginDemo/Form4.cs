@@ -16,15 +16,17 @@ namespace LoginDemo
         {
             InitializeComponent();
         }
+
         public Form4(string str)
         {
             InitializeComponent();
-            textBox1.Text = str;//这句必须放在InitializeComponent();的后面，否则会引起“空引用异常”
+            textBox1.Text = str;
             textBox1.Enabled = false;
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            this.userTableAdapter1.UpdateQuery(textBox2.Text, textBox1.Text);
+            this.userTableAdapter1.UpdateQuery(textBox2.Text, textBox1.Text);           
             this.Close();
         }
     }

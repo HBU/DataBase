@@ -39,33 +39,43 @@ namespace LoginDemo
         {
             //获取点击datagridview1的行的 行号
             int r = this.dataGridView1.CurrentRow.Index;
-            //获取此行的 员工编号 的值
+            //获取此行的 编号 的值
             string userID = this.dataGridView1.Rows[r].Cells[0].Value.ToString();
             //删除 datagridview1 的选中行
-            this.userTableAdapter.DeleteQuery(userID);
-            this.userTableAdapter.Fill(this.testDataSet.user);
+            DialogResult result = MessageBox.Show("确定删除用户："+userID+"?","Hello",MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+            if (result == DialogResult.OK)
+            {
+                this.userTableAdapter.DeleteQuery(userID);
+                this.userTableAdapter.Fill(this.testDataSet.user);
+            }
+
+                
 
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.userTableAdapter.FillBy(this.testDataSet.user,textBox1.Text);
+            if(textBox1.Text.Trim() == "")
+                this.userTableAdapter.Fill(this.testDataSet.user);
+            else
+                this.userTableAdapter.FillBy(this.testDataSet.user,textBox1.Text);
         }
 
-        private void button6_Click(object sender, EventArgs e)
-        {
-            this.userTableAdapter.Fill(this.testDataSet.user);
-        }
 
         private void button3_Click(object sender, EventArgs e)
         {
             //获取点击datagridview1的行的 行号
             int r = this.dataGridView1.CurrentRow.Index;
-            //获取此行的 员工编号 的值
+            //获取此行的 编号 的值
             string userID = this.dataGridView1.Rows[r].Cells[0].Value.ToString();
-            Form4 form4 = new Form4(userID);
+            Form4 form4 = new Form4(userID);            
             form4.Show();
 
+        }
+
+        private void Form2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
