@@ -31,20 +31,20 @@
             this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.pythonDataSet = new WindowsFormsApp2.PythonDataSet();
-            this.personsBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.personsTableAdapter = new WindowsFormsApp2.PythonDataSetTableAdapters.personsTableAdapter();
             this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.salesrepDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.personsBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.pythonDataSet = new WindowsFormsApp2.PythonDataSet();
+            this.personsTableAdapter = new WindowsFormsApp2.PythonDataSetTableAdapters.personsTableAdapter();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pythonDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.personsBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pythonDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -71,20 +71,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(399, 200);
             this.dataGridView1.TabIndex = 1;
             // 
-            // pythonDataSet
-            // 
-            this.pythonDataSet.DataSetName = "PythonDataSet";
-            this.pythonDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // personsBindingSource
-            // 
-            this.personsBindingSource.DataMember = "persons";
-            this.personsBindingSource.DataSource = this.pythonDataSet;
-            // 
-            // personsTableAdapter
-            // 
-            this.personsTableAdapter.ClearBeforeFill = true;
-            // 
             // idDataGridViewTextBoxColumn
             // 
             this.idDataGridViewTextBoxColumn.DataPropertyName = "id";
@@ -102,6 +88,20 @@
             this.salesrepDataGridViewTextBoxColumn.DataPropertyName = "salesrep";
             this.salesrepDataGridViewTextBoxColumn.HeaderText = "salesrep";
             this.salesrepDataGridViewTextBoxColumn.Name = "salesrepDataGridViewTextBoxColumn";
+            // 
+            // personsBindingSource
+            // 
+            this.personsBindingSource.DataMember = "persons";
+            this.personsBindingSource.DataSource = this.pythonDataSet;
+            // 
+            // pythonDataSet
+            // 
+            this.pythonDataSet.DataSetName = "PythonDataSet";
+            this.pythonDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // personsTableAdapter
+            // 
+            this.personsTableAdapter.ClearBeforeFill = true;
             // 
             // button1
             // 
@@ -143,12 +143,13 @@
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.button5.Location = new System.Drawing.Point(137, 384);
+            this.button5.Location = new System.Drawing.Point(517, 330);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 6;
             this.button5.Text = "button5";
             this.button5.UseVisualStyleBackColor = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Form2
             // 
@@ -166,8 +167,8 @@
             this.Text = "Form2";
             this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pythonDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.personsBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pythonDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
