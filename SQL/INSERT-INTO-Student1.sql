@@ -1,0 +1,1 @@
+INSERT    	INTO  Student    	VALUES ('201215126','уеЁицЯ','дп',18,'CS');
