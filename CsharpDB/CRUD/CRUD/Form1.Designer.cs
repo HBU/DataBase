@@ -39,11 +39,6 @@
             this.mrDavidDataSet = new CRUD.MrDavidDataSet();
             this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.studentTableAdapter = new CRUD.MrDavidDataSetTableAdapters.StudentTableAdapter();
-            this.snoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.snameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ssexDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sageDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sdeptDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
@@ -54,6 +49,11 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.snoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.snameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ssexDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sageDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.sdeptDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentBindingSource)).BeginInit();
@@ -149,36 +149,6 @@
             // 
             this.studentTableAdapter.ClearBeforeFill = true;
             // 
-            // snoDataGridViewTextBoxColumn
-            // 
-            this.snoDataGridViewTextBoxColumn.DataPropertyName = "Sno";
-            this.snoDataGridViewTextBoxColumn.HeaderText = "Sno";
-            this.snoDataGridViewTextBoxColumn.Name = "snoDataGridViewTextBoxColumn";
-            // 
-            // snameDataGridViewTextBoxColumn
-            // 
-            this.snameDataGridViewTextBoxColumn.DataPropertyName = "Sname";
-            this.snameDataGridViewTextBoxColumn.HeaderText = "Sname";
-            this.snameDataGridViewTextBoxColumn.Name = "snameDataGridViewTextBoxColumn";
-            // 
-            // ssexDataGridViewTextBoxColumn
-            // 
-            this.ssexDataGridViewTextBoxColumn.DataPropertyName = "Ssex";
-            this.ssexDataGridViewTextBoxColumn.HeaderText = "Ssex";
-            this.ssexDataGridViewTextBoxColumn.Name = "ssexDataGridViewTextBoxColumn";
-            // 
-            // sageDataGridViewTextBoxColumn
-            // 
-            this.sageDataGridViewTextBoxColumn.DataPropertyName = "Sage";
-            this.sageDataGridViewTextBoxColumn.HeaderText = "Sage";
-            this.sageDataGridViewTextBoxColumn.Name = "sageDataGridViewTextBoxColumn";
-            // 
-            // sdeptDataGridViewTextBoxColumn
-            // 
-            this.sdeptDataGridViewTextBoxColumn.DataPropertyName = "Sdept";
-            this.sdeptDataGridViewTextBoxColumn.HeaderText = "Sdept";
-            this.sdeptDataGridViewTextBoxColumn.Name = "sdeptDataGridViewTextBoxColumn";
-            // 
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(53, 408);
@@ -259,6 +229,36 @@
             this.label6.TabIndex = 16;
             this.label6.Text = "系别";
             // 
+            // snoDataGridViewTextBoxColumn
+            // 
+            this.snoDataGridViewTextBoxColumn.DataPropertyName = "Sno";
+            this.snoDataGridViewTextBoxColumn.HeaderText = "Sno";
+            this.snoDataGridViewTextBoxColumn.Name = "snoDataGridViewTextBoxColumn";
+            // 
+            // snameDataGridViewTextBoxColumn
+            // 
+            this.snameDataGridViewTextBoxColumn.DataPropertyName = "Sname";
+            this.snameDataGridViewTextBoxColumn.HeaderText = "Sname";
+            this.snameDataGridViewTextBoxColumn.Name = "snameDataGridViewTextBoxColumn";
+            // 
+            // ssexDataGridViewTextBoxColumn
+            // 
+            this.ssexDataGridViewTextBoxColumn.DataPropertyName = "Ssex";
+            this.ssexDataGridViewTextBoxColumn.HeaderText = "Ssex";
+            this.ssexDataGridViewTextBoxColumn.Name = "ssexDataGridViewTextBoxColumn";
+            // 
+            // sageDataGridViewTextBoxColumn
+            // 
+            this.sageDataGridViewTextBoxColumn.DataPropertyName = "Sage";
+            this.sageDataGridViewTextBoxColumn.HeaderText = "Sage";
+            this.sageDataGridViewTextBoxColumn.Name = "sageDataGridViewTextBoxColumn";
+            // 
+            // sdeptDataGridViewTextBoxColumn
+            // 
+            this.sdeptDataGridViewTextBoxColumn.DataPropertyName = "Sdept";
+            this.sdeptDataGridViewTextBoxColumn.HeaderText = "Sdept";
+            this.sdeptDataGridViewTextBoxColumn.Name = "sdeptDataGridViewTextBoxColumn";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -304,11 +304,6 @@
         private MrDavidDataSet mrDavidDataSet;
         private System.Windows.Forms.BindingSource studentBindingSource;
         private MrDavidDataSetTableAdapters.StudentTableAdapter studentTableAdapter;
-        private System.Windows.Forms.DataGridViewTextBoxColumn snoDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn snameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ssexDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sageDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sdeptDataGridViewTextBoxColumn;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox3;
@@ -319,6 +314,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.DataGridViewTextBoxColumn snoDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn snameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ssexDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sageDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sdeptDataGridViewTextBoxColumn;
     }
 }
 
