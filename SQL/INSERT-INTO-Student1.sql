@@ -1,1 +1,3 @@
-INSERT    	INTO  Student    	VALUES ('201215126','уеЁицЯ','дп',18,'CS');
+INSERT
+INTO  Student
+VALUES ('201215126','Е╪═Х─│Д╦┴','Г■╥',18,'CS');
