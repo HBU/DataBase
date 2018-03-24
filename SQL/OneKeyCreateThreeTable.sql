@@ -8,39 +8,39 @@ DROP TABLE IF EXISTS Student
 DROP TABLE IF EXISTS Course
 
 CREATE TABLE Student          
-      (	
-		Sno		CHAR(9) PRIMARY KEY,         /* 列级完整性约束条件,Sno是主码*/                  
-        Sname	CHAR(20) UNIQUE,             /* Sname取唯一值*/
-        Ssex	CHAR(2),
-        Sage	SMALLINT,
-        Sdept	CHAR(20)
-      ); 
+ (	
+ Sno CHAR(9) PRIMARY KEY,         /* 列级完整性约束条件,Sno是主码*/                  
+ Sname CHAR(20) UNIQUE,             /* Sname取唯一值*/
+ Ssex CHAR(2),
+ Sage SMALLINT,
+ Sdept CHAR(20)
+ ); 
 
 CREATE TABLE  Course
-      (	
-		Cno		CHAR(4) PRIMARY KEY,
-		Cname	CHAR(40),            
-        Cpno	CHAR(4),               	                      
-        Ccredit	SMALLINT,
-        FOREIGN KEY (Cpno) REFERENCES  Course(Cno) 
-       ); 
+ (	
+ Cno CHAR(4) PRIMARY KEY,
+ Cname CHAR(40),            
+ Cpno CHAR(4),               	                      
+ Ccredit SMALLINT,
+ FOREIGN KEY (Cpno) REFERENCES  Course(Cno) 
+ ); 
 
 CREATE TABLE  SC
-       (
-		Sno		CHAR(9), 
-        Cno		CHAR(4),  
-        Grade	SMALLINT,
-        PRIMARY KEY (Sno,Cno),                     /* 主码由两个属性构成，必须作为表级完整性进行定义*/
-        FOREIGN KEY (Sno) REFERENCES Student(Sno),  /* 表级完整性约束条件，Sno是外码，被参照表是Student */
-        FOREIGN KEY (Cno)REFERENCES Course(Cno)     /* 表级完整性约束条件， Cno是外码，被参照表是Course*/
+ (
+ Sno CHAR(9), 
+ Cno CHAR(4),  
+ Grade SMALLINT,
+ PRIMARY KEY (Sno,Cno),                     /* 主码由两个属性构成，必须作为表级完整性进行定义*/
+ FOREIGN KEY (Sno) REFERENCES Student(Sno),  /* 表级完整性约束条件，Sno是外码，被参照表是Student */
+ FOREIGN KEY (Cno)REFERENCES Course(Cno)     /* 表级完整性约束条件， Cno是外码，被参照表是Course*/
         ); 
 
 
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215121','李勇','男','CS',20);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215122','刘晨','女','CS',19);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215123','王敏','女','MA',18);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215125','张立','男','IS',19);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215128','陈冬','男','IS',20);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215121','李勇','男','CS',20);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215122','刘晨','女','CS',19);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215123','王敏','女','MA',18);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215125','张立','男','IS',19);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215128','陈冬','男','IS',20);
 
 SELECT * FROM Student
 
