@@ -1,1 +1,3 @@
-    INSERT    INTO  Student (Sno,Sname,Ssex,Sdept,Sage)    VALUES ('201215128','³Â¶¬','ÄÐ','IS',18);
+    INSERT
+    INTO  Student (Sno,Sname,Ssex,Sdept,Sage)
+    VALUES ('201215128','çŽ‹è¾‰','ç”·','IS',18);
