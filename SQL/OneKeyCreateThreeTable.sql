@@ -8,15 +8,17 @@ DROP TABLE IF EXISTS Student
 DROP TABLE IF EXISTS Course
 
 CREATE TABLE Student          
-      (	Sno   CHAR(9) PRIMARY KEY,         /* 列级完整性约束条件,Sno是主码*/                  
-        Sname CHAR(20) UNIQUE,             /* Sname取唯一值*/
-        Ssex  CHAR(2),
-        Sage  SMALLINT,
-        Sdept CHAR(20)
+      (	
+		Sno		CHAR(9) PRIMARY KEY,         /* 列级完整性约束条件,Sno是主码*/                  
+        Sname	CHAR(20) UNIQUE,             /* Sname取唯一值*/
+        Ssex	CHAR(2),
+        Sage	SMALLINT,
+        Sdept	CHAR(20)
       ); 
 
 CREATE TABLE  Course
-      (	Cno		CHAR(4) PRIMARY KEY,
+      (	
+		Cno		CHAR(4) PRIMARY KEY,
 		Cname	CHAR(40),            
         Cpno	CHAR(4),               	                      
         Ccredit	SMALLINT,
@@ -24,7 +26,8 @@ CREATE TABLE  Course
        ); 
 
 CREATE TABLE  SC
-       (Sno		CHAR(9), 
+       (
+		Sno		CHAR(9), 
         Cno		CHAR(4),  
         Grade	SMALLINT,
         PRIMARY KEY (Sno,Cno),                     /* 主码由两个属性构成，必须作为表级完整性进行定义*/
