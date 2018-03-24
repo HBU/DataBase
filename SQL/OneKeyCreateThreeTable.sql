@@ -1,4 +1,4 @@
---Edit by David @ HeBei University 2018
+ï»¿--Edit by David @ HeBei University 2018
 
 USE MrDavid  
 GO 
@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS Course
 
 CREATE TABLE Student          
  (	
- Sno CHAR(9) PRIMARY KEY,         /* ÁĞ¼¶ÍêÕûĞÔÔ¼ÊøÌõ¼ş,SnoÊÇÖ÷Âë*/                  
- Sname CHAR(20) UNIQUE,             /* SnameÈ¡Î¨Ò»Öµ*/
+ Sno CHAR(9) PRIMARY KEY,         /* åˆ—çº§å®Œæ•´æ€§çº¦æŸæ¡ä»¶,Snoæ˜¯ä¸»ç */                  
+ Sname CHAR(20) UNIQUE,             /* Snameå–å”¯ä¸€å€¼*/
  Ssex CHAR(2),
  Sage SMALLINT,
  Sdept CHAR(20)
@@ -30,27 +30,27 @@ CREATE TABLE  SC
  Sno CHAR(9), 
  Cno CHAR(4),  
  Grade SMALLINT,
- PRIMARY KEY (Sno,Cno),                     /* Ö÷ÂëÓÉÁ½¸öÊôĞÔ¹¹³É£¬±ØĞë×÷Îª±í¼¶ÍêÕûĞÔ½øĞĞ¶¨Òå*/
- FOREIGN KEY (Sno) REFERENCES Student(Sno),  /* ±í¼¶ÍêÕûĞÔÔ¼ÊøÌõ¼ş£¬SnoÊÇÍâÂë£¬±»²ÎÕÕ±íÊÇStudent */
- FOREIGN KEY (Cno)REFERENCES Course(Cno)     /* ±í¼¶ÍêÕûĞÔÔ¼ÊøÌõ¼ş£¬ CnoÊÇÍâÂë£¬±»²ÎÕÕ±íÊÇCourse*/
+ PRIMARY KEY (Sno,Cno),                     /* ä¸»ç ç”±ä¸¤ä¸ªå±æ€§æ„æˆï¼Œå¿…é¡»ä½œä¸ºè¡¨çº§å®Œæ•´æ€§è¿›è¡Œå®šä¹‰*/
+ FOREIGN KEY (Sno) REFERENCES Student(Sno),  /* è¡¨çº§å®Œæ•´æ€§çº¦æŸæ¡ä»¶ï¼ŒSnoæ˜¯å¤–ç ï¼Œè¢«å‚ç…§è¡¨æ˜¯Student */
+ FOREIGN KEY (Cno)REFERENCES Course(Cno)     /* è¡¨çº§å®Œæ•´æ€§çº¦æŸæ¡ä»¶ï¼Œ Cnoæ˜¯å¤–ç ï¼Œè¢«å‚ç…§è¡¨æ˜¯Course*/
         ); 
 
 
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215121','ÀîÓÂ','ÄĞ','CS',20);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215122','Áõ³¿','Å®','CS',19);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215123','ÍõÃô','Å®','MA',18);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215125','ÕÅÁ¢','ÄĞ','IS',19);
-INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215128','³Â¶¬','ÄĞ','IS',20);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215121','æå‹‡','ç”·','CS',20);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215122','åˆ˜æ™¨','å¥³','CS',19);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215123','ç‹æ•','å¥³','MA',18);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215125','å¼ ç«‹','ç”·','IS',19);
+INSERT  INTO  Student (Sno,Sname,Ssex,Sdept,Sage) VALUES ('201215128','é™ˆå†¬','ç”·','IS',20);
 
 SELECT * FROM Student
 
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('1','Êı¾İ¿â',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('2','ÊıÑ§',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('3','ĞÅÏ¢ÏµÍ³',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('4','²Ù×÷ÏµÍ³',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('5','Êı¾İ½á¹¹',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('6','Êı¾İ´¦Àí',NULL,4);
-INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('7','PascalÓïÑÔ',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('1','æ•°æ®åº“',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('2','æ•°å­¦',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('3','ä¿¡æ¯ç³»ç»Ÿ',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('4','æ“ä½œç³»ç»Ÿ',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('5','æ•°æ®ç»“æ„',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('6','æ•°æ®å¤„ç†',NULL,4);
+INSERT  INTO Course(Cno,Cname,Cpno,Ccredit)	VALUES ('7','Pascalè¯­è¨€',NULL,4);
 
 UPDATE Course SET Cpno = '5' WHERE Cno = '1' 
 UPDATE Course SET Cpno = '1' WHERE Cno = '3' 
