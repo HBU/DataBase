@@ -23,5 +23,10 @@ namespace WindowsFormsApp1
             this.personsTableAdapter.Fill(this.pythonDataSet.persons);
 
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
