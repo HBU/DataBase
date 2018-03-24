@@ -1,1 +1,3 @@
-INSERT    INTO SC(Sno,Cno)    VALUES ('201215128 ','1');
+INSERT
+INTO SC(Sno,Cno)
+VALUES ('201215128 ','1');
