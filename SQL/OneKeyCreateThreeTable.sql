@@ -1,7 +1,4 @@
-﻿--Edit by David @ HeBei University 2018
-
-USE MrDavid  
-GO 
+--Edit by David @ HeBei University 2018
 
 DROP TABLE IF EXISTS SC
 DROP TABLE IF EXISTS Student
