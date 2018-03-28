@@ -1,1 +1,20 @@
---²»Ïà¹Ø×Ó²éÑ¯SELECT Sno, Sname, SdeptFROM StudentWHERE Sdept  IN	(SELECT Sdept	FROM Student	WHERE Sname= 'Áõ³¿');--Á¬½Ó²éÑ¯£¨×ÔÉíÁ¬½Ó£©SELECT S1.Sno, S1.Sname,S1.SdeptFROM Student S1,Student S2WHERE S1.Sdept = S2.Sdept AND S2.Sname = 'Áõ³¿';--¿ÉÒÔÓÃ´øEXISTSÎ½´ÊµÄ×Ó²éÑ¯Ìæ»»£ºSELECT Sno,Sname,SdeptFROM Student S1WHERE EXISTS             ¡¡   (SELECT *                     FROM Student S2                     WHERE S2.Sdept = S1.Sdept AND                                   S2.Sname = 'Áõ³¿');
+--ä¸ç›¸å…³å­æŸ¥è¯¢
+SELECT Sno, Sname, Sdept
+FROM Student
+WHERE Sdept  IN
+	(SELECT Sdept
+	FROM Student
+	WHERE Sname= 'åˆ˜æ™¨');
+
+--è¿æ¥æŸ¥è¯¢ï¼ˆè‡ªèº«è¿æ¥ï¼‰
+SELECT S1.Sno, S1.Sname,S1.Sdept
+FROM Student S1,Student S2
+WHERE S1.Sdept = S2.Sdept AND S2.Sname = 'åˆ˜æ™¨';
+
+--å¯ä»¥ç”¨å¸¦EXISTSè°“è¯çš„å­æŸ¥è¯¢æ›¿æ¢ï¼š
+SELECT Sno,Sname,Sdept
+FROM Student S1
+WHERE EXISTS
+      (SELECT *
+        FROM Student S2
+         WHERE S2.Sdept = S1.Sdept AND S2.Sname = 'åˆ˜æ™¨');
