@@ -1,1 +1,17 @@
---等值连接SELECT  Student.*, SC.*FROM     Student, SCWHERE  Student.Sno = SC.Sno;--自然连接SELECT  Student.Sno,Sname,Ssex,Sage,Sdept,Cno,GradeFROM     Student,SCWHERE  Student.Sno = SC.Sno;--等值连接SELECT  *FROM     Student, SCWHERE  Student.Sno = SC.Sno;
+
+--碌脠脰碌脕卢陆脫
+SELECT  Student.*, SC.*
+FROM     Student, SC
+WHERE  Student.Sno = SC.Sno;
+
+
+--脳脭脠禄脕卢陆脫
+SELECT  Student.Sno,Sname,Ssex,Sage,Sdept,Cno,Grade
+FROM     Student,SC
+WHERE  Student.Sno = SC.Sno;
+
+
+--碌脠脰碌脕卢陆脫
+SELECT  *
+FROM     Student, SC
+WHERE  Student.Sno = SC.Sno;
