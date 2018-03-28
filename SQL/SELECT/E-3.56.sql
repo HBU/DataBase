@@ -1,1 +1,17 @@
-SELECT Sno,Sname                -- ¢Û ×îºóÔÚStudent¹ØÏµÖĞÈ¡³öSnoºÍSname  	FROM    Student                           	WHERE Sno  IN             (SELECT Sno                    -- ¢Ú È»ºóÔÚSC¹ØÏµÖĞÕÒ³öÑ¡ĞŞÁË3ºÅ¿Î³ÌµÄÑ§ÉúÑ§ºÅ              FROM    SC                                      WHERE  Cno IN                     (SELECT Cno             --¢Ù Ê×ÏÈÔÚCourse¹ØÏµÖĞÕÒ³ö¡°ĞÅÏ¢ÏµÍ³¡±µÄ¿Î³ÌºÅ£¬Îª3ºÅ                       FROM Course                                  WHERE Cname= 'ĞÅÏ¢ÏµÍ³'                      		                  )              );SELECT Student.Sno,SnameFROM    Student,SC,CourseWHERE Student.Sno = SC.Sno  AND	SC.Cno = Course.Cno AND	Course.Cname='ĞÅÏ¢ÏµÍ³';
+SELECT Sno,Sname                -- â‘¢ æœ€ååœ¨Studentå…³ç³»ä¸­å–å‡ºSnoå’ŒSname
+  	FROM    Student                          
+ 	WHERE Sno  IN
+             (SELECT Sno                    -- â‘¡ ç„¶ååœ¨SCå…³ç³»ä¸­æ‰¾å‡ºé€‰ä¿®äº†3å·è¯¾ç¨‹çš„å­¦ç”Ÿå­¦å·
+              FROM    SC                        
+              WHERE  Cno IN
+                     (SELECT Cno             --â‘  é¦–å…ˆåœ¨Courseå…³ç³»ä¸­æ‰¾å‡ºâ€œä¿¡æ¯ç³»ç»Ÿâ€çš„è¯¾ç¨‹å·ï¼Œä¸º3å·
+                       FROM Course           
+                       WHERE Cname= 'ä¿¡æ¯ç³»ç»Ÿ'                      
+		                  )
+              );
+
+SELECT Student.Sno,Sname
+FROM    Student,SC,Course
+WHERE Student.Sno = SC.Sno  AND
+	 SC.Cno = Course.Cno AND
+	 Course.Cname='ä¿¡æ¯ç³»ç»Ÿ';
