@@ -1,1 +1,27 @@
---Ç¶Ì×²éÑ¯--Ò»¸öSELECT-FROM-WHEREÓï¾ä³ÆÎªÒ»¸ö²éÑ¯¿é--½«Ò»¸ö²éÑ¯¿éÇ¶Ì×ÔÚÁíÒ»¸ö²éÑ¯¿éµÄWHERE×Ó¾ä»òHAVING¶ÌÓïµÄÌõ¼þÖÐµÄ²éÑ¯³ÆÎªÇ¶Ì×²éÑ¯SELECT *	                           /*Íâ²ã²éÑ¯/¸¸²éÑ¯*/FROM StudentWHERE Sno IN	(SELECT Sno        /*ÄÚ²ã²éÑ¯/×Ó²éÑ¯*/	FROM SC	WHERE Cno= '2');--²»Ïà¹Ø×Ó²éÑ¯SELECT Sno, Sname, SdeptFROM StudentWHERE Sdept  IN	(SELECT Sdept	FROM Student	WHERE Sname= 'Áõ³¿');--Ïà¹Ø×Ó²éÑ¯SELECT Sno, CnoFROM    SC  xWHERE Grade >=(	SELECT AVG(Grade) 				FROM  SC y				WHERE y.Sno=x.Sno);
+--åµŒå¥—æŸ¥è¯¢
+--ä¸€ä¸ªSELECT-FROM-WHEREè¯­å¥ç§°ä¸ºä¸€ä¸ªæŸ¥è¯¢å—
+--å°†ä¸€ä¸ªæŸ¥è¯¢å—åµŒå¥—åœ¨å¦ä¸€ä¸ªæŸ¥è¯¢å—çš„WHEREå­å¥æˆ–HAVINGçŸ­è¯­çš„æ¡ä»¶ä¸­çš„æŸ¥è¯¢ç§°ä¸ºåµŒå¥—æŸ¥è¯¢
+
+SELECT *	                           /*å¤–å±‚æŸ¥è¯¢/çˆ¶æŸ¥è¯¢*/
+FROM Student
+WHERE Sno IN
+	(SELECT Sno        /*å†…å±‚æŸ¥è¯¢/å­æŸ¥è¯¢*/
+	FROM SC
+	WHERE Cno= '2');
+
+
+--ä¸ç›¸å…³å­æŸ¥è¯¢
+SELECT Sno, Sname, Sdept
+FROM Student
+WHERE Sdept  IN
+	(SELECT Sdept
+	FROM Student
+	WHERE Sname= 'åˆ˜æ™¨');
+
+
+--ç›¸å…³å­æŸ¥è¯¢
+SELECT Sno, Cno
+FROM    SC  x
+WHERE Grade >=(	SELECT AVG(Grade) 
+				FROM  SC y
+				WHERE y.Sno=x.Sno);
