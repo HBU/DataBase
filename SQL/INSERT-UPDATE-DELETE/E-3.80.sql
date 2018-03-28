@@ -1,1 +1,5 @@
-SELECT * FROM StudentUPDATE StudentSET Sdept = NULLWHERE Sno='201215121';SELECT * FROM Student
+SELECT * FROM Student
+UPDATE Student
+SET Sdept = NULL
+WHERE Sno='201215121';
+SELECT * FROM Student
