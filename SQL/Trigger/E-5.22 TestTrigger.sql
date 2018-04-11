@@ -1,6 +1,6 @@
 INSERT
 INTO  Student
-VALUES ('201215135','ÕÅÀÏ9','ÄÐ',18,'CS');
+VALUES ('201215135','çŽ‹äº”','ç”·',18,'CS');
 
 SELECT * FROM Student
 SELECT * FROM StudentInsertLog
