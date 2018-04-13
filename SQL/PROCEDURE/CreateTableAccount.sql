@@ -2,8 +2,8 @@ DROP TABLE IF EXISTS Account;
 
 CREATE TABLE Account
 (
-accountnum CHAR(3),	-- “¯––’À∫≈
-total FLOAT		-- ’Àªß”‡∂Ó
+accountnum CHAR(3),	-- Ë¥¶Êà∑ÁºñÂè∑
+total FLOAT		-- Ë¥¶Êà∑‰ΩôÈ¢ù
 );
 
 INSERT INTO Account VALUES(101,50);
