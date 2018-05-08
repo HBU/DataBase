@@ -2739,11 +2739,28 @@ SELECT Sno, Sname, Ssex, Sage, Sdept FROM Student WHERE (Sno = @Sno)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[3];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT Sno, Sname, Ssex, Sage, Sdept FROM dbo.Student";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[1].Connection = this.Connection;
+            this._commandCollection[1].CommandText = "SELECT   Sno, Sname, Ssex, Sage, Sdept\r\nFROM      Student\r\nWHERE   (Sno = @xuehao" +
+                ")";
+            this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@xuehao", global::System.Data.SqlDbType.VarChar, 9, global::System.Data.ParameterDirection.Input, 0, 0, "Sno", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[2].Connection = this.Connection;
+            this._commandCollection[2].CommandText = "INSERT INTO Student\r\n                (Sno, Sname, Ssex, Sage, Sdept)\r\nVALUES   (@" +
+                "Sno,@Sname,@Ssex,@Sage,@Sdept); \r\nSELECT Sno, Sname, Ssex, Sage, Sdept FROM Stud" +
+                "ent WHERE (Sno = @Sno)";
+            this._commandCollection[2].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Sno", global::System.Data.SqlDbType.VarChar, 9, global::System.Data.ParameterDirection.Input, 0, 0, "Sno", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Sname", global::System.Data.SqlDbType.VarChar, 20, global::System.Data.ParameterDirection.Input, 0, 0, "Sname", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Ssex", global::System.Data.SqlDbType.VarChar, 2, global::System.Data.ParameterDirection.Input, 0, 0, "Ssex", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Sage", global::System.Data.SqlDbType.Int, 2, global::System.Data.ParameterDirection.Input, 0, 0, "Sage", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[2].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Sdept", global::System.Data.SqlDbType.VarChar, 20, global::System.Data.ParameterDirection.Input, 0, 0, "Sdept", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2765,6 +2782,42 @@ SELECT Sno, Sname, Ssex, Sage, Sdept FROM Student WHERE (Sno = @Sno)";
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
         public virtual MrDavidDataSet.StudentDataTable GetData() {
             this.Adapter.SelectCommand = this.CommandCollection[0];
+            MrDavidDataSet.StudentDataTable dataTable = new MrDavidDataSet.StudentDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, false)]
+        public virtual int FillBySno(MrDavidDataSet.StudentDataTable dataTable, string xuehao) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((xuehao == null)) {
+                throw new global::System.ArgumentNullException("xuehao");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(xuehao));
+            }
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual MrDavidDataSet.StudentDataTable GetDataBy(string xuehao) {
+            this.Adapter.SelectCommand = this.CommandCollection[1];
+            if ((xuehao == null)) {
+                throw new global::System.ArgumentNullException("xuehao");
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[0].Value = ((string)(xuehao));
+            }
             MrDavidDataSet.StudentDataTable dataTable = new MrDavidDataSet.StudentDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3004,6 +3057,59 @@ SELECT Sno, Sname, Ssex, Sage, Sdept FROM Student WHERE (Sno = @Sno)";
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
         public virtual int Update(string Sname, string Ssex, global::System.Nullable<short> Sage, string Sdept, string Original_Sno, string Original_Sname, string Original_Ssex, global::System.Nullable<short> Original_Sage, string Original_Sdept) {
             return this.Update(Original_Sno, Sname, Ssex, Sage, Sdept, Original_Sno, Original_Sname, Original_Ssex, Original_Sage, Original_Sdept);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, false)]
+        public virtual int InsertQuery(string Sno, string Sname, string Ssex, global::System.Nullable<int> Sage, string Sdept) {
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[2];
+            if ((Sno == null)) {
+                throw new global::System.ArgumentNullException("Sno");
+            }
+            else {
+                command.Parameters[0].Value = ((string)(Sno));
+            }
+            if ((Sname == null)) {
+                command.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            else {
+                command.Parameters[1].Value = ((string)(Sname));
+            }
+            if ((Ssex == null)) {
+                command.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            else {
+                command.Parameters[2].Value = ((string)(Ssex));
+            }
+            if ((Sage.HasValue == true)) {
+                command.Parameters[3].Value = ((int)(Sage.Value));
+            }
+            else {
+                command.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((Sdept == null)) {
+                command.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                command.Parameters[4].Value = ((string)(Sdept));
+            }
+            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
+            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                command.Connection.Open();
+            }
+            int returnValue;
+            try {
+                returnValue = command.ExecuteNonQuery();
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    command.Connection.Close();
+                }
+            }
+            return returnValue;
         }
     }
     
