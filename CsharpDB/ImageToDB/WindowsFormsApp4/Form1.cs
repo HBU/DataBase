@@ -29,8 +29,10 @@ namespace WindowsFormsApp4
 
                 string sql = "insert into Images (BLOBData) values (@blobdata)";
                 SqlCommand command = new SqlCommand(sql, connection);
-                //图片路径
-                string picturePath = @"D:\1.jpg"; //注意，这里需要指定保存图片的绝对路径和图片?
+                //打开浏览图片对话框
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.ShowDialog();
+                string picturePath = openFileDialog.FileName;//获取图片路径
 
                 //文件的名称，每次必须更换图片的名称，这里很为不便
                 //创建FileStream对象
