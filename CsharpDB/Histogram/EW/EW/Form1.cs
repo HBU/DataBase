@@ -20,7 +20,7 @@ namespace EW
 
         private void button1_Click(object sender, EventArgs e)
         {
-            String conn = "Data Source=.;Initial Catalog=Northwind;User ID=sa;Password=sql";
+            String conn = "Data Source=.;Initial Catalog=BlockIndex;User ID=sa;Password=sql";
             String resultNum = "";
             String resultNumNest = "";
             SqlConnection sqlConnection = new SqlConnection(conn);  //实例化连接对象
@@ -29,7 +29,7 @@ namespace EW
             try
             {
                 sqlConnection.Open();
-                String select_by_id = "select count(*) from Products where SupplierID='" + 18 + "'";
+                String select_by_id = "select count(*) from Attr_Census2D where attr0='" + 60 + "'";
                 SqlCommand sqlCommand = new SqlCommand(select_by_id, sqlConnection);
                 SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();                
                 while (sqlDataReader.Read())
@@ -49,7 +49,7 @@ namespace EW
             try
             {
                 sqlConnection.Open();
-                String select_by_Nest = "select count(*) from Products where SupplierID > '16' and SupplierID < '20'";
+                String select_by_Nest = "select count(*) from Attr_Census2D where attr0 > '58' and attr0 < '63'";
                 SqlCommand sqlCommandNest = new SqlCommand(select_by_Nest, sqlConnection);
                 SqlDataReader sqlDataReaderNest = sqlCommandNest.ExecuteReader();                
                 while (sqlDataReaderNest.Read())
@@ -66,10 +66,16 @@ namespace EW
             }
 
             //计算误差
-            Double rn = Convert.ToDouble(resultNum);
-            Double rnn = Convert.ToDouble(resultNumNest);
-            Double errorValue = (rnn - rn) ;
-            textBox5.Text = errorValue.ToString();
+            if(resultNum != "" && resultNumNest !="")
+            {
+                Double rn = Convert.ToDouble(resultNum);
+                Double rnn = Convert.ToDouble(resultNumNest);
+                Double errorValue = (rnn - rn);
+                textBox5.Text = errorValue.ToString();
+            }
+            
+            
+            
 
         }
     }

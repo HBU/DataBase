@@ -1,0 +1,2958 @@
+
+2005.5.20
+
+void CMainFrame::OnResults3To4D() 
+{
+	if(!zlOpenDB())
+	{
+		AfxMessageBox("zlOpenDB() err!");
+		zlCloseDB();
+	}
+
+	long lStartTimer = GetTickCount();
+	long lEndTimer;
+
+	long lALL_StartTimer = GetTickCount();
+	long lALL_EndTimer;
+	int  iALL_TickCount = 0;
+
+	int m = 100; //20; //10; //9;    //10;  //the number of rectangles 
+	int n = COL_NUM; //2;	//104;   //the dimensions of space
+	double Totall_v =0.0; // Totall_v = v(U Si )
+	int i, j;
+	int old_m = m;
+	int m_T;  //the number of {T[i]}
+	int iTableSize =0;
+
+    RESULT_LEARNING RstLng[WORKLOAD_NUM +1];
+
+	char * szSql = new char[8092000];
+	strcpy(szSql, "");
+
+	char temp[512] = "";
+	CString cstrMarc = "";
+	double VFactor;
+	if(n==104)
+	  VFactor = 5.0 * pow(10, 37);
+	else if(n==50)
+	  VFactor = pow(10, 34); // (30 +38)/2=34
+
+	CFile file;
+
+	//Seed the random-number generator with current time
+	srand( (unsigned)time( NULL ) );	
+	int iRandom = rand()%100;
+
+	char TableName[1024] = "";
+
+
+	ZLRECT * S = new ZLRECT[m+1]; //S[m+1];
+	ZLRECT * T = new ZLRECT[m+1]; //T[m+1];
+	//-- NOT use the following definition: 
+	//      ZLRECT ** T = new ( ZLRECT (*[m+1]) ); //T[m+1];
+
+
+////////////////////////////////////////////////////////////////////////////////////	
+//----------- 1. Get m initial rectangles from DB----------------------
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+	// [15, 90]x[-25897, 347998]: the domain of the table CLMB_census2D
+    //15 <=	Age <= 90	
+    //-25897 <= income <=347998
+	
+	//SELECT MIN(attr0), MIN(attr1), MAX(attr0), MAX(attr1) FROM Attr_Census2D
+    //15	-25897	90	347998
+
+	double dMin[COL_NUM+1]; 
+	double dMax[COL_NUM+1];
+
+	CLearnIing6App * pApp = (CLearnIing6App * ) AfxGetApp();
+	strcpy(TableName, pApp->TableName);
+
+	for(i = 0; i <COL_NUM+1; i++)
+	{
+		dMin[i] = pApp->dMin[i];
+		dMax[i] = pApp->dMax[i];
+	}
+
+	int iQryIdx =1;
+
+	int longTicks =0, shortTicks =0;
+	int f_rst= 0, shortTicks_rst = 0; //2003/4/5
+    char tmp[512] = "";
+	double  fCol[COL_NUM+1];		//Elevation
+	SDWORD  cbCol[COL_NUM+1]; 
+
+	int		sN,  sf,  sf_rst,  sshortTicks_rst,  sshortTicks,  slongTicks;
+	SDWORD  cbN, cbf, cbf_rst, cbshortTicks_rst, cbshortTicks, cblongTicks;
+	double	sr;	
+	SDWORD cbr;
+	sf_rst =0;  sshortTicks_rst=0;
+
+
+    //----the size is all 100 (the size of workload) 
+
+	//UCHAR szSqlAllLearningRows[] = "SELECT * FROM Census2D_T0100_B_Learning_P0178"; //census 2dim 
+	//UCHAR szSqlAllLearningRows[] = " SELECT * FROM Census2D_T0100_B_OPT "; //census 2dim 
+	
+	//UCHAR szSqlAllLearningRows[] = " SELECT * FROM Lsi_104D_T0020_B_Learning_P0954 "; //Lsi_104D
+	//UCHAR szSqlAllLearningRows[] = " SELECT * FROM Lsi_104D_Top20_B_OPT "; //Lsi_104D
+	
+	UCHAR szSqlAllLearningRows[] = " SELECT * FROM Lsi_050D_Top20_B_OPT "; //Lsi_050D
+
+	//------
+	// only for test SELECT * FROM Lsi_050D_Top20_Profile909
+	//UCHAR szSqlAllLearningRows[] = " SELECT * FROM Lsi_050D_Top20_Profile909 "; //Lsi_050D
+	//------
+
+
+	SQLFreeStmt(hstmt, SQL_DROP);
+	retcode = SQLAllocStmt(hdbc, &hstmt); ///Statement handle 
+	if(retcode != SQL_SUCCESS)
+		AfxMessageBox("1. Get m initial rectangles from DB, Error!" ); //return -1;
+
+	SQLSetStmtOption(hstmt, SQL_CONCURRENCY, SQL_CONCUR_READ_ONLY);
+	SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+	
+	longTicks = GetTickCount();
+		retcode = SQLExecDirect(hstmt, (unsigned char *)szSqlAllLearningRows, SQL_NTS);
+	longTicks = GetTickCount() - longTicks;
+
+	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO ) 
+	{    //	retcode = SQLExecDirect for DATA_Top100_Census2D_Profile
+		
+		int iRowCount;
+		SDWORD *  RowCountPtr = new SDWORD ;
+		retcode = SQLRowCount(hstmt, RowCountPtr);						 
+		iRowCount = * RowCountPtr;
+		//iTupleNum = iRowCount;
+		//iSizeProfile = iRowCount; // here only size of profile, 218, 436, 872, //100,200, ...,2000
+		delete RowCountPtr;
+		
+		// Bind columns 1,2,3,4, ..., 104
+		for(i = 0; i <COL_NUM+1; i++)
+		{
+			fCol[i] =0.0;
+			cbCol[i] = 0; 
+		}
+		// Bind columns 1,2,3,4 ,.., COL_NUM
+		for(i = 0; i <COL_NUM; i++)
+			SQLBindCol(hstmt, i+1, SQL_C_DOUBLE, &fCol[i],0, &cbCol[i]); //SQL_C_SSHORT
+
+		SQLBindCol(hstmt, COL_NUM+1, SQL_C_SLONG, &sN,0, &cbN); //SQL_C_SSHORT
+		SQLBindCol(hstmt, COL_NUM+2, SQL_C_DOUBLE, &sr,0, &cbr); //SQL_C_SSHORT
+		SQLBindCol(hstmt, COL_NUM+3, SQL_C_SLONG, &sf,0, &cbf); //SQL_C_SSHORT
+
+		SQLBindCol(hstmt, COL_NUM+4, SQL_C_SLONG, &sf_rst,0, &cbf_rst); //SQL_C_SSHORT
+		SQLBindCol(hstmt, COL_NUM+5, SQL_C_SLONG, &sshortTicks_rst,0, &cbshortTicks_rst); //SQL_C_SSHORT
+		SQLBindCol(hstmt, COL_NUM+6, SQL_C_SLONG, &sshortTicks,0, &cbshortTicks); //SQL_C_SSHORT
+		SQLBindCol(hstmt, COL_NUM+7, SQL_C_SLONG, &slongTicks,0, &cblongTicks); //SQL_C_SSHORT
+		
+		iRowCount =0;
+		while (TRUE) 
+		{
+			retcode = SQLFetch(hstmt);
+
+			if (retcode == SQL_ERROR)
+			{
+				//show_error();
+				wsprintf(tmp, "%ld", iRowCount);
+				//int i = iRowCount;
+				AfxMessageBox("SQLFetch Error !!!!!!");
+						//break; //99.8.26
+			}
+
+			if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
+			{
+				
+				for(i = 1; i<=COL_NUM; i++)
+				{
+					RstLng[iQryIdx].q[i] = fCol[i-1];
+				}
+				
+				RstLng[iQryIdx].N		= sN;
+				RstLng[iQryIdx].r		= (float) sr;
+				RstLng[iQryIdx].f		= sf;
+				RstLng[iQryIdx].f_rst	= sf_rst;
+				RstLng[iQryIdx].shortTicks_rst = sshortTicks_rst;
+				RstLng[iQryIdx].longTicks = slongTicks;	 
+				RstLng[iQryIdx].shortTicks = sshortTicks; 
+
+				sf_rst =0;  
+				sshortTicks_rst=0;
+
+				iQryIdx++;
+
+				if(retcode == SQL_SUCCESS_WITH_INFO)
+				{
+					wsprintf(tmp, "%ld", retcode);
+					AfxMessageBox(tmp);
+				}
+					
+			} 
+			else 
+			{
+				break;
+			}
+
+		}   ///while (TRUE)
+	}//	retcode = SQLExecDirect  for DATA_Top100_Census2D_Profile
+
+   for(i=1; i<=WORKLOAD_NUM; i++)
+   {
+		pApp->Q[i] = RstLng[i];
+   }
+////////////////////////////////////////////////////////////////////////////////////	
+
+
+////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////// 11111111111111111 ///////////////////////
+//		Assigned the rectangles S[i] from RstLng[i]; S[i]:= RstLng[i]
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+lALL_StartTimer = GetTickCount();
+	
+	for(i=1; i<=m; i++)
+	{
+		for(j= 1; j <=n; j++)
+		{
+			S[i].a[j] = RstLng[i].q[j] - RstLng[i].r ; 
+			if(S[i].a[j] < dMin[j])
+				S[i].a[j] = dMin[j];
+
+			S[i].b[j] = RstLng[i].q[j] + RstLng[i].r; 
+			if(S[i].b[j] >dMax[j])
+				S[i].b[j] = dMax[j];
+		}
+
+		S[i].v =1;
+		if(n < 25)
+		{
+			for(j=1; j<=n; j++)
+			{
+				S[i].v *= (S[i].b[j]-S[i].a[j]);
+			}
+		}
+		else
+		{
+			for(j=1; j<=n; j++)
+			{
+				S[i].v *= ( (S[i].b[j]-S[i].a[j])/VFactor );
+			}
+			
+		}
+
+		sprintf(S[i].suffix, "%d", i);
+		S[i].suf1st = i;
+		S[i].sufend = i;
+		S[i].cn =0;
+		//S[i].bsn = i; //2005.4.8
+		S[i].bsn = 0;   //2005.4.8
+
+	}
+
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+	
+if(n>24)
+{
+	double V_Lsi104D =1.0;
+	double S_v[101];
+
+	for(j=1; j<=n; j++)
+	{
+		V_Lsi104D *= ( (dMax[j]-dMin[j])/VFactor );
+	}
+
+	for(i=1; i<=m; i++)
+	{  
+		S_v[i] = S[i].v;
+	}
+	sprintf(temp, " V_Lsi104D = %.15G  ", V_Lsi104D );
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+}
+
+//------test 1 start ------
+for(i=1; i<=m; i++)
+{         
+	//sprintf(temp, " S[%02i].v = %.15G  ", i, S[i].v );
+	//cstrMarc += temp;
+	//cstrMarc += "\r\n";
+}
+	//cstrMarc += "\r\n";
+	//cstrMarc += "\r\n";
+
+//------test 1 end --------
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+/////////////////     222222222222222222222        //////////////////////////
+//		2. Eliminating redundant squares temporarily
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+lALL_StartTimer = GetTickCount();
+
+	bool rmvable =false;
+    int l=1; 
+	int k;
+
+	rmvable =false;
+	for(i=1; i<=m; i++)
+	{ 
+		rmvable =false;
+
+		for(k=1; k<=m; k++)
+		{
+		   // for each i, see ?? S[i] in S[k], for all k:  i!=k and S[k] is not removed
+		   // this wan can avoid the situation S[i] ==S[k]. say, S[8] == S[65]
+           // then in the case of S[8] == S[65], the loop of () will be dead loop
+
+		   //if(i != k )  // 2005.4.8
+		   if( k != i  && S[k].bsn == 0) // 2005.4.8 
+		   {
+				for(j=1; j<=n; j++)
+				{
+					// if S[i] is the subset of S[k], 
+					if( (S[k].a[j]<=S[i].a[j]) && (S[i].b[j]<=S[k].b[j] ))
+					{
+						rmvable = true;
+					}
+					else
+					{
+						rmvable = false;
+						break; //break j, for next k
+					}
+				} //for(j= 1; j <=n; j++)
+				
+				if(rmvable) //there is a k such that Si is in Sk 
+				{
+						//-------test 2---
+							sprintf(temp, " S[%ld] cover, REMOVE S[%i] = [%G, %.15G]x[%G, %G]: ", k, i, S[i].a[1], S[i].b[1], S[i].a[2], S[i].b[2] );
+							cstrMarc += temp;
+							cstrMarc += "\r\n";
+
+						//-------test 2---
+					S[i].bsn = k; // s[i] is in s[k], i.e. S[i] is the subset of s[k]. IMPORTANT. bsn = Big Set Number
+					S[i].tplNum =S[i].bsn; //2005.5.17
+
+					break;  // break k and then for next i
+				}
+		   } //if(i != k)
+
+		}//for(k=1; i<=m; k++)
+
+		if(l==1 && i==m && rmvable)  // forget the meaning of this conditions
+		{                           // i==m ?? the last one S[m] is in S[k], k !=m
+			AfxMessageBox("l==1 && i==m && rmvable");
+		} //2005.5.14
+
+		//if( (rmvable == false) || (l==1 && i==m && rmvable) ) //cannot be removed //2005.5.14
+		if( (rmvable == false)  ) //cannot be removed //2005.5.14
+		{
+			//T[l] = S[i];
+			// :==: is the same as :==:
+			//memset(&T[l], 0, sizeof(ZLRECT));
+			//memcpy(&T[l], &S[i], sizeof(ZLRECT));
+			
+			for(j= 1; j <=n; j++)
+			{
+				T[l].a[j] = S[i].a[j];
+				T[l].b[j] = S[i].b[j]; 
+			}
+			T[l].v=S[i].v;
+
+			sprintf(T[l].suffix, "%d", l);
+			T[l].suf1st = l;
+			T[l].sufend = l;
+			T[l].cn = 0;
+			//T[l].bsn = l;  // 2004.4.13
+			T[l].bsn = 0;    // 2004.4.13
+
+			S[i].bsn= 10000+l; // the remainder of S[i]: S[i].bsn = l +10000; 
+							   // where l is the index of T[l]. i.e. S[i] is the (sub)set of T[l]
+			S[i].tplNum =S[i].bsn; //2005.5.17
+
+			l++;
+		}//if( (rmvable == false) || (l==1 && i==m && rmvable) ) //cannot be removed
+	
+	}//for(i=1; i<=m; i++)
+
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+//3. Select * from 4 Cases;
+//SELECT * FROM CLMB_census2D where (20 <= Age and Age <= 50) AND (3000 <= Income and Income <= 60000)
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+		
+	int  ituples_cnt = 0;
+	int PreTuplesNum = 0;
+	//char TableName[] = "CLUM_census2D";
+	//char TableName[] = " Lsi_104D ";
+
+	int iSum_TickCount = 0;
+    int iSum_TuplesCount =0;
+	//3.0 select * FROM  ALL TABLE: //SELECT * FROM CLMB_census2D, 
+	//---------------------------------------------------------------------
+
+	strcpy(	szSql, 	" SELECT * FROM ");
+	strcat(	szSql, 	TableName);
+
+	lStartTimer = GetTickCount();
+	 PreTuplesNum = 0;
+
+		ituples_cnt = pApp->zlExeSelect(PreTuplesNum, szSql);
+	lEndTimer = GetTickCount() - lStartTimer ;
+    iTableSize = ituples_cnt;
+
+	cstrMarc += "\r\n";
+	cstrMarc += TableName;
+    sprintf(temp, ": \r\n GetTickCount = %ld", lEndTimer);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	sprintf(temp, " All Size of Table = %ld", iTableSize);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+
+	//3.1 select * each reach rectangle of all  {S[i]} with size m, 
+	//---------------------------------------------------------------------
+	//---------------------------------------------------------------------
+
+	//m = min(m,l-1);
+
+	// m = m ==100
+
+	int iCandidateNum = 0;
+
+	for(i = 1; i<=m; i++) // there are m the originial rectangles S[1] to S[100]
+	{
+
+       ////////////////////////
+		char szSqltmp[] = " SELECT * FROM Lsi_104D ";
+		SQLFreeStmt(hstmt, SQL_DROP);
+		retcode = SQLAllocStmt(hdbc, &hstmt); ///Statement handle 
+		if(retcode != SQL_SUCCESS)
+			AfxMessageBox("1. Get m initial rectangles from DB, Error!" ); //return -1;
+
+		SQLSetStmtOption(hstmt, SQL_CONCURRENCY, SQL_CONCUR_READ_ONLY);
+		SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+		
+		//longTicks = GetTickCount();
+		retcode = SQLExecDirect(hstmt, (unsigned char *)szSqlAllLearningRows, SQL_NTS);
+		//longTicks = GetTickCount() - longTicks;
+	  /////////////////////////////
+
+
+		//strcpy(	szSql, 	" SELECT * FROM CLMB_census2D where ( ( ");
+		strcpy(	szSql, 	" SELECT * FROM ");
+		strcat(	szSql, 	TableName );
+		strcat(	szSql, 	" where ( ( ");
+			
+			for(j=1; j<=COL_NUM-1; j++)
+			{
+				//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", S[i].a[j],j-1,j-1, S[i].b[j]);
+				sprintf(temp, " %G <= attr%d AND attr%d <= %G ", S[i].a[j],j-1,j-1, S[i].b[j]);
+				strcat(	szSql, temp	);
+				strcat(	szSql, ") AND (" );
+			}
+
+			//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", S[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, S[i].b[COL_NUM]);
+			sprintf(temp, " %G <= attr%d AND attr%d <= %G ", S[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, S[i].b[COL_NUM]);
+			strcat(	szSql, temp	);
+
+		strcat(	szSql, ") ) "	);
+
+		/////////----
+					//CString cstrMarc1;
+					//cstrMarc1 = szSql;
+
+					//if(file.Open("E:\\Paper2\\CLMB_census2D\\Select.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+					//{
+					//	file.Write(cstrMarc1, cstrMarc1.GetLength() +1 );
+					//}
+					//file.Close();
+		/////////----
+
+			lStartTimer = GetTickCount();
+							// will use  zlExeSelect(PreTuplesNum, szSql);
+				PreTuplesNum =0;
+				//ituples_cnt =  pApp->zlExeSelect(TableName, szSql);
+				ituples_cnt =  pApp->zlExeSelect(PreTuplesNum, szSql);
+				iCandidateNum = pApp->zlGetTopNTuple(i, S, ituples_cnt);				
+		    lEndTimer = GetTickCount() - lStartTimer ;
+
+			if(iCandidateNum < pApp->Q[i].N)
+			{		
+			    AfxMessageBox("iCandidateNum < pApp->Q[i].N");
+					//Q[QueryNum].r := __max( distance from Q[QueryNum] to 
+					// tpl[1],..., tpl[iTopN]) here will do this work.
+			}
+			
+			iSum_TickCount += lEndTimer;
+			iSum_TuplesCount += ituples_cnt;
+
+            sprintf(temp, " S%i: tuples_num = %ld ", i, ituples_cnt );			
+			cstrMarc += temp;
+            sprintf(temp, " GetTickCount = %ld", lEndTimer);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+	}
+
+
+	sprintf(temp, "       Sum of Tick Count = %ld", iSum_TickCount);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	sprintf(temp, "       Sum of Tuples Count = %ld", iSum_TuplesCount);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+
+/*****
+	if(file.Open("E:\\Paper2\\Lsi_050D\\cluster_100_LSI050D_OPT_516.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+
+	{
+		file.Write(cstrMarc, cstrMarc.GetLength() +1 );
+	}
+	file.Close();
+
+		AfxMessageBox("s[100]  OK !!!!!");
+
+return;
+***/
+
+	//3.2 select * From UNION of l T[i]: from T[1] to T[l] generally l<=m , 
+    //---------------------------------------------------------------------
+
+	m=l-1;  // for T[i]
+	m_T = l-1;  // for T[i]
+/***********
+	cstrMarc += "\r\n";
+	cstrMarc += " 2. select * From UNION ";
+
+	strcpy(	szSql, 	" SELECT * FROM CLMB_census2D where ");
+
+	for(i = 1; i<=m; i++)
+	{
+		strcat(	szSql, 	" ( ( ");
+
+			sprintf(temp, " %.2f", T[i].a[1] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, "<= age AND age <=");
+			sprintf(temp, " %.2f", T[i].b[1] );
+			strcat(	szSql, temp	);
+
+			strcat(	szSql, ") AND (" );
+
+			sprintf(temp, " %.2f", T[i].a[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, 	"<= Income AND Income <=");
+			sprintf(temp, " %.2f", T[i].b[2] );
+			strcat(	szSql, temp	);
+		strcat(	szSql, ") ) "	);
+
+		if(i<m)
+			strcat(	szSql, " OR " );
+	}
+
+	//AfxMessageBox(szSql);
+
+	lStartTimer = GetTickCount();
+		ituples_cnt = zlExeSelect(TableName, szSql);
+	lEndTimer = GetTickCount() - lStartTimer ;
+	
+	//iSum_TickCount += lEndTimer;
+
+    sprintf(temp, " \r\n		The UNION　spend TickCount = %ld", lEndTimer);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+    sprintf(temp, " \r\n		The UNION　Tuples Number = %ld", ituples_cnt);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+*************/
+	////3.0_1 select * FROM  ALL TABLE: SELECT * FROM CLMB_census2D, 
+	
+	//strcpy(	szSql, 	" SELECT * FROM CLMB_census2D ");
+	//lStartTimer = GetTickCount();
+	//	ituples_cnt = zlExeSelect(TableName, szSql);
+	//lEndTimer = GetTickCount() - lStartTimer ;
+
+	//cstrMarc += "\r\n";
+    //sprintf(temp, "SELECT * FROM CLMB_census2D: GetTickCount = %ld", lEndTimer);
+	//cstrMarc += temp;
+	//cstrMarc += "\r\n";
+	//cstrMarc += "\r\n";
+
+	
+///////////////////////// 333333333333333333 /////////////////////////////////
+//   3.3  select * From SCR, obtain the scr (Small Cover Rectagle,) of all T[i], i=1,l
+//					where the scr is the biggest one that contains all T[i]'s
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+	
+	m=l-1;  // for T[i], at this moment, the size of {T[i]} is l-1 
+	cstrMarc += "\r\n";
+	cstrMarc += " 3. select * From SCR ";
+
+lALL_StartTimer = GetTickCount();
+
+	ZLRECT scr;  //This is the BIG scr that covers all T[i]
+
+	for(i=1; i<=n; i++ )
+	{
+		scr.a[i] = T[1].a[i];
+		scr.b[i] = T[1].b[i];
+
+		for(j=2; j<=m; j++ )
+		{
+			scr.a[i] = min(scr.a[i], T[j].a[i]);
+			scr.b[i] = max(scr.b[i], T[j].b[i]);
+		}
+	}
+
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+///===========
+//scr.a[1] = 15; scr.b[1]=90;
+//scr.a[2] =0 ; scr.b[2]= 347998;   
+
+//scr.a[2] =-25897 ; scr.b[2]= 347998;  //-25897	347998
+///===========
+
+/***********
+		strcpy(	szSql, 	" SELECT * FROM CLMB_census2D where ( ( ");
+		
+			sprintf(temp, " %.2f ", scr.a[1] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, "<= age AND age <=");
+			sprintf(temp, " %.2f ", scr.b[1] );
+			strcat(	szSql, temp	);
+
+			strcat(	szSql, ") AND (" );
+
+			sprintf(temp, " %.2f ", scr.a[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, 	"<= Income AND Income <=");
+			sprintf(temp, " %.2f ", scr.b[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, ") ) "	);
+*****************/
+
+		strcpy(	szSql, 	" SELECT * FROM ");
+		strcat(	szSql, 	TableName );
+		strcat(	szSql, 	" where ( ( ");
+			
+			for(j=1; j<=COL_NUM-1; j++)
+			{
+				sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr.a[j],j-1,j-1, scr.b[j]);
+				strcat(	szSql, temp	);
+				strcat(	szSql, ") AND (" );
+			}
+
+			sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr.a[COL_NUM],COL_NUM-1,COL_NUM-1, scr.b[COL_NUM]);
+			strcat(	szSql, temp	);
+
+		strcat(	szSql, ") ) "	);
+
+		/////////----
+					//CString cstrMarc1;
+					//cstrMarc1 = szSql;
+
+					//CFile file;
+					//if(file.Open("E:\\Paper2\\CLMB_census2D\\Lsi_104D.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+					//{
+						//file.Write(cstrMarc1, cstrMarc1.GetLength() +1 );
+					//}
+					//file.Close();
+		/////////----
+
+//strcpy(	szSql, 	" SELECT * FROM CLMB_census2D Where ( (15 <=Age AND Age<=90) AND (0 <=Income and income <= 347998) ) ");
+
+			lStartTimer = GetTickCount();
+				ituples_cnt = zlExeSelect(TableName, szSql);
+		    lEndTimer = GetTickCount() - lStartTimer ;
+			
+			iSum_TickCount += lEndTimer;
+
+			cstrMarc += "\r\n";
+            //sprintf(temp, "The Biggest scr: [%.2f, %.2f]x[%.2f, %.2f]: ", scr.a[1], scr.b[1], scr.a[2], scr.b[2] );
+			//cstrMarc += temp;
+
+            sprintf(temp, "\r\n    scr  GetTickCount = %ld", lEndTimer);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			sprintf(temp, "\r\n    scr  Tuples Number = %ld", ituples_cnt);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+
+			cstrMarc += "\r\n";
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+///////////////////////// 44444444444444444444 ///////////////////////
+//3.4  ----   division the biggest scr into 12 = 4*3 partition  ----
+//            select * From each partition,
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+lALL_StartTimer = GetTickCount();
+	ZLRECT part[101]; //we use 1-12
+    char   buffer[1024] ="";
+	int iPartNum = 0;
+
+	int ilnum =0, iaaallNum =0;
+
+	//iPartNum = pApp->zlPartion(scr, n, T, m, iPartNum);
+	iPartNum = pApp->zlPartion3D(&scr, n, T, m, iPartNum);
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+//--------------------test33 start ---------
+//see How many T[j] does Part[i] contain ?  (== ilnum )
+	for(i= 1; i<=iPartNum; i++)
+	{
+		sprintf(part[i].suffix, " Part[%i]: " , i ); 
+	}
+
+	for(i= 1; i<=iPartNum; i++)
+	{
+		ilnum =0;
+		for(j=1; j<=m; j++)
+		{
+			if(T[j].bsn == i)
+			{
+				sprintf(buffer, ",%i", j);
+				strcat(part[i].suffix, buffer); 
+				ilnum ++;
+			}
+		}
+		sprintf(buffer, "   part[%i]: ilnum= %i   ", i, ilnum);
+		cstrMarc += buffer;			
+
+		cstrMarc += part[i].suffix;						 
+	    cstrMarc += "\r\n";
+	    cstrMarc += "\r\n";
+
+       iaaallNum +=ilnum;
+
+	}
+
+		sprintf(buffer, "   iallNum = %i", iaaallNum);
+		cstrMarc += buffer;						 
+	    cstrMarc += "\r\n";
+
+	      cstrMarc += "T[j].bsn <= 0  :";
+	    cstrMarc += "\r\n";
+
+	int bsn[101];
+	for(i=0; i<=100; i++)
+		bsn[101] =-100;
+
+		ilnum =0;
+		for(j=1; j<=m; j++)
+		{
+			bsn[j] = T[j].bsn;
+			if(T[j].bsn <= 0)
+			{
+				sprintf(buffer, ",%i", j);
+		        cstrMarc += buffer;						 
+	            cstrMarc += "\r\n";
+
+				//strcat(part[i].suffix, buffer); 
+				ilnum ++;
+			}
+		}
+
+		sprintf(buffer, "   0000 = %i", ilnum);
+		cstrMarc += buffer;						 
+	    cstrMarc += "\r\n";
+//--------------------test33 end---------
+
+
+
+	//CFile file;
+
+	//if(file.Open("E:\\Paper2\\CLMB_census2D\\part.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	////if(file.Open("E:\\Paper2\\CLMB_census2D\\cluster_100_census2D.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	//{
+	//	file.Write(cstrMarc, cstrMarc.GetLength() +1 );
+	//}
+	//file.Close();
+
+    //AfxMessageBox("On part OK!");
+
+//return;
+
+
+//------test 3.4 start ------
+//	cstrMarc += "\r\n";
+//	cstrMarc += "\r\n";
+//	CString cstrPart ;
+
+//for(i=1; i<=12; i++)
+//{
+           
+//	sprintf(temp, " part[%02i]: [%.2f, %.2f]x[%.2f, %.2f]: ",i, part[i].a[1], part[i].b[1], part[i].a[2], part[i].b[2] );
+//	cstrPart += temp;
+//    cstrPart += "\r\n";
+
+//}
+
+//	AfxMessageBox(cstrPart);
+//	cstrMarc += "\r\n";
+//	cstrMarc += "\r\n";
+
+//------test 3.3 end --------
+
+	iSum_TickCount =0;
+	iSum_TuplesCount =0;
+/**************
+	for(i=1; i<=12; i++)
+	{
+		strcpy(	szSql, 	" SELECT * FROM CLMB_census2D where ( ( ");
+		
+			sprintf(temp, " %.2f ", part[i].a[1] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, "<= age AND age <=");
+			sprintf(temp, " %.2f ", part[i].b[1] );
+			strcat(	szSql, temp	);
+
+			strcat(	szSql, ") AND (" );
+
+			sprintf(temp, " %.2f ", part[i].a[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, 	"<= Income AND Income <=");
+			sprintf(temp, " %.2f ", part[i].b[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, ") ) "	);
+
+			lStartTimer = GetTickCount();
+				ituples_cnt = zlExeSelect(TableName, szSql);
+		    lEndTimer = GetTickCount() - lStartTimer ;
+			
+			iSum_TickCount += lEndTimer;
+			iSum_TuplesCount += ituples_cnt;
+
+			sprintf(temp, " part[%02i]: [%.2f, %.2f]x[%.2f, %.2f]: ",i, part[i].a[1], part[i].b[1], part[i].a[2], part[i].b[2] );
+			cstrMarc += temp;
+            sprintf(temp, "Num_tuples = %ld,  GetTickCount = %ld", ituples_cnt, lEndTimer);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+	}
+
+	    sprintf(temp, "       Sum of Tick Count of all Part = %ld", iSum_TickCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+		sprintf(temp, "       Sum of Tuples Count = %ld", iSum_TuplesCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+********************/
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+//3.5 ---- Find which rectangle T[i] that Center IN the partition of all 12 = 4*3 partitions ----
+//         DO NOT USE intersect, 
+//	     We use "Center IN" method 
+/////////////////////// 555555555555555 /////////////////////
+//3.6 ------------------- Clustering -----------------------
+// we use the method of "Center IN " to clustering: 
+// see the function iPartNum = pApp->zlPartion3D(&scr, n, T, m, iPartNum);
+// in this function, the method of "Center IN " has been used
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+	iSum_TickCount =0;
+	iSum_TuplesCount =0;
+	
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+
+	int index[101][101];  // i= 1 to 12 intersect with part[i] : index[i][1]=5, index[i][2]=7,index[i][3]=8, index[i][4]=15,...
+	double p, q;
+	bool bInterable =false;
+
+	//for(i= 1; i<=12; i++)
+	// renew the value of part[i].suffix
+	for(i= 1; i<=iPartNum; i++)
+	{
+		sprintf(part[i].suffix, " Part[%i]: " , i );
+	}
+
+	cstrMarc += "\r\n";
+    cstrMarc += "\r\n";
+	
+	ZLRECT * partT[101];
+	//int clsNum =0;  //2005.3.16
+	//int clsNum =1000; ////2005.3.16 , only for intersections
+	//int clsNum =12; ////2005.3.24 , only for intersections
+	int clsNum = iPartNum; //2005.4.14
+
+	double center =0.0;
+
+	//for(i= 1; i<=12; i++)
+	for(i= 1; i<=iPartNum; i++)
+	{
+		sprintf(part[i].suffix, " Part[%i]: " , i ); 
+		//?? for debug ? WHY part[i].suffix?  NOT partT[i].suffix
+		// Yes, for debug!
+	}
+
+lALL_StartTimer = GetTickCount();
+
+	//for(i= 1; i<=12; i++)
+	for(i= 1; i<=iPartNum; i++)
+	{
+		for(j=1; j<=100; j++)
+		{
+			index[i][j] = 0;
+		}
+	}
+
+
+////// ~~~~~~~~ Finding all T[j]'s that center are in part[i].
+/////         and clustering by calling: pApp->zlClusterPart	
+	for(i= 1; i<=iPartNum; i++)
+	{
+		l=0;
+		for(j= 1; j <=m ; j++) // m is the number of T[i]'s
+		{
+			//T[j].bsn == i means T[j]-CENTER is IN  part[i]
+			if(T[j].bsn == i && T[j].cn <=0)   
+			{
+					l++;
+					index[i][l] = j;
+					sprintf(buffer, ",%i", j);
+					strcat(part[i].suffix, buffer); // save the index j of T[j] 
+
+					T[j].cn = i;                   //2005.3.16, use it again.
+
+					partT[l] = &T[j]; // the address of (T[j]) assign to (partT[l]);
+
+			}
+		}
+
+		cstrMarc += part[i].suffix;						 
+	    cstrMarc += "\r\n";
+
+		if(l>0)
+		{
+		  //clsNum = zlClusterPart( partT, l, T, m, clsNum, n );  
+		  //clsNum = pApp->zlClusterPart( partT, l, T, m, clsNum, n ); //2005.04.28
+			if( n < 25 )
+				clsNum = pApp->zlClusterPart( partT, l, T, m, clsNum, n, iPartNum);  			
+			else
+				clsNum = pApp->zlClusterPartLsi( partT, l, T, m, clsNum, n, iPartNum);  			
+
+		}
+	}
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+
+////////////////////---------ttest start ----------///////////
+// see cluster[i] contain: T[j]'s
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+    int iclsNum =0;
+	int iallNum =0;
+
+	for(i=1; i<= clsNum; i++)
+	{
+		iclsNum =0;
+
+		sprintf(temp, "cluster[%02i] : ", i);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		for(j=1; j<=m; j++)
+		{
+			if(T[j].cn == i)
+			{
+				//sprintf(temp, ", %02i", j);
+				sprintf(temp, " T[%02i],T[%02i].bsn =%02i;  ", j, j, T[j].bsn );
+				cstrMarc += temp;
+				iclsNum ++;
+			}			
+		}
+
+		if(iclsNum >0)
+		{
+			cstrMarc += "\r\n";
+			sprintf(temp, "    iclsNum = %02i ", iclsNum);
+			cstrMarc += temp;
+			iallNum = iallNum + iclsNum; 
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+		}
+
+	}
+
+		sprintf(temp, " iallNum = %02i ", iallNum);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+//////////////////---------ttest end ----------///////////
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+//					 Finding sct of each Cluster						//
+lALL_StartTimer = GetTickCount();		
+iSum_TickCount = 0;
+iSum_TuplesCount =0;
+
+	double * Sum_v_T = new double [100 +1]; //[clsNum +1];
+	ZLRECT * scr_CLS = new ZLRECT[100+1];   //[clsNum +1];  
+	
+	for(i=1; i<=clsNum; i++)
+	{
+		scr_CLS[i].v = 1.0;
+		
+		Sum_v_T[i] = 0.0;
+		for(k=1; k<= m_T; k++) //old_m ==100; m_T = l-1
+		{
+			if(T[k].cn ==i)
+			{
+				Sum_v_T[i] += T[k].v; //all T[k] with cluster num == i 
+			}
+
+		}
+
+	}
+
+	for(i=1; i<=clsNum; i++ )
+	{
+		for(j=1; j<=n; j++)
+		{
+		    scr_CLS[i].a[j] = dMax[j];
+			scr_CLS[i].b[j] = dMin[j];
+		}
+		for(j=1; j<=n; j++)
+		{
+			for(k=1; k<=m_T; k++) // 
+			{
+				if(T[k].cn ==i)
+				{
+					scr_CLS[i].a[j] = min(scr_CLS[i].a[j], T[k].a[j]);
+					scr_CLS[i].b[j] = max(scr_CLS[i].b[j], T[k].b[j]);
+				}
+
+			}
+		}
+
+		for(j=1; j<=n; j++)
+		{
+			if(n<25)
+				scr_CLS[i].v *= (scr_CLS[i].b[j]-scr_CLS[i].a[j]) ;
+			else
+				scr_CLS[i].v *= ( (scr_CLS[i].b[j]-scr_CLS[i].a[j])/VFactor ) ;
+
+		}
+	}
+
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+	int nonzearo =0;
+	cstrMarc += "\r\n";
+// not for T[i], But for T[i]; 2005.5.17
+lALL_StartTimer = GetTickCount();	
+	
+	for(i = 1; i<=clsNum; i++)
+	{
+		scr_CLS[i].bsn = 1; // means has elements T[i]
+	}
+
+	//for cen2D CETA = 4
+	int CETA = 1 ; //1;  //10;
+
+	for(i = 1; i<=iPartNum ; i++)   //2005.5.5
+	{
+		//?? add if (.bsn ==1)
+		// CETA = 3, 4, 5,10
+		if(scr_CLS[i].v <= CETA*Sum_v_T[i]  )  // 5*Sum_v_T[i] //10*Sum_v_T[i]
+		{
+			/// test ////
+			sprintf(temp, " scr_CLS[%02i].v = %G <<<=== %i*Sum_v_T[%02i] =%G;  ",i, scr_CLS[i].v, CETA, i, Sum_v_T[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			sprintf(temp, "		scr_CLS[%02i].v/Sum_v_T[%02i]= %.02f   ",i,i, scr_CLS[i].v/Sum_v_T[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+			/// test ////
+		}
+		else // that is: scr_CLS[i].v/Sum_v_T[i]  >CETA , Cancel this cluster
+		{
+            k=0;
+			for(j=1; j<=m_T; j++)
+			{
+				if(T[j].cn == i)
+				{
+					T[j].cn =0;
+					k++;
+				}
+			}
+
+			scr_CLS[i].bsn = 0; 
+			scr_CLS[i].cn =k;  //in the begining it has k T[i], //?? is that useful??
+
+			/// test ////
+			sprintf(temp, " scr_CLS[%02i].v = %G >>>>>> %i*Sum_v_T[%02i] =%G ",i, scr_CLS[i].v, CETA, i, Sum_v_T[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			sprintf(temp, "						scr_CLS[%02i].v/Sum_v_T[%02i]= %.02f   ",i,i, scr_CLS[i].v/Sum_v_T[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+			/// test ////
+
+		}
+	}
+////////////////////////////////////////////////////////////////////////////////////	
+
+////////////////////////////////////////////////////////////////////////////////////	
+//clustering again if one is the subset of another, then togather them 
+   //3.9.1 for  scr_CLS[i].bsn =1
+   //3.9.2 for T[i].cn =0
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+////////////////////////////////////////////////////////////////////////////////////	
+	// see whethe or not there are SUBSET 
+	//  if scr_CLS[i] is the SUBSET of scr_CLS[k], label it, scr_CLS[i].bsn = 0;
+	//  and remove it
+
+	int scr_CLS_Idx[101];
+	for(i=1; i<=100; i++)
+		scr_CLS_Idx[i]=0;
+
+	int min_scr_CLS_Idx = 0;
+	double min_scr_CLS_v =0.0;
+
+	for(i=1; i<=clsNum; i++)
+	{
+	  rmvable = false;
+
+	  for(j=1; j<=100; j++)
+		  scr_CLS_Idx[j]=0;
+
+
+	  if(scr_CLS[i].bsn ==1)
+	  {
+
+		for(k=1; k<=clsNum; k++)
+		{
+		   if( (i != k) && scr_CLS[k].bsn ==1 )
+		   {
+				for(j=1; j<=n; j++)
+				{
+					// if scr_CLS[i] is the subset of scr_CLS[k], 
+					//if( (scr_CLS[k].a[j]<=scr_CLS[i].a[j]) && (scr_CLS[i].b[j]<=scr_CLS[k].b[j] ))
+					//if the center of scr_CLS[i] is in scr_CLS[k],
+					
+					if( (scr_CLS[k].a[j]<=scr_CLS[i].a[j]) && (scr_CLS[i].b[j]<=scr_CLS[k].b[j] ))		
+					{
+						rmvable = true;
+					}
+					else
+					{
+						rmvable = false;
+						break; //break j, for next k
+					}
+				} //for(j= 1; j <=n; j++)
+				
+				if(rmvable) //there is a k, such that scr_CLS[i] is in scr_CLS[k] 
+				{
+						//-------test 2---
+							sprintf(temp, " scr_CLS[%ld].v =%G cover, REMOVE scr_CLS[%i]: [%G, %G]x[%G, %G]: ", k, scr_CLS[k].v, i, scr_CLS[i].a[1], scr_CLS[i].b[1], scr_CLS[i].a[2], scr_CLS[i].b[2] );
+							cstrMarc += temp;
+							cstrMarc += "\r\n";
+
+						//-------test 2---
+					//scr_CLS[i].bsn = 0; // s[i] is in s[k], IMPORTANT
+					//for(l=1; l<=old_m; l++)
+					//{
+						//if(T[l].cn ==i)
+							//T[l].cn=k;
+					//}
+
+					scr_CLS_Idx[k]=k;
+					min_scr_CLS_Idx=k;
+					min_scr_CLS_v =scr_CLS[k].v;
+
+					rmvable = false;
+					
+
+					//break;  //2005.5.15 not break, for k continue; break k and then for next i
+				}
+
+		   } //if(i != k)
+
+		}//for(k=1; i<=m; k++)
+
+		////////
+			 for(k = 1; k<=clsNum; k++)
+			 {
+				 if(scr_CLS_Idx[k] >0)
+				 {
+					 if(scr_CLS[ scr_CLS_Idx[k] ].v < min_scr_CLS_v)
+					 {
+						min_scr_CLS_v =  scr_CLS[ scr_CLS_Idx[k] ].v;
+						min_scr_CLS_Idx = scr_CLS_Idx[k];
+					 }
+				 }
+				
+			 }
+			if(min_scr_CLS_Idx >0 )
+			{
+				scr_CLS[i].bsn = 0; // s[i] is in s[min_scr_CLS_Idx], IMPORTANT
+				for(l=1; l<=m_T; l++)
+				{
+					if(T[l].cn ==i)
+						T[l].cn = min_scr_CLS_Idx;
+				}
+				//-------test 2---
+					sprintf(temp, " MIN scr_CLS[%ld].v =%G cover, REMOVE scr_CLS[%i]: [%G, %G]x[%G, %G]: ", min_scr_CLS_Idx, scr_CLS[min_scr_CLS_Idx].v, i, scr_CLS[i].a[1], scr_CLS[i].b[1], scr_CLS[i].a[2], scr_CLS[i].b[2] );
+
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+					cstrMarc += "\r\n";
+			//-------test 2---
+
+				min_scr_CLS_Idx =0;
+			}
+		///////////
+
+	  }
+	}//for(i=1; i<=m; i++) 
+
+////////////////////////////////////////////////////////////////////////////////////	
+
+
+   //3.9.2 if  T[k].cn == 0 that is obtained from	"if( !(scr_CLS[i].v <= CETA*Sum_v_T[i])  )"
+	rmvable =false;
+
+	for(i=1; i<=100; i++)
+		scr_CLS_Idx[i]=0;
+
+	min_scr_CLS_Idx = 0;
+	min_scr_CLS_v =0.0;
+
+	for(k=1; k<=m_T; k++)
+	{
+				
+	  if(T[k].cn ==0 )  
+	  {
+
+		rmvable = false;
+
+		for(j=1; j<=100; j++)
+			scr_CLS_Idx[j]=0;
+
+		for(i=1; i<=clsNum; i++)
+		{
+			rmvable =false;
+
+			if(scr_CLS[i].bsn ==1)
+			{
+
+					for(j=1; j<=n; j++)
+					{
+						 // if T[k] is the subset of scr_CLS[i], 
+						if( (scr_CLS[i].a[j]<=T[k].a[j]) && (T[k].b[j]<=scr_CLS[i].b[j] ))
+						{
+							rmvable = true;
+						}
+						else
+						{
+							rmvable = false;
+							break; //break j, for next k
+						}
+					} //for(j= 1; j <=n; j++)
+				
+				
+					if(rmvable) //there is a k such that scr_CLS[i] is in scr_CLS[k] 
+					{
+							//-------test 2---
+								sprintf(temp, " scr_CLS[%ld] cover, REMOVE T[%i]= [%.2f, %.2f]x[%.2f, %.2f]: ", i, k, T[k].a[1], T[k].b[1], T[k].a[2], T[k].b[2] );
+								cstrMarc += temp;
+								cstrMarc += "\r\n";
+
+							//-------test 2---
+
+						//T[k].cn = i;
+						scr_CLS_Idx[i] = i;
+						min_scr_CLS_Idx = i;
+						min_scr_CLS_v = scr_CLS[i].v;
+
+								
+						rmvable =false;
+						//break;  // 2005.5.15 not break, for next i countinoue; break k and then for next i
+					}//if(rmvable)
+				}//if(T[k].cn ==0 )
+			}//for(i=1; i<=clsNum; i++)
+
+		////////
+			 for(i = 1; i<=clsNum; i++)
+			 {
+				 if(scr_CLS_Idx[i] >0)
+				 {
+					 if(scr_CLS[ scr_CLS_Idx[i] ].v < min_scr_CLS_v)
+					 {
+						min_scr_CLS_v =  scr_CLS[ scr_CLS_Idx[i] ].v;
+						min_scr_CLS_Idx = scr_CLS_Idx[i];
+					 }
+				 }
+				
+			 }
+			if(min_scr_CLS_Idx >0 )
+			{
+				T[k].cn = min_scr_CLS_Idx;
+				 //-------test 2---
+					sprintf(temp, " MIN scr_CLS[%ld].v =%G cover, REMOVE T[%i]= [%.2f, %.2f]x[%.2f, %.2f]: ", min_scr_CLS_Idx, scr_CLS[min_scr_CLS_Idx].v, k, T[k].a[1], T[k].b[1], T[k].a[2], T[k].b[2] );
+
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+					cstrMarc += "\r\n";
+				//-------test 2---
+				min_scr_CLS_Idx =0;
+			}
+		///////////
+
+
+		}
+	}//for(k=1; k<=m_T; k++)
+	int allNonzero =0;
+	nonzearo = 0;
+	cstrMarc += "\r\n";
+
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+/////////////////////////////////////////////////////
+
+//-- Finding Which scr_CLS[i] is NOT empty, that is, let scr_CLS[i].bsn =1
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+	for(i = 1; i<=clsNum; i++) // there are clsNum scr's of cluster scr_CLS[1] to scr_CLS[clsNum]
+	{
+		nonzearo = 0;
+		sprintf(temp, " scr_CLS%02i:  ", i);
+		cstrMarc += temp;	
+	    cstrMarc += "\r\n";
+
+		cstrMarc += "    Cover: ";
+
+		for(j=1; j<=m_T; j++)
+		{
+			if(T[j].cn ==i)
+			{
+				sprintf(temp, " ,T[%02i] ", j );
+				cstrMarc += temp;
+				nonzearo ++;
+			}
+		}
+	    cstrMarc += "\r\n";
+
+       allNonzero += nonzearo;
+
+
+      //if(nonzearo !=0)
+	  //{
+		  //scr_CLS[i].bsn = 1; //no sueful 
+	  //}
+	  //else
+		//scr_CLS[i].bsn = 0; //no sueful 
+
+	}
+    cstrMarc += "\r\n";
+	sprintf(temp, " T[i] allNonzero = %02i ", allNonzero);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+
+	int scr_nonZeroNum = 0;
+	int scr_ZeroNum = 0;
+	for(i = 1; i<=clsNum; i++) // there are clsNum scr's of cluster scr_CLS[1] to scr_CLS[clsNum]
+	{
+		  if(scr_CLS[i].bsn == 1)
+		  {
+			  scr_nonZeroNum ++;
+		  }
+		  else if(scr_CLS[i].bsn == 0)
+		  {
+			  scr_ZeroNum ++;
+		  }
+	}
+
+    cstrMarc += "\r\n";
+	sprintf(temp, " scr_nonZeroNum = %02i ", scr_nonZeroNum);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+    cstrMarc += "\r\n";
+	sprintf(temp, " scr_ZeroNum = %02i ", scr_ZeroNum);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+////////////////////---------ttest start ----------///////////
+// see cluster[i] contain: T[j]'s
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+    iclsNum =0;
+	iallNum =0;
+
+	for(i=1; i<= clsNum; i++)
+	{
+		iclsNum =0;
+
+		sprintf(temp, "cluster[%02i] : ", i);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		for(j=1; j<=m; j++)
+		{
+			if(T[j].cn == i)
+			{
+				//sprintf(temp, ", %02i", j);
+				sprintf(temp, " T[%02i].cn =%02i ,T[%02i].bsn =%02i;  ", j, T[j].cn ,j, T[j].bsn );
+				cstrMarc += temp;
+				iclsNum ++;
+			}			
+		}
+
+
+		if(iclsNum >0)
+		{
+			cstrMarc += "\r\n";
+			sprintf(temp, "    iclsNum = %02i ", iclsNum);
+			cstrMarc += temp;
+			iallNum = iallNum + iclsNum; 
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+
+		}
+
+	}
+
+
+	int iZeroNum =0;
+	sprintf(temp, "cluster[%02i] : ", 0);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+
+
+	for(j=1; j<=m; j++)
+	{
+		if(T[j].cn == 0)
+		{
+			//sprintf(temp, ", %02i", j);
+			sprintf(temp, " T[%02i].cn =%02i ,T[%02i].bsn =%02i;  ", j, T[j].cn ,j, T[j].bsn );
+			cstrMarc += temp;
+			iZeroNum ++;
+		}			
+	}
+
+    cstrMarc += "\r\n";
+	sprintf(temp, " iallNum NonZero = %02i ", iallNum);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	sprintf(temp, " iZeroNum = %02i ", iZeroNum);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+//////////////////---------ttest T[] end ----------/////////// 
+////////////////////////////////////////////////////////////////////////////////////	
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////// 666666666666666666 ////////////////////////////
+// 3.7 ------------------- Clustering S[] -----------------------
+//    obtain all cluster number of S[i] (where i=1 to 100)
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+////////////////////////////---------ttest S[] start ----------//////////////////
+	cstrMarc += " 11111 ----    ttest S[] ==== start \r\n";
+	cstrMarc += "\r\n";
+
+    iclsNum =0;
+	iallNum =0;
+
+	for(j=1; j<=old_m; j++)
+	{
+		sprintf(temp, " S[%02i].cn =%02i ,S[%02i].bsn =%02i;  ", j, S[j].cn,  j, S[j].bsn );
+		cstrMarc += temp;
+		iclsNum ++;
+		cstrMarc += "\r\n";
+	}
+	sprintf(temp, "; iclsNum = %02i ", iclsNum);
+	cstrMarc += temp;
+	iallNum = iallNum + iclsNum; 
+
+	cstrMarc += "\r\n";
+
+	sprintf(temp, " iallNum = %02i ", iallNum);
+	cstrMarc += temp;
+	cstrMarc += "\r\n";
+////////////////////////////////////---------ttest S[] end ----------////////////
+
+
+lALL_StartTimer = GetTickCount();	
+	
+	for(i=1; i<= old_m; i++)
+	{
+
+		do 
+		{
+			if(S[i].bsn > 10000)
+			{	
+				S[i].cn = T[S[i].bsn-10000].cn;
+				break;
+			}
+			else
+			{
+				k = S[i].bsn;
+				S[i].bsn = S[k].bsn; // S[i].bsn = S[ S[i].bsn ].bsn; 
+			}
+		} while (true);
+
+	}
+
+
+	for(i=1; i<= old_m; i++)
+	{
+		S[i].bsn = S[i].tplNum;
+		S[i].tplNum = 0;  //it has its own task
+	}
+
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+//---------ttest S[] start ----------
+	cstrMarc += " 2 2222----    ttest S[] ==== start \r\n";
+	cstrMarc += "\r\n";
+
+    iclsNum =0;
+	iallNum =0;
+
+		for(j=1; j<=old_m; j++)
+		{
+			//if(S[j].cn == i)
+			{
+				sprintf(temp, " S[%02i].cn =%02i ,S[%02i].bsn =%02i;  ", j, S[j].cn,  j, S[j].bsn );
+				cstrMarc += temp;
+				iclsNum ++;
+			}	
+			cstrMarc += "\r\n";
+		}
+		sprintf(temp, "; iclsNum = %02i ", iclsNum);
+		cstrMarc += temp;
+		iallNum = iallNum + iclsNum; 
+
+		cstrMarc += "\r\n";
+
+		sprintf(temp, " iallNum = %02i ", iallNum);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+//---------ttest S[] end ----------
+
+
+/////////////////////---------ttest S[] start ----------///////////////
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+
+    iclsNum =0;
+	iallNum =0;
+
+		cstrMarc += "For S[i] ===================== ";
+		cstrMarc += "\r\n";
+		cstrMarc += "\r\n";
+
+	for(i=1; i<= clsNum; i++)
+	{
+		iclsNum =0;
+
+
+		sprintf(temp, "Cluster[%02i]: ", i);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		for(j=1; j<=old_m; j++)
+		{
+			if(S[j].cn == i)
+			{
+				//sprintf(temp, " S[%02i],S[%02i].bsn =%02i;  ", j, j, S[j].bsn );
+				//sprintf(temp, "S[%02i], ", j  );
+				sprintf(temp, " S[%02i].cn =%02i ,S[%02i].bsn =%02i;  ", j, S[j].cn,  j, S[j].bsn );
+				cstrMarc += temp;
+				iclsNum ++;
+			}			
+		}
+		
+		if(iclsNum >0)
+		{
+			cstrMarc += "\r\n";
+			sprintf(temp, "    iclsNum = %02i ", iclsNum);
+			cstrMarc += temp;
+			iallNum = iallNum + iclsNum; 
+			cstrMarc += "\r\n";
+		}
+
+	}
+
+   iZeroNum =0;
+   sprintf(temp, "Cluster[%02i]: ", 0);
+
+	for(j=1; j<=old_m; j++)
+	{
+		if(S[j].cn == 0)
+		{
+			//sprintf(temp, " S[%02i],S[%02i].bsn =%02i;  ", j, j, S[j].bsn );
+			//sprintf(temp, "S[%02i], ", j  );
+			sprintf(temp, " S[%02i].cn =%02i ,S[%02i].bsn =%02i;  ", j, S[j].cn,  j, S[j].bsn );
+			cstrMarc += temp;
+			iZeroNum ++;
+		}			
+	}
+
+		cstrMarc += "\r\n";
+		sprintf(temp, " iallNum NonZero = %02i ", iallNum);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+		sprintf(temp, " iZeroNum = %02i ", iZeroNum);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+		cstrMarc += "\r\n";
+///////////////////---------ttest S[] end ----------////////////
+
+
+{
+///////////////////////////  77777777777777  ///////////////////////////
+
+// 3.8 ------------------- obtain all scr's of the Clusters of S[i];  according to the Clusters of  S[i] -----------------------
+//						where scr is the small one that cover the S[i]'s with the same cluster number
+//	15 <=	Age <= 90	
+//	-25897 <= income <=	347998
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+///########################################
+/********
+lALL_StartTimer = GetTickCount();	
+	
+iSum_TickCount = 0;
+iSum_TuplesCount =0;
+
+	double * Sum_v_S = new double [100 +1];//[clsNum +1];
+	//ZLRECT * scr_CLS = new ZLRECT[100+1]; //[clsNum +1];  
+	
+	for(i=1; i<=clsNum; i++)
+	{
+		scr_CLS[i].v = 1.0;
+		
+		Sum_v_S[i] = 0.0;
+		for(k=1; k<=old_m; k++) //old_m ==100
+		{
+			if(S[k].cn ==i)
+			{
+				Sum_v_S[i] += S[k].v; //all S[k] with cluster num == i 
+			}
+
+		}
+
+	}
+
+	for(i=1; i<=clsNum; i++ )
+	{
+		for(j=1; j<=n; j++)
+		{
+		    scr_CLS[i].a[j] = dMax[j];
+			scr_CLS[i].b[j] = dMin[j];
+		}
+		for(j=1; j<=n; j++)
+		{
+			for(k=1; k<=old_m; k++) // old_m ==100
+			{
+				if(S[k].cn ==i)
+				{
+					scr_CLS[i].a[j] = min(scr_CLS[i].a[j], S[k].a[j]);
+					scr_CLS[i].b[j] = max(scr_CLS[i].b[j], S[k].b[j]);
+
+				}
+
+			}
+			//scr_CLS[i].v *= (scr_CLS[i].b[j]-scr_CLS[i].a[j]) ;
+		}
+
+		for(j=1; j<=n; j++)
+		{
+			if(n<25)
+				scr_CLS[i].v *= (scr_CLS[i].b[j]-scr_CLS[i].a[j]) ;
+			else
+				scr_CLS[i].v *= ( (scr_CLS[i].b[j]-scr_CLS[i].a[j])/VFactor ) ;
+
+		}
+	}
+
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+
+	//int nonzearo =0;
+	cstrMarc += "\r\n";
+************/
+/******** 
+	for(i = 1; i<=clsNum; i++) // there are clsNum scr's of cluster scr_CLS[1] to scr_CLS[clsNum]
+	{
+		nonzearo =0;
+		for(j=1; j<=old_m; j++)
+		{
+			if(S[j].cn ==i)
+			{
+				//sprintf(temp, " ,S[%02i] ", j );
+				//cstrMarc += temp;
+				nonzearo ++;
+			}
+		}
+      if(nonzearo !=0)
+	  {
+		strcpy(	szSql, 	" SELECT * FROM CLMB_census2D where ( ( ");
+		
+			sprintf(temp, " %.2f ", scr_CLS[i].a[1] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, "<= age AND age <=");
+			sprintf(temp, " %.2f ", scr_CLS[i].b[1] );
+			strcat(	szSql, temp	);
+
+			strcat(	szSql, ") AND (" );
+
+			sprintf(temp, " %.2f ", scr_CLS[i].a[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, 	"<= Income AND Income <=");
+			sprintf(temp, " %.2f ", scr_CLS[i].b[2] );
+			strcat(	szSql, temp	);
+			strcat(	szSql, ") ) "	);
+
+			lStartTimer = GetTickCount();
+				ituples_cnt = zlExeSelect(TableName, szSql);
+		    lEndTimer = GetTickCount() - lStartTimer ;
+			
+			iSum_TickCount += lEndTimer;
+			iSum_TuplesCount += ituples_cnt;
+
+            //sprintf(temp, " S%i: [%.2f, %.2f]x[%.2f, %.2f]: tuples_num = %ld ",i, T[i].a[1], T[i].b[1], T[i].a[2], T[i].b[2], ituples_cnt );
+            sprintf(temp, " scr_CLS%02i: [%.2f, %.2f]x[%.2f, %.2f], .v =%.2f : tuples_num = %ld ",i, scr_CLS[i].a[1], scr_CLS[i].b[1], scr_CLS[i].a[2], scr_CLS[i].b[2], scr_CLS[i].v, ituples_cnt );
+			cstrMarc += temp;
+            sprintf(temp, " GetTickCount = %ld", lEndTimer);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+	  }
+	}
+
+
+	    sprintf(temp, "       Sum of Tick Count = %ld", iSum_TickCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		sprintf(temp, "       Sum of Tuples Count = %ld", iSum_TuplesCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+		cstrMarc += "\r\n";
+****/
+
+/////////////////////////// 8888888888888888888 ///////////////////////////
+
+// 3.9 ------------------- 2nd Clustering for obtained scr's  -----------------------
+   	
+//   scr_CLS[i].v <= 4 * Sum_v_S[i], OK! else let S[i].cn =0 again.
+
+
+// not for S[i], But for T[i]; 2005.5.17
+/*************
+lALL_StartTimer = GetTickCount();	
+	
+	for(i = 1; i<=clsNum; i++)
+	{
+		scr_CLS[i].bsn = 1; // means has elements S[i]
+	}
+
+	//for cen2D CETA = 4
+	//int CETA = 4 ; //1;  //10;
+	//for(i = 1; i<=clsNum; i++)    //2005.5.5
+	for(i = 1; i<=iPartNum ; i++)   //2005.5.5
+	{
+		//?? add if (.bsn ==1)
+		if(scr_CLS[i].v <= CETA*Sum_v_S[i]  ) // CETA = 3, 4, 5,10 5*Sum_v_S[i] //10*Sum_v_S[i]
+		{
+
+			sprintf(temp, " scr_CLS[%02i].v = %G <<<=== %i*Sum_v_S[%02i] =%G;  ",i, scr_CLS[i].v, CETA, i, Sum_v_S[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			sprintf(temp, "						scr_CLS[%02i].v/Sum_v_S[%02i]= %.02f   ",i,i, scr_CLS[i].v/Sum_v_S[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+
+		}
+		else // that is: scr_CLS[i].v/Sum_v_S[i]  > 4 //5        //10
+		{
+            k=0;
+			for(j=1; j<=old_m; j++)
+			{
+				if(S[j].cn == i)
+				{
+					S[j].cn =0;
+					k++;
+				}
+			}
+
+			scr_CLS[i].bsn = 0; 
+			scr_CLS[i].cn =k;  //in the begining it has k S[i],
+
+
+			sprintf(temp, " scr_CLS[%02i].v = %G >>>>>> %i*Sum_v_S[%02i] =%G ",i, scr_CLS[i].v, CETA, i, Sum_v_S[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			sprintf(temp, "						scr_CLS[%02i].v/Sum_v_S[%02i]= %.02f   ",i,i, scr_CLS[i].v/Sum_v_S[i] );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+		}
+	}
+************/
+//clustering again if one is the subset of another, then togather them 
+////// ~~~~~~~~ Finding all scr_CLS[i]'s that center are in scr_CLS[k].
+   //3.9.1 for  scr_CLS[i].bsn =1
+   //3.9.2 for S[i].cn =0
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+/***************
+	bInterable = false;
+
+	for(i=1; i<=clsNum; i++)
+	{
+		if(scr_CLS[i].bsn ==1)
+		{
+			for(j=1; j<=clsNum; j++)
+			{
+				if( (j != i) && (scr_CLS[j].bsn ==1) )
+				{
+					for(k=1; k<=n; k++) //n is the number of dimensions 
+					{						
+						center = (double)(scr_CLS[j].a[k] + scr_CLS[j].b[k])/2.0;
+						//if the Center of scr_CLS[j] is in scr_CLS[i]
+						if( (scr_CLS[i].a[k]<=center) && (center<= scr_CLS[i].b[k]) ) //the Center in the part[i]
+						{
+							bInterable = true;
+						} //
+						else // 
+						{
+							bInterable = false;
+							break;   //break k,   
+						}
+					}//for(k=1; k<=n; k++)
+
+				}
+				if(bInterable) //there is a k such that scr_CLS[i] is in scr_CLS[k] 
+				{
+						//-------test 2---
+							sprintf(temp, " Center of scr_CLS[%ld] IN scr_CLS[%i]: [%.2f, %.2f]x[%.2f, %.2f]: ", j, i, scr_CLS[j].a[1], scr_CLS[j].b[1], scr_CLS[j].a[2], scr_CLS[j].b[2] );
+							cstrMarc += temp;
+							cstrMarc += "\r\n";
+
+						//-------test 2---
+					scr_CLS[j].bsn = 0; // the center of scr_CLS[j] is in scr_CLS[i], IMPORTANT
+					for(l=1; l<=old_m; l++)
+					{
+						if(S[l].cn ==j)
+							S[l].cn=i;
+					}
+
+					bInterable = false;
+					break;  // break k and then for next i
+				}
+
+			}//for(j=1; j<=clsNum; j++)
+		}//if(scr_CLS[i].bsn ==1)
+	}//(i=1; i<=clsNum; i++)
+ ****/
+/*********
+   //3.9.2 if  S[k].cn == 0 && S[k].bsn >1000 that is obtained from	"if( !(scr_CLS[i].v <= CETA*Sum_v_S[i])  )"
+	rmvable =false;
+
+	for(i=1; i<=clsNum; i++)
+	{
+		rmvable =false;
+
+		if(scr_CLS[i].bsn ==1)
+		{
+			for(k=1; k<=old_m; k++)
+			{
+				
+				//if(S[k].cn ==0 ) //2005.5.16
+				if(S[k].cn ==0 && S[k].bsn >1000 )
+				{
+					for(j=1; j<=n; j++)
+					{
+						 // if S[k] is the subset of scr_CLS[i], 
+						if( (scr_CLS[i].a[j]<=S[k].a[j]) && (S[k].b[j]<=scr_CLS[i].b[j] ))
+						{
+							rmvable = true;
+						}
+						else
+						{
+							rmvable = false;
+							break; //break j, for next k
+						}
+					} //for(j= 1; j <=n; j++)
+				
+				
+					if(rmvable) //there is a k such that scr_CLS[i] is in scr_CLS[k] 
+					{
+							//-------test 2---
+								sprintf(temp, " scr_CLS[%ld] cover, REMOVE S[%i]= [%.2f, %.2f]x[%.2f, %.2f]: ", i, k, S[k].a[1], S[k].b[1], S[k].a[2], S[k].b[2] );
+								cstrMarc += temp;
+								cstrMarc += "\r\n";
+
+							//-------test 2---
+
+						S[k].cn = i;						
+						rmvable =false;
+						//break;  // 2005.5.15 not break, for next k countinoue; break k and then for next i
+					}//if(rmvable)
+				}//if(S[k].cn ==0 )
+			}//for(k=1; k<=old_m; k++)
+		}
+	}
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+**********/
+///####################################
+
+// ----------------------------------
+// -- for a scr_CLS[i] : if scr_CLS[i].bsn ==0, that is, if scr_CLS[%02i].v/Sum_v_S[%02i] > 5
+// -- and it contain >8 S[i]'s then part it 12 parts.
+
+///////////////////////// 9999999999999999999 /////////////////////////////
+// 3.10 -------- obtain 2nd SCR's according to the  New Clusters of S[] -----------------------
+//				where scr is the small one
+//15 <=	Age <= 90	
+//-25897 <= income <=	347998
+//---------------------------------------------------------------------
+//---------------------------------------------------------------------
+
+/****
+	cstrMarc += "\r\n";
+	cstrMarc += "\r\n";
+
+lALL_StartTimer = GetTickCount();	
+	
+	iSum_TickCount = 0;
+	iSum_TuplesCount =0;
+
+	//double * Sum_v_S = new double [clsNum +1];
+	//ZLRECT * scr_CLS = new ZLRECT[clsNum +1];  
+	
+	for(i=1; i<=clsNum; i++)
+	{
+		scr_CLS[i].v = 1.0;
+		
+		Sum_v_S[i] = 0.0;
+		for(k=1; k<=old_m; k++) //old_m ==100
+		{
+			if(S[k].cn ==i)
+			{
+				Sum_v_S[i] += S[k].v;
+			}
+
+		}
+
+	}
+
+	for(i=1; i<=clsNum; i++ )
+	{
+			//scr_CLS[i].a[1] = 90;
+			//scr_CLS[i].b[1] = 15;
+			//scr_CLS[i].a[2] = 347998;
+			//scr_CLS[i].b[2] = -25897;
+		for(j=1; j<=n; j++)
+		{
+			scr_CLS[i].a[j] = dMax[j];;
+			scr_CLS[i].b[j] = dMin[j];
+
+		}
+
+		for(j=1; j<=n; j++)
+		{
+			for(k=1; k<=old_m; k++) // old_m ==100
+			{
+				if(S[k].cn ==i)
+				{
+					scr_CLS[i].a[j] = min(scr_CLS[i].a[j], S[k].a[j]);
+					scr_CLS[i].b[j] = max(scr_CLS[i].b[j], S[k].b[j]);
+				}
+
+			}
+			//scr_CLS[i].v *= (scr_CLS[i].b[j]-scr_CLS[i].a[j]) ;
+		}
+
+		for(j=1; j<=n; j++)
+		{
+			if(n<25)
+				scr_CLS[i].v *= (scr_CLS[i].b[j]-scr_CLS[i].a[j]) ;
+			else
+				scr_CLS[i].v *= ( (scr_CLS[i].b[j]-scr_CLS[i].a[j])/VFactor ) ;
+		}
+
+
+		scr_CLS[i].bsn = 0; //2005.04.15
+	}//for(i=1; i<=clsNum; i++ )
+
+ int allNonzero =0;
+ nonzearo = 0;
+
+	cstrMarc += "\r\n";
+
+//-- Finding Which scr_CLS[i] is NOT empty, that is, let scr_CLS[i].bsn =1
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+
+	for(i = 1; i<=clsNum; i++) // there are clsNum scr's of cluster scr_CLS[1] to scr_CLS[clsNum]
+	{
+			nonzearo = 0;
+			sprintf(temp, " scr_CLS%02i:  ", i);
+			cstrMarc += temp;	
+	        cstrMarc += "\r\n";
+
+			cstrMarc += "    Cover: ";
+
+			for(j=1; j<=old_m; j++)
+			{
+				if(S[j].cn ==i)
+				{
+					sprintf(temp, " ,S[%02i] ", j );
+					cstrMarc += temp;
+					nonzearo ++;
+				}
+			}
+	        cstrMarc += "\r\n";
+
+       allNonzero += nonzearo;
+
+      if(nonzearo !=0)
+	  {
+		  scr_CLS[i].bsn = 1;
+	  }
+
+	}
+    ************/
+
+
+	// see whethe or not there are SUBSET 
+	//  if scr_CLS[i] is the SUBSET of scr_CLS[k], label it, scr_CLS[i].bsn = 0;
+	//  and remove it
+/*************
+	for(i=1; i<=clsNum; i++)
+	{
+	  rmvable = false;
+	  if(scr_CLS[i].bsn ==1)
+	  {
+
+		for(k=1; k<=clsNum; k++)
+		{
+		   if( (i != k) && scr_CLS[k].bsn ==1 )
+		   {
+				for(j=1; j<=n; j++)
+				{
+					 // if scr_CLS[i] is the subset of scr_CLS[k], 
+					//if( (scr_CLS[k].a[j]<=scr_CLS[i].a[j]) && (scr_CLS[i].b[j]<=scr_CLS[k].b[j] ))
+					//if the center of scr_CLS[i] is in scr_CLS[k],
+					
+					if( (scr_CLS[k].a[j]<=scr_CLS[i].a[j]) && (scr_CLS[i].b[j]<=scr_CLS[k].b[j] ))		
+					{
+						rmvable = true;
+					}
+					else
+					{
+						rmvable = false;
+						break; //break j, for next k
+					}
+				} //for(j= 1; j <=n; j++)
+				
+				if(rmvable) //there is a k such that scr_CLS[i] is in scr_CLS[k] 
+				{
+						//-------test 2---
+							sprintf(temp, " scr_CLS[%ld] cover, REMOVE scr_CLS[%i]: [%G, %G]x[%G, %G]: ", k, i, scr_CLS[i].a[1], scr_CLS[i].b[1], scr_CLS[i].a[2], scr_CLS[i].b[2] );
+							cstrMarc += temp;
+							cstrMarc += "\r\n";
+
+						//-------test 2---
+					scr_CLS[i].bsn = 0; // s[i] is in s[k], IMPORTANT
+					for(l=1; l<=old_m; l++)
+					{
+						if(S[l].cn ==i)
+							S[l].cn=k;
+					}
+					rmvable = false;
+					//break;  //2005.5.15 not break, for k continue; break k and then for next i
+				}
+
+		   } //if(i != k)
+
+		}//for(k=1; i<=m; k++)
+	  }
+
+	}//for(i=1; i<=m; i++)
+**********/
+
+}
+//////////////////////////////////////////////////////////////////////////////
+//					Up to New. Clustering is OK								//
+//					select the tuples from each clustering scr				//
+//////////////////////////////////////////////////////////////////////////////
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+pApp->Qi=0;
+	int iMinTupleNum = 0;
+	int iStart =0;
+	//int iAllTuplesNum =0;
+	int iInterIdx =0;
+    iSum_TuplesCount =0;
+	iSum_TickCount =0;
+	iCandidateNum =0;
+
+    int S_Idx[101];
+
+	pApp->tuple = new ( TUPLE *[100 +1] );
+
+
+	//for 1st NO_empty scr_CLS[i], let it be the start.
+	for(i = 1; i<=clsNum; i++)
+		//scr_CLS[i].cn = 0;     //now scr_CLS[i].cn is the size of tuples in  scr_CLS[i]
+		scr_CLS[i].tplNum = 0;     //scr_CLS[i].tplNum is the size of tuples in  scr_CLS[i]
+
+	for(i = 1; i<=clsNum; i++) // there are clsNum scr's of cluster scr_CLS[1] to scr_CLS[clsNum]
+	{
+		if(scr_CLS[i].bsn ==1)
+		{
+
+       ////////////////////////
+		char szSqltmp[] = " SELECT * FROM Lsi_104D ";
+		SQLFreeStmt(hstmt, SQL_DROP);
+		retcode = SQLAllocStmt(hdbc, &hstmt); ///Statement handle 
+		if(retcode != SQL_SUCCESS)
+			AfxMessageBox("1. Get m initial rectangles from DB, Error!" ); //return -1;
+
+		SQLSetStmtOption(hstmt, SQL_CONCURRENCY, SQL_CONCUR_READ_ONLY);
+		SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+		
+		//longTicks = GetTickCount();
+		retcode = SQLExecDirect(hstmt, (unsigned char *)szSqlAllLearningRows, SQL_NTS);
+		//longTicks = GetTickCount() - longTicks;
+	  /////////////////////////////
+
+			strcpy(	szSql, 	" SELECT * FROM ");
+			strcat(	szSql, 	TableName );
+			strcat(	szSql, 	" where ( ( ");
+				
+				for(j=1; j<=COL_NUM-1; j++)
+				{
+					//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[j],j-1,j-1, scr_CLS[i].b[j]);
+					sprintf(temp, " %G <= attr%d AND attr%d <= %G ", scr_CLS[i].a[j],j-1,j-1, scr_CLS[i].b[j]);
+					strcat(	szSql, temp	);
+					strcat(	szSql, ") AND (" );
+				}
+
+				//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, scr_CLS[i].b[COL_NUM]);
+				sprintf(temp, " %G <= attr%d AND attr%d <= %G ", scr_CLS[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, scr_CLS[i].b[COL_NUM]);
+				strcat(	szSql, temp	);
+
+			strcat(	szSql, ") ) "	);
+
+			for(j=0; j<=old_m; j++)
+			{
+				S_Idx[j] =0;
+			}
+
+			iclsNum =0 ;
+			for(j=1; j<=old_m; j++)
+			{
+				if(S[j].cn == i)
+				{
+					iclsNum ++;
+					S_Idx[iclsNum] = j;
+				}			
+			}
+            
+			//pApp->t_Num = new ( int *[iclsNum +1] );
+			//pApp->tuple = new ( TUPLE *[iclsNum +1] );
+
+			lStartTimer = GetTickCount();			
+				ituples_cnt = pApp->zlExeSelect_Mul(0, szSql);
+				for(j = 1; j<=iclsNum ; j++)
+				{
+						if( S[S_Idx[j]].tplNum <=0 && S_Idx[j])
+						   iCandidateNum = pApp->zlGetTopNTuple_Mul(S_Idx[j], S, ituples_cnt );
+				}
+		    lEndTimer = GetTickCount() - lStartTimer ;
+			
+			iSum_TickCount += lEndTimer;
+			iSum_TuplesCount += ituples_cnt;
+
+			sprintf(temp, " scr_CLS[%02i]:  ", i);
+			cstrMarc += temp;	
+	        cstrMarc += "\r\n";
+            sprintf(temp, "		GetTickCount = %ld", lEndTimer);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+
+            sprintf(temp, "		tuples_num = %ld ", ituples_cnt );
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+			cstrMarc += "\r\n";
+
+			iMinTupleNum = ituples_cnt;
+			iStart = i;
+			//scr_CLS[i].cn = ituples_cnt;
+			scr_CLS[i].tplNum = ituples_cnt;
+			iSum_TuplesCount += ituples_cnt;
+
+			//delete [] pApp->t_Num;
+			//for(j=0; j<= iclsNum ; j++)
+				//delete [] pApp->tuple[S_Idx[j]];
+
+			//delete [] pApp->tuple;
+
+			break;
+		}
+	}
+
+	int Idx[101];
+	for(i=1; i<=100; i++)
+		Idx[i]=0;
+
+	for(i = iStart+1; i<=clsNum; i++) // 
+	{
+		if(scr_CLS[i].bsn ==1 && i > iStart)
+		{
+			iInterIdx = 0;
+			bInterable = false;
+            for(j=1; j<=100; j++)
+				 Idx[j]=0;
+
+			 for(j = iStart; j<i; j++)   // when i=5, j = 1,2,3,4 if iStart =1
+			 {
+				//////////////
+				if(scr_CLS[j].bsn ==1 )
+				{
+					for(k=1; k<=n; k++) //n is the number of dimensions 
+					{
+						p = __max(scr_CLS[i].a[k], scr_CLS[j].a[k]); // here we use "intersect"
+						q = __min(scr_CLS[i].b[k], scr_CLS[j].b[k]);
+
+						if(p<q) //the intersection is not empty
+						{
+							bInterable = true; //must intersect for all dimensions
+						} //if(p<q)
+						else //the intersection is empty or p=q
+						{
+							bInterable = false; // it is enough there is a dimensions
+							break;   //break k, because there is i0 such that p[i0] >=q[i0]  
+						}
+
+					}//for(k=1; k<=n; k++)
+
+					if(bInterable) //if intersectable
+					{
+						//iMinTupleNum = __min(iMinTupleNum, scr_CLS[j].tplNum);
+						//iInterIdx = j;
+						//scr_CLS[i].tplNum = iMinTupleNum;
+						Idx[j] = j;
+						bInterable = false;
+					}
+				}
+				////////////////				
+			 }
+
+			 scr_CLS[i].tplNum = 2100000000; //int 2147 483 647
+			 for(j = iStart; j<i; j++)
+			 {
+				 if(Idx[j] >0)
+				 {
+					 if(scr_CLS[ Idx[j] ].tplNum < scr_CLS[i].tplNum)
+					 {
+						//iMinTupleNum = __min(iMinTupleNum, scr_CLS[ Idx[j] ].tplNum);						
+						iMinTupleNum =  scr_CLS[ Idx[j] ].tplNum;
+						iInterIdx = Idx[j];
+						scr_CLS[i].tplNum = scr_CLS[ Idx[j] ].tplNum;
+					 }
+				 }
+				
+			 }
+
+             //1000 = iTopN*50
+			//if(iInterIdx >=0 )   // if there is no one that is intersect with scr_CLS[i];
+			if(iInterIdx ==0 || scr_CLS[i].tplNum > 1000 )   // if there is no one that is intersect with scr_CLS[i];
+			{                   // or the scr_CLS[ Idx[j] ].tplNum is too much
+				
+       ////////////////////////
+		char szSqltmp[] = " SELECT * FROM Lsi_104D ";
+		SQLFreeStmt(hstmt, SQL_DROP);
+		retcode = SQLAllocStmt(hdbc, &hstmt); ///Statement handle 
+		if(retcode != SQL_SUCCESS)
+			AfxMessageBox("1. Get m initial rectangles from DB, Error!" ); //return -1;
+
+		SQLSetStmtOption(hstmt, SQL_CONCURRENCY, SQL_CONCUR_READ_ONLY);
+		SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+		
+		//longTicks = GetTickCount();
+		retcode = SQLExecDirect(hstmt, (unsigned char *)szSqlAllLearningRows, SQL_NTS);
+		//longTicks = GetTickCount() - longTicks;
+	  /////////////////////////////				
+								
+				//
+				strcpy(	szSql, 	" SELECT * FROM ");
+				strcat(	szSql, 	TableName );
+				strcat(	szSql, 	" where ( ( ");
+					
+					for(j=1; j<=COL_NUM-1; j++)
+					{
+						//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[j],j-1,j-1, scr_CLS[i].b[j]);
+						sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[j],j-1,j-1, scr_CLS[i].b[j]);
+						strcat(	szSql, temp	);
+						strcat(	szSql, ") AND (" );
+					}
+
+					//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, scr_CLS[i].b[COL_NUM]);
+					sprintf(temp, " %G <= attr%d AND attr%d <= %G ", scr_CLS[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, scr_CLS[i].b[COL_NUM]);
+					strcat(	szSql, temp	);
+
+				strcat(	szSql, ") ) "	);
+				//
+
+				for(j=0; j<=old_m; j++)
+				{
+					S_Idx[j] =0;
+				}
+
+				iclsNum =0 ;
+				for(j=1; j<=old_m; j++)
+				{
+					if(S[j].cn == i)
+					{
+						iclsNum ++;
+						S_Idx[iclsNum] = j;
+					}			
+				}
+					
+				 //pApp->tuple = new ( TUPLE *[iclsNum+1] );
+
+					lStartTimer = GetTickCount();
+						ituples_cnt = pApp->zlExeSelect_Mul(0, szSql);
+					for(j = 1; j<=iclsNum ; j++)
+					{
+							if( S[S_Idx[j]].tplNum <=0 && S_Idx[j])
+							   iCandidateNum = pApp->zlGetTopNTuple_Mul(S_Idx[j], S, ituples_cnt );
+					}
+					lEndTimer = GetTickCount() - lStartTimer ;
+					
+					iSum_TickCount += lEndTimer;
+					iSum_TuplesCount += ituples_cnt;
+					scr_CLS[i].tplNum = ituples_cnt;
+
+					//sprintf(temp, " S%i: [%.2f, %.2f]x[%.2f, %.2f]: tuples_num = %ld ",i, T[i].a[1], T[i].b[1], T[i].a[2], T[i].b[2], ituples_cnt );
+					sprintf(temp, " scr_CLS[%02i]: .v =%G : ", i, scr_CLS[i].v );
+					cstrMarc += temp;	
+					cstrMarc += "\r\n";
+					sprintf(temp, "		GetTickCount = %ld", lEndTimer);				
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+
+					sprintf(temp, "		tuples_num = %ld ", ituples_cnt );
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+					cstrMarc += "\r\n";
+
+						//ituples_cnt = zlExeSelect(TableName, szSql);
+						//ituples_cnt = pApp->zlExeSelect_Mul(0, szSql);
+					for(j = 1; j<=iclsNum ; j++)
+					{
+						lStartTimer = GetTickCount();
+								if( S[S_Idx[j]].tplNum <=0 && S_Idx[j])
+								   iCandidateNum = pApp->zlGetTopNTuple_Mul(S_Idx[j], S, ituples_cnt );
+						lEndTimer = GetTickCount() - lStartTimer ;
+						
+						sprintf(temp, " S[%i]: ", S_Idx[j] );
+						cstrMarc += temp;	
+						cstrMarc += "\r\n";
+						sprintf(temp, "	pApp->zlGetTopNTuple_Mul: GetTickCount = %ld", lEndTimer);				
+						cstrMarc += temp;
+						cstrMarc += "\r\n";
+						sprintf(temp, "	pApp->zlGetTopNTuple_Mul: iCandidateNum = %ld", iCandidateNum);				
+						cstrMarc += temp;
+						cstrMarc += "\r\n";
+						cstrMarc += "\r\n";
+
+
+					}
+		
+
+					//for(j=0; j<= iclsNum ; j++)
+						//delete [] pApp->tuple[S_Idx[j]];
+
+					//int iaai =0;
+
+					//delete [] pApp->tuple;
+
+			
+			}
+			else  // if there is someone that is intersect with scr_CLS[i];
+			{     // scr_CLS[iInterIdx] is the smallest one in all scr that
+				  // intersection with scr_CLS[i]
+
+				//CLearnIing6App * pApp = (CLearnIing6App * ) AfxGetApp();
+				int issNum = pApp->zlDiffRects(scr_CLS[i], scr_CLS[iInterIdx], n);
+				
+				if( issNum >= 2*n)
+				{
+					sprintf(temp, "	%ld	dimension Space , P = %ld ", n, issNum );
+				}
+				
+
+				//````````````````````````
+				//(a) Use between ´ and ´ 
+				//	SELECT * FROM CLMB_census2D Where
+				//	((Age between 15 and 85) AND (Income between 3000 and 113070))
+				//	OR 		
+				//	( (Age between 20 and 90) AND (Income between 2995 and 113065) ) 
+ 
+				//
+				int SEC = 21; // SECTION 
+
+              // n =104, SEC = 9
+			  // n =50;  SEC = 21
+			  // n = 25, SEC =??
+
+              // issNum = p
+			/****************** too bad 
+			if( (25 <= n) && issNum > SEC)
+			{
+			  for(k =0; k< issNum/SEC; k++ )
+			  {
+				//strcpy(	szSql, 	" SELECT * FROM ");
+				//strcat(	szSql, 	TableName );
+				//strcat(	szSql, 	" where " );
+				strcpy(	szSql, 	"");
+
+				for(l = k*SEC; l<(k +1)*SEC; l++)
+				{
+					strcat(	szSql, 	" SELECT * FROM ");
+					strcat(	szSql, 	TableName );
+					strcat(	szSql, 	" where " );
+					//
+					strcat(	szSql, 	"( ( ");
+						
+						for(j=1; j<=COL_NUM-1; j++)
+						{
+							sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l+1].a[j], j-1, j-1, pApp->ss[l+1].b[j]);
+							strcat(	szSql, temp	);
+							strcat(	szSql, ") AND (" );
+						}
+
+						sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l+1].a[COL_NUM],COL_NUM-1,COL_NUM-1, pApp->ss[l+1].b[COL_NUM]);
+						strcat(	szSql, temp	);
+
+					strcat(	szSql, ") ) "	);
+					//
+
+					if(l+1< (k +1)*SEC ) //?? "Union"
+						//strcat(	szSql, " OR " );
+						//strcat(	szSql, " union all " );
+						strcat(	szSql, " union " );
+
+					
+				}//for l
+
+				lStartTimer = GetTickCount();
+
+					ituples_cnt = pApp->zlExeSelect(scr_CLS[iInterIdx].tplNum, szSql);
+				lEndTimer = GetTickCount() - lStartTimer ;
+
+				///---------------------------
+					CString cstrMarc1;
+					cstrMarc1 = szSql;
+
+					if(file.Open("E:\\Paper2\\CLMB_census2D\\szSqlSection.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+					{
+						file.Write(cstrMarc1, cstrMarc1.GetLength() +1 );
+					}
+					file.Close();
+
+					//	AfxMessageBox(szSql);
+
+				////----------------------------------				
+				
+				iSum_TickCount += lEndTimer;
+				iSum_TuplesCount += ituples_cnt;
+			    scr_CLS[i].tplNum += ituples_cnt;
+
+				sprintf(temp, "scr_CLS[%i]:  ", i);					
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+
+				sprintf(temp, " 		The pApp->ss　spend TickCount = %ld", lEndTimer);
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+				sprintf(temp, "  		The pApp->ss　Tuples Number = %ld", ituples_cnt);				
+				cstrMarc += temp;
+				//cstrMarc += "\r\n";
+				//cstrMarc += szSql;
+				cstrMarc += "\r\n";				
+				sprintf(temp, "  		scr_CLS[%i]:　Tuples Number = %ld", iInterIdx, scr_CLS[iInterIdx].tplNum);				
+				cstrMarc += temp;
+
+				cstrMarc += "\r\n";				
+				sprintf(temp, "  k =	%i, issNum = %i", k, issNum);				
+				cstrMarc += temp;
+
+				cstrMarc += "\r\n";
+				cstrMarc += "\r\n";
+
+				cstrMarc += "-------section------------\r\n";
+				cstrMarc += "\r\n";
+
+
+			  }//for(k)
+
+			  if(issNum%SEC >0)			 
+			  {
+				//strcpy(	szSql, 	" SELECT * FROM ");
+				//strcat(	szSql, 	TableName );
+				//strcat(	szSql, 	" where " );
+				strcpy(	szSql, 	"");
+
+				for(l = k*SEC; l<issNum; l++)
+				{
+					strcat(	szSql, 	" SELECT * FROM ");
+					strcat(	szSql, 	TableName );
+					strcat(	szSql, 	" where " );
+				//
+					strcat(	szSql, 	"( ( ");
+						
+						for(j=1; j<=COL_NUM-1; j++)
+						{
+							sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l+1].a[j], j-1, j-1, pApp->ss[l+1].b[j]);
+							strcat(	szSql, temp	);
+							strcat(	szSql, ") AND (" );
+						}
+
+						sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l+1].a[COL_NUM],COL_NUM-1,COL_NUM-1, pApp->ss[l+1].b[COL_NUM]);
+						strcat(	szSql, temp	);
+
+					strcat(	szSql, ") ) "	);
+					//
+
+					if(l+1< issNum ) //?? "Union"
+						//strcat(	szSql, " OR " );
+						//strcat(	szSql, " union all " );
+						strcat(	szSql, " union " );
+
+				}//for l
+
+				///---------------------------
+					CString cstrMarc1;
+					cstrMarc1 = szSql;
+
+					if(file.Open("E:\\Paper2\\CLMB_census2D\\szSqltail.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+					{
+						file.Write(cstrMarc1, cstrMarc1.GetLength() +1 );
+					}
+					file.Close();
+
+					//	AfxMessageBox(szSql);
+
+				////----------------------------------
+
+				lStartTimer = GetTickCount();
+					ituples_cnt = pApp->zlExeSelect(scr_CLS[iInterIdx].tplNum, szSql);
+				lEndTimer = GetTickCount() - lStartTimer ;
+				
+				iSum_TickCount += lEndTimer;
+				iSum_TuplesCount += ituples_cnt;
+			    scr_CLS[i].tplNum += ituples_cnt;
+
+				sprintf(temp, "scr_CLS[%i]:  ", i);					
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+
+				sprintf(temp, " 		The pApp->ss　spend TickCount = %ld", lEndTimer);
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+				sprintf(temp, "  		The pApp->ss　Tuples Number = %ld", ituples_cnt);				
+				cstrMarc += temp;
+				//cstrMarc += "\r\n";
+				//cstrMarc += szSql;
+				cstrMarc += "\r\n";				
+				sprintf(temp, "  		scr_CLS[%i]:　Tuples Number = %ld", iInterIdx, scr_CLS[iInterIdx].tplNum);				
+				cstrMarc += temp;
+
+				cstrMarc += "\r\n";				
+				sprintf(temp, "  k =	%i, issNum = %i", k, issNum);				
+				cstrMarc += temp;
+
+				cstrMarc += "\r\n";
+				cstrMarc += "\r\n";
+
+				cstrMarc += "------------tails-----------\r\n";
+				cstrMarc += "\r\n";
+			  }
+
+			}
+
+			 //if( ((25 <= n) && (0 <issNum && issNum <9)) || (n < 25)  )
+			 else 
+			***************/
+				 
+			 if( ((25 <= n) && (0 <issNum && issNum <= 21)) || (n < 25)  )
+			 {
+				strcpy(	szSql, 	" SELECT * FROM ");
+				strcat(	szSql, 	TableName );
+				strcat(	szSql, 	" where " );
+
+				for(l = 1; l<=issNum; l++)
+				{
+					//
+					strcat(	szSql, 	"( ( ");
+						
+						for(j=1; j<=COL_NUM-1; j++)
+						{
+							sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l].a[j], j-1, j-1, pApp->ss[l].b[j]);
+							strcat(	szSql, temp	);
+							strcat(	szSql, ") AND (" );
+						}
+
+						sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", pApp->ss[l].a[COL_NUM],COL_NUM-1,COL_NUM-1, pApp->ss[l].b[COL_NUM]);
+						strcat(	szSql, temp	);
+
+					strcat(	szSql, ") ) "	);
+					//
+
+					if(l<issNum) //?? "Union"
+						strcat(	szSql, " OR " );
+				}
+///---------------------------
+				//CString cstrMarc1;
+				//cstrMarc1 = szSql;
+
+	//if(file.Open("E:\\Paper2\\CLMB_census2D\\szSql.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	//{
+	//	file.Write(cstrMarc1, cstrMarc1.GetLength() +1 );
+	//}
+	//file.Close();
+
+
+			//	AfxMessageBox(szSql);
+
+////----------------------------------
+
+				lStartTimer = GetTickCount();
+					ituples_cnt = zlExeSelect(TableName, szSql);
+				lEndTimer = GetTickCount() - lStartTimer ;
+				
+				iSum_TickCount += lEndTimer;
+				iSum_TuplesCount += ituples_cnt;
+			    scr_CLS[i].tplNum += ituples_cnt;
+
+				sprintf(temp, "scr_CLS[%i]:  ", i);					
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+
+				sprintf(temp, " 		The pApp->ss　spend TickCount = %ld", lEndTimer);
+				cstrMarc += temp;
+				cstrMarc += "\r\n";
+				sprintf(temp, "  		The pApp->ss　Tuples Number = %ld", ituples_cnt);				
+				cstrMarc += temp;
+				//cstrMarc += "\r\n";
+				//cstrMarc += szSql;
+				cstrMarc += "\r\n";				
+				sprintf(temp, "  		scr_CLS[%i]:　Tuples Number = %ld", iInterIdx, scr_CLS[iInterIdx].tplNum);				
+				cstrMarc += temp;
+
+				cstrMarc += "\r\n";
+				cstrMarc += "\r\n";
+
+				cstrMarc += "-----------------------------\r\n";
+				cstrMarc += "\r\n";
+
+			 } 
+			 else
+			 {
+				//--------------------------------------------------
+				// scr_CLS[iInterIdx] is the subtrahend set
+				///////
+					//has removed this part
+				///////
+				
+				////////////////////////////////////////////////
+				//scr_CLS[i] is the minuend set
+				strcpy(	szSql, 	" SELECT * FROM ");
+				strcat(	szSql, 	TableName );
+				strcat(	szSql, 	" where ( ( ");
+					
+					for(j=1; j<=COL_NUM-1; j++)
+					{
+						sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[j],j-1,j-1, scr_CLS[i].b[j]);
+						strcat(	szSql, temp	);
+						strcat(	szSql, ") AND (" );
+					}
+
+					sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", scr_CLS[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, scr_CLS[i].b[COL_NUM]);
+					strcat(	szSql, temp	);
+
+				strcat(	szSql, ") ) "	);
+				//
+
+					lStartTimer = GetTickCount();
+						ituples_cnt = zlExeSelect(TableName, szSql);
+					lEndTimer = GetTickCount() - lStartTimer ;
+					
+					iSum_TickCount += lEndTimer;
+					iSum_TuplesCount += ituples_cnt;
+					scr_CLS[i].tplNum = ituples_cnt;
+
+					//SSSSSSSSS = scr_CLS[i] is the minuend set
+					sprintf(temp, " SSSSSSSSS-T de scr_CLS[%i]: GetTickCount = %ld ",i,  lEndTimer);
+					
+					//sprintf(temp, "		tuples_num = %ld ", ituples_cnt );
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+
+					sprintf(temp, "		tuples_num = %ld", ituples_cnt);
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+					//cstrMarc += szSql;
+					cstrMarc += "\r\n";
+					cstrMarc += "\r\n";
+					///////////////////////////////////////////////
+			 }
+
+			}
+
+
+		}
+
+	}
+
+	int izero = 0;
+	      	cstrMarc += "\r\n";	
+			cstrMarc += "cluster0 : ";	
+
+			for(j=1; j<=old_m; j++)
+			{
+				if(S[j].cn ==0)
+				{
+					sprintf(temp, " ,S[%02i] ", j );
+					cstrMarc += temp;
+					izero ++;
+				}
+
+			}
+			cstrMarc += "\r\n";	
+			cstrMarc += "\r\n";
+
+	if(izero >0 )
+	{
+		for(i = 1; i<=old_m; i++) // there are m the originial rectangles S[1] to S[100]
+		{
+
+		        if(S[i].cn ==0 && S[i].tplNum <=0 ) // for ones that are NO clustering 
+				{
+       ////////////////////////
+		char szSqltmp[] = " SELECT * FROM Lsi_104D ";
+		SQLFreeStmt(hstmt, SQL_DROP);
+		retcode = SQLAllocStmt(hdbc, &hstmt); ///Statement handle 
+		if(retcode != SQL_SUCCESS)
+			AfxMessageBox("1. Get m initial rectangles from DB, Error!" ); //return -1;
+
+		SQLSetStmtOption(hstmt, SQL_CONCURRENCY, SQL_CONCUR_READ_ONLY);
+		SQLSetStmtOption(hstmt, SQL_CURSOR_TYPE, SQL_CURSOR_KEYSET_DRIVEN);
+		
+		//longTicks = GetTickCount();
+		retcode = SQLExecDirect(hstmt, (unsigned char *)szSqlAllLearningRows, SQL_NTS);
+		//longTicks = GetTickCount() - longTicks;
+	  /////////////////////////////
+
+
+
+					strcpy(	szSql, 	" SELECT * FROM ");
+					strcat(	szSql, 	TableName );
+					strcat(	szSql, 	" where ( ( ");
+						
+						for(j=1; j<=COL_NUM-1; j++)
+						{
+							//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", S[i].a[j],j-1,j-1, S[i].b[j]);
+							sprintf(temp, " %G <= attr%d AND attr%d <= %G ", S[i].a[j],j-1,j-1, S[i].b[j]);
+							strcat(	szSql, temp	);
+							strcat(	szSql, ") AND (" );
+						}
+
+						//sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", S[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, S[i].b[COL_NUM]);
+						sprintf(temp, " %G <= attr%d AND attr%d <= %G ", S[i].a[COL_NUM],COL_NUM-1,COL_NUM-1, S[i].b[COL_NUM]);
+						strcat(	szSql, temp	);
+
+					strcat(	szSql, ") ) "	);
+
+					lStartTimer = GetTickCount();
+						//ituples_cnt = zlExeSelect(TableName, szSql);					
+						ituples_cnt = pApp->zlExeSelect_Mul(0, szSql);
+						//if( S[i].tplNum <=0 )
+							//iCandidateNum = pApp->zlGetTopNTuple_Mul(i, S, ituples_cnt );					
+					lEndTimer = GetTickCount() - lStartTimer ;
+					
+					iSum_TickCount += lEndTimer;
+					iSum_TuplesCount += ituples_cnt;
+
+					//sprintf(temp, " S%i: [%.2f, %.2f]x[%.2f, %.2f]: tuples_num = %ld ",i, T[i].a[1], T[i].b[1], T[i].a[2], T[i].b[2], ituples_cnt );
+					sprintf(temp, " S%i: [%G, %G]x[%G, %G]: \r\n tuples_num = %ld ",i, S[i].a[1], S[i].b[1], S[i].a[2], S[i].b[2], ituples_cnt );
+					cstrMarc += temp;
+					sprintf(temp, " GetTickCount = %ld", lEndTimer);
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+
+					lStartTimer = GetTickCount();
+						if( S[i].tplNum <=0 )
+							iCandidateNum = pApp->zlGetTopNTuple_Mul(i, S, ituples_cnt );					
+					lEndTimer = GetTickCount() - lStartTimer ;
+
+					sprintf(temp, " zlGetTopNTuple_Mul : GetTickCount = %ld", lEndTimer);
+					cstrMarc += temp;
+					cstrMarc += "\r\n";
+
+
+
+				}
+			}
+
+	   }
+
+	    sprintf(temp, "       Sum of Tick Count = %ld", iSum_TickCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		sprintf(temp, "       Sum of Tuples Count = %ld", iSum_TuplesCount);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		//sprintf(temp, "       nonzero = %i, zero = %i", allNonzero , izero);
+		sprintf(temp, "       nonzero = %i, zero = %i", iallNum, izero);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+	
+lALL_EndTimer = GetTickCount()-lALL_StartTimer;
+iALL_TickCount += lALL_EndTimer;
+
+		sprintf(temp, "      iALL_TickCount = %i ,  ", iALL_TickCount );
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		sprintf(temp, "      iALL_TickCount - iSum_TickCount = %i ,  ", iALL_TickCount-iSum_TickCount );
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+
+
+//---------ttest S[] start ----------
+   /***********
+	cstrMarc += " 2 2222----    ttest S[] ==== start \r\n";
+	cstrMarc += "\r\n";
+
+    iclsNum =0;
+	iallNum =0;
+
+		for(j=1; j<=old_m; j++)
+		{
+			//if(S[j].cn == i)
+			{
+				sprintf(temp, " S[%02i].cn =%02i ,S[%02i].bsn =%02i;  ", j, S[j].cn,  j, S[j].bsn );
+				cstrMarc += temp;
+				iclsNum ++;
+			}	
+			cstrMarc += "\r\n";
+		}
+		sprintf(temp, "; iclsNum = %02i ", iclsNum);
+		cstrMarc += temp;
+		iallNum = iallNum + iclsNum; 
+
+		cstrMarc += "\r\n";
+
+		sprintf(temp, " iallNum = %02i ", iallNum);
+		cstrMarc += temp;
+		cstrMarc += "\r\n";
+
+		 izero = 0;
+	      	cstrMarc += "\r\n";	
+			cstrMarc += "cluster0 : ";	
+
+			for(j=1; j<=old_m; j++)
+			{
+				if(S[j].cn ==0)
+				{
+					sprintf(temp, " ,S[%02i] ", j );
+					cstrMarc += temp;
+					izero ++;
+				}
+
+			}
+			cstrMarc += "\r\n";	
+			sprintf(temp, " izero = %02i ", izero);
+			cstrMarc += temp;
+			cstrMarc += "\r\n";
+
+			cstrMarc += "\r\n";
+			**********/
+//---------ttest S[] end ----------
+
+			for(j=0; j<= 100 ; j++)
+				delete [] pApp->tuple[j];
+
+			delete [] pApp->tuple;
+
+
+
+
+//---------------   the algorithms --------------------
+//---------------^^^^^^^^^^^^^^^^^^^^^^^^^^------------
+////////////////////////////////////////////////////////////////////////
+	
+		
+	//CFile file;
+
+	//if(file.Open("E:\\Paper2\\CLMB_census2D\\cluster_100_cen2D_OPT416.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	//if(file.Open("E:\\Paper2\\CLMB_census2D\\cluster_100_LSI104D_502.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	
+	//if(file.Open("E:\\Paper2\\Lsi_104D\\cluster_100_LSI104D_Lng_513.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+	//if(file.Open("E:\\Paper2\\Lsi_104D\\cluster_100_LSI104D_OPT_513.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+
+	if(file.Open("E:\\Paper2\\Lsi_050D\\cluster_100_LSI050D_OPT_520.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
+
+	{
+		file.Write(cstrMarc, cstrMarc.GetLength() +1 );
+	}
+	file.Close();
+
+		
+	AfxMessageBox("OnViewCluster100 OK!");
+	zlCloseDB();
+
+	//delete [] Sum_v_S;
+	delete [] Sum_v_T;
+
+	delete [] scr_CLS;
+	delete [] szSql;	
+}

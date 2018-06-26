@@ -1,0 +1,606 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Chinese (P.R.C.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+#ifdef _WIN32
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TABLE_NAME_DLG DIALOG DISCARDABLE  0, 0, 301, 163
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Input Table Name Dialog"
+FONT 10, "System"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,26,142,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,149,142,50,14
+    LTEXT           "Input Table Name(KB Profile Table):",IDC_STATIC,7,7,137,
+                    8
+    LTEXT           "Output Table Name(Insert Table):",IDC_STATIC,7,30,150,9
+    LTEXT           "Top-N",IDC_STATIC,7,111,20,8
+    EDITTEXT        IDC_EDIT_TOPN,7,124,40,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO_INPUT_TABLE,7,16,287,103,CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_OUTPUT_TABLE,7,39,287,82,CBS_DROPDOWN | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "DataSet Table Name:",IDC_STATIC,7,53,70,8
+    COMBOBOX        IDC_COMBO_DATASET,7,62,287,82,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Workload Table:",IDC_STATIC,7,77,109,8
+    COMBOBOX        IDC_COMBO_WORKLOAD,7,87,287,69,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Note: Change COL_NUM, DIS_NUM, Top-N , max server memory, //, iNumUpdateKB//,  THRESHOLD_KB",
+                    IDC_STATIC,60,117,213,23
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_TABLE_NAME_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 294
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 156
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "res\\icon1.ico"
+IDI_ICON2               ICON    DISCARDABLE     "res\\icon2.ico"
+#endif    // Chinese (P.R.C.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 164
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About LearnIing6"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,21,23
+    LTEXT           "LearnIing6 Version 1.0",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2003",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 157
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\LearnIing6.ico"
+IDR_LEARNITYPE          ICON    DISCARDABLE     "res\\LearnIing6Doc.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\LearnIing6.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#include ""afxprint.rc""       // printing/print preview resources\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP  MOVEABLE PURE   "res\\Toolbar.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      ID_RUN
+    SEPARATOR
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    SEPARATOR
+    BUTTON      ID_APP_ABOUT
+    SEPARATOR
+    BUTTON      ID_CM_NM
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAINFRAME MENU PRELOAD DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW
+        MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
+        MENUITEM SEPARATOR
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar",                    ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar",                 ID_VIEW_STATUS_BAR
+        MENUITEM "&FileToDatabase",             ID_VIEW_FILETODB
+        MENUITEM "&Insert",                     ID_VIEW_INSERT
+        MENUITEM "&Covtype Insert",             ID_VIEW_COVTYPE
+        MENUITEM SEPARATOR
+        MENUITEM "Test Small",                  ID_VIEW_TESTSMALL
+        MENUITEM "Test",                        ID_VIEW_TEST
+        MENUITEM SEPARATOR
+        MENUITEM "cluster_100",                 ID_VIEW_CLUSTER_100, HELP
+        MENUITEM SEPARATOR
+        MENUITEM "CV_cluster_2D_100Q",          ID_VIEW_CLUSTER2D100q
+    END
+    POPUP "InsertColumbiaDB"
+    BEGIN
+        MENUITEM "Insert_2D",                   ID_DBGOLUMBIA_INSERT2D
+        , GRAYED
+        MENUITEM "3D_Insert",                   ID_3D_INSERT, GRAYED
+        MENUITEM "InsertCover4D",               ID_INSERT_COVER4D, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Gauss2D",                    ID_GAUSS2D, GRAYED
+        MENUITEM "Gau&ss3D",                    ID_GAUSS_3D, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "&Array3D",                    ID_ARRAY3D, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM SEPARATOR
+        MENUITEM "CLMB_census2D",               ID_CLMBCENSUS2D
+        MENUITEM "CLMB_census3D",               ID_CLMBCENSUS3D
+        MENUITEM "CLMB_cover4D",                ID_CLMBCOVER4D
+        MENUITEM SEPARATOR
+        MENUITEM "CLMB_Gauss3D",                ID_CLMBGAUSS3D
+        MENUITEM SEPARATOR
+        MENUITEM "CLMB_Array2D",                ID_CLMBARRAY2D
+        MENUITEM "CLMB_Array3D",                ID_CLMBARRAY3D
+        MENUITEM SEPARATOR
+        MENUITEM "LSI_104D",                    ID_LSI104D
+        MENUITEM SEPARATOR
+        MENUITEM "House20D(16D,08D)",           ID_HOUSE20D
+    END
+    POPUP "SelectDB"
+    BEGIN
+        MENUITEM "SelectAll",                   ID_SELECT_ALL
+        MENUITEM "Select2D_Where",              ID_SELECT2D_WHERE
+    END
+    POPUP "Generator"
+    BEGIN
+        MENUITEM "Generat_Profile",             ID_GENERATER_GENERATPROFILE
+        MENUITEM SEPARATOR
+        MENUITEM "Census2DWorkLoad",            ID_GENERATER_CENSUS2DWORKLOAD
+
+        MENUITEM "Top100Census2DWL",            ID_TOP100CENSUS2DWL
+        MENUITEM SEPARATOR
+        MENUITEM SEPARATOR
+        MENUITEM "(Gauss2DWorkLoad_)smpl_Census2D", ID_GAUSS2DWORKLOAD
+        MENUITEM "Census2D(3D)_Uniform_WorkLoad", ID_SMPL1459CENSUS2DUNIFORM
+        MENUITEM SEPARATOR
+        MENUITEM SEPARATOR
+        MENUITEM "Array2D_32000Smpl",           ID_ARRAY2D32000SMPL
+        MENUITEM SEPARATOR
+        MENUITEM "Smpl1654_Census3D(827,414)",  ID_SMPL1654CENSUS3D
+        MENUITEM "smpl5000_Gauss3D(Array3D)",   ID_SMPL5000GAUSS3DARRAY3D
+        MENUITEM SEPARATOR
+        MENUITEM "Smpl5810_Cover4D",            ID_SMPL5810COVER4D
+        MENUITEM SEPARATOR
+        MENUITEM "Lsi(House)_smpl_Bworkload",   ID_GENERATOR_LSISMPLBWORKLOAD
+
+        MENUITEM "Cover4DWorkLoad",             ID_GENERATER_COVER4DWORKLOAD
+    END
+    POPUP "Creat_TopNProfile"
+    BEGIN
+        MENUITEM "DATA_Top100_Census2D_WorkLoad_Profile ---- NO USER", 
+                                                ID_DATA_TOP100_CENSUS2D_WORKLOAD_PROFILE
+        , GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Smpl2000_Census2D_Profile  ----------------NO USER", 
+                                                ID_SMPL2000CENSUS2DPROFILE
+        , GRAYED
+        MENUITEM "Smpl1459_Census2D_Profile_EUCL_SUM", 
+                                                ID_SMPL1459CENSUS2DPROFILEEUCLSUM
+
+        MENUITEM SEPARATOR
+        MENUITEM "Smpl1654_Census3D_Profile(3 distance, 827,414)", 
+                                                ID_SMPL1654CENSUS3DPROFILE
+        MENUITEM "smpl5000_Gauss3D_Array3D_Profile(3 distance)", 
+                                                ID_SMPL5000GAUSS3DARRAY3DPROFILE3DISTANCE
+
+        MENUITEM SEPARATOR
+        MENUITEM "Smpl5810_Cover4D_Profile",    ID_SMPL5810COVERPROFILE
+        MENUITEM SEPARATOR
+        MENUITEM "Lsi(House)_Profile_OPTworkload", ID_LSIPROFILEOPTWORKLOAD
+    END
+    POPUP "Learning"
+    BEGIN
+        MENUITEM "Census2D_Biased",             ID_LEARNING_CENSUS2DBIASED
+        MENUITEM SEPARATOR
+        MENUITEM "Top100_Census2D_Biased_from2000", 
+                                                ID_LEARNING_TOP100CENSUS2DBIASEDFROM2000
+
+        MENUITEM "Top100_Census2D_Biased_from1000", 
+                                                ID_LEARNING_TOP100CENSUS2DBIASEDFROM1000
+
+        MENUITEM "Top100_Census2D_Biased_from0800", 
+                                                ID_LEARNING_TOP100CENSUS2DBIASEDFROM0800
+
+        MENUITEM "Top100_Census2D_Biased_from0400-0100", 
+                                                ID_LEARNING_TOP100CENSUS2DBIASEDFROM04000100
+
+        MENUITEM SEPARATOR
+        MENUITEM "Top100_Census2D_Biased_FRM1459_EUCL_SUM", 
+                                                ID_LEARNING_TOP100CENSUS2DBIASEDFRM1459EUCLSUM
+
+        MENUITEM "Census2D_T0100_B_Learning_P1459_730_365", 
+                                                ID_LEARNING_CENSUS2DT0100BLEARNINGP1459
+
+        MENUITEM "3D_T0100_B_Learning(Census3d, Gauss, Array)", 
+                                                ID_3DT0100_B_LEARNING_CENSUS3D_GAUSS_ARRAY
+
+        MENUITEM SEPARATOR
+        MENUITEM "4D_Cover_Learning",           ID_4DCOVER_LEARNING
+        MENUITEM SEPARATOR
+        MENUITEM "Lsi104D(House)_Learning(50,25)", ID_LSI104DLEARNING
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About LearnIing6...",        ID_APP_ABOUT
+    END
+    POPUP "Multiple"
+    BEGIN
+        MENUITEM "Census2DWorkload",            ID_CENSUS2DWORKLOAD, GRAYED
+        MENUITEM "Census2DResults",             ID_CENSUS2DRESULTS, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Lsi_104DBWorkLoad",           ID_LSI104DBWORKLOAD, GRAYED
+        MENUITEM "Results3to104D",              ID_RESULTS3TO4D
+    END
+    POPUP "LRC"
+    BEGIN
+        MENUITEM "LRC_Method",                  ID_MENU_LRC
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS PRELOAD MOVEABLE PURE 
+BEGIN
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "LearnIing6 MFC Application\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "LearnIing6\0"
+            VALUE "LegalCopyright", "Copyright (C) 2003\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "LearnIing6.EXE\0"
+            VALUE "ProductName", "LearnIing6 Application\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    IDR_MAINFRAME           "LearnIing6\n\nLearnI\n\n\nLearnIing6.Document\nLearnI Document"
+END
+
+STRINGTABLE PRELOAD DISCARDABLE 
+BEGIN
+    AFX_IDS_APP_TITLE       "LearnIing6"
+    AFX_IDS_IDLEMESSAGE     "Ready"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INDICATOR_EXT        "EXT"
+    ID_INDICATOR_CAPS       "CAP"
+    ID_INDICATOR_NUM        "NUM"
+    ID_INDICATOR_SCRL       "SCRL"
+    ID_INDICATOR_OVR        "OVR"
+    ID_INDICATOR_REC        "REC"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_FILE_MRU_FILE1       "Open this document"
+    ID_FILE_MRU_FILE2       "Open this document"
+    ID_FILE_MRU_FILE3       "Open this document"
+    ID_FILE_MRU_FILE4       "Open this document"
+    ID_FILE_MRU_FILE5       "Open this document"
+    ID_FILE_MRU_FILE6       "Open this document"
+    ID_FILE_MRU_FILE7       "Open this document"
+    ID_FILE_MRU_FILE8       "Open this document"
+    ID_FILE_MRU_FILE9       "Open this document"
+    ID_FILE_MRU_FILE10      "Open this document"
+    ID_FILE_MRU_FILE11      "Open this document"
+    ID_FILE_MRU_FILE12      "Open this document"
+    ID_FILE_MRU_FILE13      "Open this document"
+    ID_FILE_MRU_FILE14      "Open this document"
+    ID_FILE_MRU_FILE15      "Open this document"
+    ID_FILE_MRU_FILE16      "Open this document"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last action\nRepeat"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
+    ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCSIZE          "Change the window size"
+    AFX_IDS_SCMOVE          "Change the window position"
+    AFX_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    AFX_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    AFX_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    AFX_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_SCRESTORE       "Restore the window to normal size"
+    AFX_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_RUN                  "Run\nRun"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\LearnIing6.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#include "afxprint.rc"       // printing/print preview resources
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
