@@ -1,11 +1,8 @@
 // MainFrm.cpp : implementation of the CMainFrame class
-//
 
 #include "stdafx.h"
 #include "LearnIing6.h"
-
 #include "MainFrm.h"
-
 #include "TableName.h"  //zl add 
 
 #ifdef _DEBUG
@@ -206,8 +203,8 @@ bool CMainFrame::zlUpdate_c_KBProfile(ProfileMP Prf)
 
 ///////////////
 
-	sprintf(szc," c = %ld ", Prf.c);
-	sprintf(szCondition," WHERE c = %ld AND d = %ld", Prf.c-1, Prf.d);
+	sprintf_s(szc," c = %ld ", Prf.c);
+	sprintf_s(szCondition," WHERE c = %ld AND d = %ld", Prf.c-1, Prf.d);
 
   /////////////
 	CString cStrUpdate;
@@ -332,8 +329,8 @@ double CMainFrame::zlObtainSearchDistance(QUERY Query, int iQueryNum)
 		//for( k =0; k<1024; k++)
 			//cDblToStr[k] = 0;
 
-		//sprintf(cDblToStr,"%.13f",  Z[j].v);
-		//sprintf(cDblToStr,"%.0f",  Z[j].v);
+		//sprintf_s(cDblToStr,"%.13f",  Z[j].v);
+		//sprintf_s(cDblToStr,"%.0f",  Z[j].v);
 		//int ilen = strlen(cDblToStr);
 
 		//if(strcmp(cDblToStr,"1.#INF000000000") == 0)
@@ -549,7 +546,7 @@ double CMainFrame::zlObtainSearchDistance(QUERY Query, int iQueryNum)
 	
 	//shortTicks = GetTickCount() - shortTicks;
 	//char temp[200];
-	//sprintf(temp, " get distance, Ticks = %i ",  shortTicks);
+	//sprintf_s(temp, " get distance, Ticks = %i ",  shortTicks);
 	//AfxMessageBox(temp);
 	//-- test 
 
@@ -626,7 +623,7 @@ int CMainFrame::zlGetTopNTuple(int QueryNum, int tuplesNum)
 	CString str = "";
 	char temp[512] ="";
 
-	//sprintf(temp, "1. QueryNum = %i; iCandidateNum = %i; Ticks = %i; ", QueryNum, iRowCnt, lEndTimer);
+	//sprintf_s(temp, "1. QueryNum = %i; iCandidateNum = %i; Ticks = %i; ", QueryNum, iRowCnt, lEndTimer);
 	//str += temp;
 	//str += "\r\n";
    //if(tuplesNum>3000)
@@ -639,7 +636,7 @@ int CMainFrame::zlGetTopNTuple(int QueryNum, int tuplesNum)
 	{
 		str += "zlGetTopNTuple: iCandidateNum < iTopN ";
 		str += "\r\n";
-		//sprintf(temp, "1. QueryNum = %i; iCandidateNum = %i; Ticks = %i; ", QueryNum, tuplesNum, lEndTimer);
+		//sprintf_s(temp, "1. QueryNum = %i; iCandidateNum = %i; Ticks = %i; ", QueryNum, tuplesNum, lEndTimer);
 		str += temp;
 		str += "\r\n";
 
@@ -829,7 +826,7 @@ iGetTopNTupleTime = GetTickCount()- iGetTopNTupleTime;
 		              //5.0249400000000001E+37
 
 		char cDblToStr[1024] = "";
-		sprintf(cDblToStr,"%.0f",  r_Opt);
+		sprintf_s(cDblToStr,"%.0f",  r_Opt);
 
 		int ilen = strlen(cDblToStr);
 		r_Opt = r_Opt + EPCINO* pow(10, (ilen-1) );
@@ -869,12 +866,12 @@ int CMainFrame::zlExeSelectCount(QUERY Query, double r)
 			
 			for(j=0; j<COL_NUM-1; j++)
 			{
-				sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", Query.x[j]-r,j,j, Query.x[j]+r);
+				sprintf_s(temp, " %.15G <= attr%d AND attr%d <= %.15G ", Query.x[j]-r,j,j, Query.x[j]+r);
 				strcat(	szSql, temp	);
 				strcat(	szSql, ") AND (" );
 			}
 
-			sprintf(temp, " %.15G <= attr%d AND attr%d <= %.15G ", Query.x[COL_NUM-1]-r,COL_NUM-1,COL_NUM-1, Query.x[COL_NUM-1]+r);
+			sprintf_s(temp, " %.15G <= attr%d AND attr%d <= %.15G ", Query.x[COL_NUM-1]-r,COL_NUM-1,COL_NUM-1, Query.x[COL_NUM-1]+r);
 			strcat(	szSql, temp	);
 
 		strcat(	szSql, ") ) "	);
@@ -904,7 +901,6 @@ int CMainFrame::zlExeSelectCount(QUERY Query, double r)
 	//----- body  end -----------------
 	return iRowCnt;
 }
-
 
 int CMainFrame::zlSelectAllFromWorkload(char *WorkloadTableName)
 {
@@ -1268,7 +1264,7 @@ void CMainFrame::OnViewFileToDB()
 
 	}// read file  and convert it to database 
 
-	sprintf(cTmp,"Err Num = %d", iErr);
+	sprintf_s(cTmp,"Err Num = %d", iErr);
     AfxMessageBox(cTmp);
 	AfxMessageBox("Insert new Recode OK!!!!!!!!!!!!!!!!!!!");
 
@@ -1609,7 +1605,7 @@ void CMainFrame::OnCovtypeInsert()
 
 	}// read file  and convert it to database 
 
-	sprintf(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
+	sprintf_s(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
     AfxMessageBox(cTmp);
 	AfxMessageBox("Insert new Recode OK!!!!!!!!!!!!!!!!!!!");
 
@@ -1792,7 +1788,7 @@ void CMainFrame::OnDbgolumbiaInsert2d()
 
 	}// read file  and convert it to database 
 
-	sprintf(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
+	sprintf_s(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
     AfxMessageBox(cTmp);
 	AfxMessageBox("Insert new Recode OK!!!!!!!!!!!!!!!!!!!");
 
@@ -1978,7 +1974,7 @@ void CMainFrame::On3dInsert()
 
 	}// read file  and convert it to database 
 
-	sprintf(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
+	sprintf_s(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
     AfxMessageBox(cTmp);
 	AfxMessageBox("Insert new Recode OK!!!!!!!!!!!!!!!!!!!");
 
@@ -2161,7 +2157,7 @@ void CMainFrame::OnInsertCover4d()
 
 	}// read file  and convert it to database 
 
-	sprintf(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
+	sprintf_s(cTmp,"Err Num = %d, dwBytesRead = %d", iErr, dwBytesRead);
     AfxMessageBox(cTmp);
 	AfxMessageBox("Insert new Recode OK!!!!!!!!!!!!!!!!!!!");
 
@@ -6680,8 +6676,6 @@ void CMainFrame::OnCreateSmpl2000census2Dprofile()
 	AfxMessageBox("Insert hstmt_Generet2D_profile OK!");
 	
 }
-
-
 
 void CMainFrame::OnLearningTop100census2dbiasedfrom2000() 
 {
@@ -31065,19 +31059,22 @@ bool CMainFrame::zlGetResults3To104D_C_N_HighLarge(int iCountOfQueries, char *In
 //-- after memory = 512m--------- end --------------
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////// for LRC    ////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////// for LRC    //////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////Code by Fengyanchao 2010////////////////////////////////
+////////////////////////////////////////////Code by David 2018.6.27 //////////////////////////////////
 
-void CMainFrame::OnMenuLRC()  // for get histegram
+void CMainFrame::OnMenuLRC()  // for get histogram
 {
     bool bReturn = false;
     int old_m = 0;
 	CLearnIing6App * pApp = (CLearnIing6App * ) AfxGetApp();
 	
-	m_DataSetTable = pApp->TableName; 
+	//Set the text of dialog 
+	//m_DataSetTable = pApp->TableName; //Census2D
+	m_DataSetTable = "Attr_Census2D";//Add by david
 	m_InsertTable =  pApp->szOutputTableName;
 	m_KBProfileTable =pApp->szInputTableName;
 	m_WorkloadTable = pApp->m_WorkloadTable;
@@ -31092,15 +31089,12 @@ void CMainFrame::OnMenuLRC()  // for get histegram
 	int ituples_cnt =0;
 	int frequence_Opt =0;
 
-	/************************
+	/**************************************
 	*  0. select all tuples from a given dataset
 	*  1. partion the domain of the dataset
-	*  2. get the histegram
+	*  2. get the histogram
 	*  3. Select all queires from workload table 
-
-	\**************************/
-
-
+	**************************************/
 	char temp[1024] = "";
 
 	int iSizeofWorkload =0;
@@ -31114,25 +31108,25 @@ void CMainFrame::OnMenuLRC()  // for get histegram
 	int	total_time= 0;  
     int KB_time =0;
 	bool bUpdateRC = true;
-//    bool bfirst=false;
-//	int  LearningP=0;
+    //bool bfirst=false;
+    //int  LearningP=0;
     //ZLRECT S; //the search n-square of Q 
     int n = COL_NUM;
 	double VFactor;
 	if(n==104)
-	  VFactor = 5.0 * pow(10, 37);
+		VFactor = 5.0 * pow(10, 37);
 	else if(n==50)
-	  VFactor = pow(10, 34); // (30 +38)/2=34
+		VFactor = pow(10, 34); // (30 +38)/2=34
 	else if(n==25)
-	  VFactor = pow(10, 31); // (24 +38)/2=31
+		VFactor = pow(10, 31); // (24 +38)/2=31
 
 
-//0. ----------------  0. select all tuples from a given dataset, 
-	// here  we use the function zlSelectAllFromKB that is a old version one, in order to easy 
-	/////--- call function: int zlSelectAllFromKB(char * KBTableName)	
-    /////--- we get Z[i] that is the member variable in this Class 
-	//iCStrLenth = m_KBProfileTable.GetLength() + 1;		
-	//iSizeofKB  = zlSelectAllFromKB(m_KBProfileTable.GetBuffer(iCStrLenth) );
+    //----------------  0. select all tuples from a given dataset----------------
+	// Here  we use the function zlSelectAllFromKB that is a old version one, in order to easy 
+	/////------ Call function: int zlSelectAllFromKB(char * KBTableName)	
+    /////------ We get Z[i] that is the member variable in this Class 
+	//		iCStrLenth = m_KBProfileTable.GetLength() + 1;		
+	//		iSizeofKB  = zlSelectAllFromKB(m_KBProfileTable.GetBuffer(iCStrLenth) );
 	
 	//-- here use : m_DataSetTable
 	iCStrLenth = m_DataSetTable.GetLength() + 1;		
@@ -31141,13 +31135,12 @@ void CMainFrame::OnMenuLRC()  // for get histegram
 	
 	if( iSizeofKB <= 0)
 	{
-		AfxMessageBox(" Call zlSelectAllFromKB Error !!!!!!");
+		AfxMessageBox(" 警告: Call zlSelectAllFromKB( ) Error !!!!!!");
 	}
 	else
 	{
-		//sprintf(temp, " 2. iSizeofKB = %i, Ticks = %i ", iSizeofKB, shortTicks);
-		sprintf(temp, " zlSelect All tuples ,  iSizeofKB = %i", iSizeofKB);
-
+		//sprintf_s(temp, " 2. iSizeofKB = %i, Ticks = %i ", iSizeofKB, shortTicks);
+		sprintf_s(temp, " zlSelect All tuples ,  iSizeofKB = %i", iSizeofKB);
 		//AfxMessageBox(temp);
 	}
 //1. partion the domain of the dataset
@@ -31209,7 +31202,7 @@ void CMainFrame::OnMenuLRC()  // for get histegram
 
 //int s1=0,s2=0,f1=0,f2=0,f3=0;
 
-//2. get the histegram
+//2. get the histogram
 int Num=iPartNum;
 
 int ss=0;
@@ -31327,7 +31320,7 @@ for(k=1; k<=iPartNum; k++)
 	}
 	else
 	{
-		sprintf(temp, " iSizeofWorkload = %i", iSizeofWorkload);
+		sprintf_s(temp, " iSizeofWorkload = %i", iSizeofWorkload);
 		AfxMessageBox(temp);
 	}
 
@@ -31469,44 +31462,44 @@ for(k=1; k<=iPartNum; k++)
 				cAttribute[ii][jj]=0;
 
 		for(ii=0; ii<COL_NUM ; ii++)
-			sprintf(cAttribute[ii],	"%G", Q[i].x[ii] );
+			sprintf_s(cAttribute[ii],	"%G", Q[i].x[ii] );
 
-	    sprintf(cAttribute[COL_NUM],  "%ld", m_TopN);
-		sprintf(cAttribute[COL_NUM+1],"%.15G",  Q[i].r);    
+	    sprintf_s(cAttribute[COL_NUM],  "%ld", m_TopN);
+		sprintf_s(cAttribute[COL_NUM+1],"%.15G",  Q[i].r);    
 	
-		sprintf(cAttribute[COL_NUM+2],"%ld",  Q[i].f);
+		sprintf_s(cAttribute[COL_NUM+2],"%ld",  Q[i].f);
 
-		sprintf(cAttribute[COL_NUM+3],"%ld", Q[i].f_rst ); //--2007.12.05
-		sprintf(cAttribute[COL_NUM+4],"%ld", rst_time);   //--2007.12.05
+		sprintf_s(cAttribute[COL_NUM+3],"%ld", Q[i].f_rst ); //--2007.12.05
+		sprintf_s(cAttribute[COL_NUM+4],"%ld", rst_time);   //--2007.12.05
         
 		
-		sprintf(cAttribute[COL_NUM+5],"%ld", iEstimateNum);    // r_time       //change 2007.11.05
-		sprintf(cAttribute[COL_NUM+6],"%ld", iPartNum);    //change 2007.11.05
+		sprintf_s(cAttribute[COL_NUM+5],"%ld", iEstimateNum);    // r_time       //change 2007.11.05
+		sprintf_s(cAttribute[COL_NUM+6],"%ld", iPartNum);    //change 2007.11.05
 
-		sprintf(cAttribute[COL_NUM+7],"%ld", est);  //add   2007.11.05
-		sprintf(cAttribute[COL_NUM+8],"%ld", total_time);  //add   2007.11.05
-		sprintf(cAttribute[COL_NUM+9],"%ld", KB_time);     //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+7],"%ld", est);  //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+8],"%ld", total_time);  //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+9],"%ld", KB_time);     //add   2007.11.05
 
-		sprintf(cAttribute[COL_NUM+7+3],"%ld",   Q[i].ID);
-		sprintf(cAttribute[COL_NUM+8+3],"%.15G", Q[i].r_Opt);
+		sprintf_s(cAttribute[COL_NUM+7+3],"%ld",   Q[i].ID);
+		sprintf_s(cAttribute[COL_NUM+8+3],"%.15G", Q[i].r_Opt);
 		
-		sprintf(cAttribute[COL_NUM+9+3],"%ld",  f_Opt);   //the real number
+		sprintf_s(cAttribute[COL_NUM+9+3],"%ld",  f_Opt);   //the real number
 
-		sprintf(cAttribute[COL_NUM+10+3],"%ld", Q[i].ante_SizeKB);
-		sprintf(cAttribute[COL_NUM+11+3],"%ld", Q[i].post_SizeKB);
-		sprintf(cAttribute[COL_NUM+12+3],"%ld", Q[i].increment);
+		sprintf_s(cAttribute[COL_NUM+10+3],"%ld", Q[i].ante_SizeKB);
+		sprintf_s(cAttribute[COL_NUM+11+3],"%ld", Q[i].post_SizeKB);
+		sprintf_s(cAttribute[COL_NUM+12+3],"%ld", Q[i].increment);
 	
-		sprintf(cAttribute[COL_NUM+13+3],"%ld", pApp->case1);
+		sprintf_s(cAttribute[COL_NUM+13+3],"%ld", pApp->case1);
 
-		sprintf(cAttribute[COL_NUM+14+3],"%ld", Q[i].case2a);
-		sprintf(cAttribute[COL_NUM+15+3],"%ld", Q[i].case2b);
-		sprintf(cAttribute[COL_NUM+16+3],"%ld", Q[i].adjust_case2a);
-		sprintf(cAttribute[COL_NUM+17+3],"%ld", Q[i].restart);
+		sprintf_s(cAttribute[COL_NUM+14+3],"%ld", Q[i].case2a);
+		sprintf_s(cAttribute[COL_NUM+15+3],"%ld", Q[i].case2b);
+		sprintf_s(cAttribute[COL_NUM+16+3],"%ld", Q[i].adjust_case2a);
+		sprintf_s(cAttribute[COL_NUM+17+3],"%ld", Q[i].restart);
 		
-        sprintf(cAttribute[COL_NUM+18+3],"%ld", iNumUpdateKB);
-        sprintf(cAttribute[COL_NUM+18+3+1],"%ld", pApp->iIO_Num); //add. 2007.11.15
-        sprintf(cAttribute[COL_NUM+18+3+2],"%ld", pApp->iSum_SCR_TuplesCount); //add. 2007.11.15
-		sprintf(cAttribute[COL_NUM+19+3+3],"%ld", i+1); //add 2007.11.05 , Qnum
+        sprintf_s(cAttribute[COL_NUM+18+3],"%ld", iNumUpdateKB);
+        sprintf_s(cAttribute[COL_NUM+18+3+1],"%ld", pApp->iIO_Num); //add. 2007.11.15
+        sprintf_s(cAttribute[COL_NUM+18+3+2],"%ld", pApp->iSum_SCR_TuplesCount); //add. 2007.11.15
+		sprintf_s(cAttribute[COL_NUM+19+3+3],"%ld", i+1); //add 2007.11.05 , Qnum
 
 /////////////////////////////
 
@@ -31536,9 +31529,7 @@ for(k=1; k<=iPartNum; k++)
 			//Sleep(100);//AfxMessageBox("pApp->zlExeInsertTable ---- OK !");
 		}
 		else
-		{
-
-					CFile file;
+		{			CFile file;
                     CString cstrMarc;
                     cstrMarc = cStrInsert;
 					if(file.Open("E:\\StreamQueryTEST\\cStrInsert.txt",CFile::modeCreate | CFile::modeReadWrite ) != 0)
@@ -31565,12 +31556,7 @@ for(k=1; k<=iPartNum; k++)
     delete [] T; //this should be golable
   }
 }
-
-  
-
-
    	AfxMessageBox("OnMenuLRC OK OK OK !!!!");
-
 }
 
 
@@ -31663,8 +31649,8 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 	}
 	else
 	{
-		//sprintf(temp, " 2. iSizeofKB = %i, Ticks = %i ", iSizeofKB, shortTicks);
-		sprintf(temp, " zlSelectAllFromKB,  iSizeofKB = %i", iSizeofKB);
+		//sprintf_s(temp, " 2. iSizeofKB = %i, Ticks = %i ", iSizeofKB, shortTicks);
+		sprintf_s(temp, " zlSelectAllFromKB,  iSizeofKB = %i", iSizeofKB);
 
 		AfxMessageBox(temp);
 	}
@@ -31678,8 +31664,8 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 	iCStrLenth = m_KBProfileTable.GetLength() + 1;		
 	old_m = zlClusterProfileRegions(iSizeofKB, m_KBProfileTable.GetBuffer(iCStrLenth));
 
-	//sprintf(temp, " zlClusterProfileRegions, old_m = %i", old_m );
-	sprintf(temp, " zlClusterProfileRegions, pApp->clsnum = %i", old_m );
+	//sprintf_s(temp, " zlClusterProfileRegions, old_m = %i", old_m );
+	sprintf_s(temp, " zlClusterProfileRegions, pApp->clsnum = %i", old_m );
 
 	AfxMessageBox(temp);
 
@@ -31695,7 +31681,7 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 	}
 	else
 	{
-		sprintf(temp, " iSizeofWorkload = %i", iSizeofWorkload);
+		sprintf_s(temp, " iSizeofWorkload = %i", iSizeofWorkload);
 		AfxMessageBox(temp);
 	}
 
@@ -31820,7 +31806,7 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 			{
 				bAddEP = true;
 				char cDblToStr[1024] = "";
-				sprintf(cDblToStr,"%.0f",  r);
+				sprintf_s(cDblToStr,"%.0f",  r);
 
 		        int ilen = strlen(cDblToStr);
 
@@ -31830,7 +31816,7 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 				f_rst = ituples_cnt;
 				Q[i].f = ituples_cnt;
 				Q[i].r = r;
-				 //sprintf(temp, " recompute the search distance Error !! ituples_cnt = %i", ituples_cnt);
+				 //sprintf_s(temp, " recompute the search distance Error !! ituples_cnt = %i", ituples_cnt);
 				 //AfxMessageBox(temp);
 			}
 
@@ -31879,7 +31865,7 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 		       //shortTicks = GetTickCount() - shortTicks;
 
 		//-- test 
-		//sprintf(temp, " 5.  frequence_Opt = %i, Ticks = %i ", frequence_Opt, shortTicks);
+		//sprintf_s(temp, " 5.  frequence_Opt = %i, Ticks = %i ", frequence_Opt, shortTicks);
 		//AfxMessageBox(temp);
        //-- test 
        //top_N_time = GetTickCount() - top_N_time;
@@ -31956,58 +31942,58 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 				cAttribute[ii][jj]=0;
 
 		for(ii=0; ii<COL_NUM ; ii++)
-			sprintf(cAttribute[ii],	"%G", Q[i].x[ii] );
+			sprintf_s(cAttribute[ii],	"%G", Q[i].x[ii] );
 
-		sprintf(cAttribute[COL_NUM],  "%ld", m_TopN);
-		sprintf(cAttribute[COL_NUM+1],"%.15G",  Q[i].r);
-		sprintf(cAttribute[COL_NUM+2],"%ld", f_first);
+		sprintf_s(cAttribute[COL_NUM],  "%ld", m_TopN);
+		sprintf_s(cAttribute[COL_NUM+1],"%.15G",  Q[i].r);
+		sprintf_s(cAttribute[COL_NUM+2],"%ld", f_first);
 
 		if(f_rst > 0)
 		{
-			sprintf(cAttribute[COL_NUM+3],"%ld", f_rst );
-			sprintf(cAttribute[COL_NUM+4],"%ld", rst_time);
+			sprintf_s(cAttribute[COL_NUM+3],"%ld", f_rst );
+			sprintf_s(cAttribute[COL_NUM+4],"%ld", rst_time);
 			f_rst = 0;
 		}else
 		{
-			sprintf(cAttribute[COL_NUM+3],"NULL");
-			sprintf(cAttribute[COL_NUM+4],"NULL");
+			sprintf_s(cAttribute[COL_NUM+3],"NULL");
+			sprintf_s(cAttribute[COL_NUM+4],"NULL");
 
 		}
-		//sprintf(cAttribute[COL_NUM+5],"%ld", shortTicks);
-		//sprintf(cAttribute[COL_NUM+6],"%ld", longTicks);
-		sprintf(cAttribute[COL_NUM+5],"%ld", r_time);            //change 2007.11.05
-		sprintf(cAttribute[COL_NUM+6],"%ld", candidate_time);    //change 2007.11.05
+		//sprintf_s(cAttribute[COL_NUM+5],"%ld", shortTicks);
+		//sprintf_s(cAttribute[COL_NUM+6],"%ld", longTicks);
+		sprintf_s(cAttribute[COL_NUM+5],"%ld", r_time);            //change 2007.11.05
+		sprintf_s(cAttribute[COL_NUM+6],"%ld", candidate_time);    //change 2007.11.05
 
-		sprintf(cAttribute[COL_NUM+7],"%ld", top_N_time);  //add   2007.11.05
-		sprintf(cAttribute[COL_NUM+8],"%ld", total_time);  //add   2007.11.05
-		sprintf(cAttribute[COL_NUM+9],"%ld", KB_time);     //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+7],"%ld", top_N_time);  //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+8],"%ld", total_time);  //add   2007.11.05
+		sprintf_s(cAttribute[COL_NUM+9],"%ld", KB_time);     //add   2007.11.05
 
-		sprintf(cAttribute[COL_NUM+7+3],"%ld",   Q[i].ID);
-		sprintf(cAttribute[COL_NUM+8+3],"%.15G", Q[i].r_Opt);
-		sprintf(cAttribute[COL_NUM+9+3],"%ld",  Q[i].f_Opt);
-		sprintf(cAttribute[COL_NUM+10+3],"%ld", Q[i].ante_SizeKB);
-		sprintf(cAttribute[COL_NUM+11+3],"%ld", Q[i].post_SizeKB);
-		sprintf(cAttribute[COL_NUM+12+3],"%ld", Q[i].increment);
-		sprintf(cAttribute[COL_NUM+13+3],"%ld", Q[i].case1);
-		sprintf(cAttribute[COL_NUM+14+3],"%ld", Q[i].case2a);
-		sprintf(cAttribute[COL_NUM+15+3],"%ld", Q[i].case2b);
-		sprintf(cAttribute[COL_NUM+16+3],"%ld", Q[i].adjust_case2a);
-		//sprintf(cAttribute[COL_NUM+17+3],"%ld", Q[i].restart);
+		sprintf_s(cAttribute[COL_NUM+7+3],"%ld",   Q[i].ID);
+		sprintf_s(cAttribute[COL_NUM+8+3],"%.15G", Q[i].r_Opt);
+		sprintf_s(cAttribute[COL_NUM+9+3],"%ld",  Q[i].f_Opt);
+		sprintf_s(cAttribute[COL_NUM+10+3],"%ld", Q[i].ante_SizeKB);
+		sprintf_s(cAttribute[COL_NUM+11+3],"%ld", Q[i].post_SizeKB);
+		sprintf_s(cAttribute[COL_NUM+12+3],"%ld", Q[i].increment);
+		sprintf_s(cAttribute[COL_NUM+13+3],"%ld", Q[i].case1);
+		sprintf_s(cAttribute[COL_NUM+14+3],"%ld", Q[i].case2a);
+		sprintf_s(cAttribute[COL_NUM+15+3],"%ld", Q[i].case2b);
+		sprintf_s(cAttribute[COL_NUM+16+3],"%ld", Q[i].adjust_case2a);
+		//sprintf_s(cAttribute[COL_NUM+17+3],"%ld", Q[i].restart);
 		//iNumUpdateKB, this is a new one; add col in the table 
-        //sprintf(cAttribute[COL_NUM+18+3],"%ld", iNumUpdateKB);
+        //sprintf_s(cAttribute[COL_NUM+18+3],"%ld", iNumUpdateKB);
         //-- new use for this 2 col
-		sprintf(cAttribute[COL_NUM+17+3],"%ld", pApp->clsNum);
-        sprintf(cAttribute[COL_NUM+18+3],"%ld", pApp->it_list_cnt);
+		sprintf_s(cAttribute[COL_NUM+17+3],"%ld", pApp->clsNum);
+        sprintf_s(cAttribute[COL_NUM+18+3],"%ld", pApp->it_list_cnt);
 
-        sprintf(cAttribute[COL_NUM+18+3+1],"%ld", pApp->iIO_Num); //add. 2007.11.15
-        sprintf(cAttribute[COL_NUM+18+3+2],"%ld", pApp->iSum_SCR_TuplesCount); //add. 2007.11.15
-		sprintf(cAttribute[COL_NUM+19+3+3],"%ld", i+1); //add 2007.11.05 , Qnum
+        sprintf_s(cAttribute[COL_NUM+18+3+1],"%ld", pApp->iIO_Num); //add. 2007.11.15
+        sprintf_s(cAttribute[COL_NUM+18+3+2],"%ld", pApp->iSum_SCR_TuplesCount); //add. 2007.11.15
+		sprintf_s(cAttribute[COL_NUM+19+3+3],"%ld", i+1); //add 2007.11.05 , Qnum
 
 /////////////////////////////
 
 
 
-		//	sprintf(InsertValue, "(%i,%i,%f,%f,%i,%i,%i,%i,%i,NULL,%i,%i,%i,%i,%f,%f,%f,%f)",
+		//	sprintf_s(InsertValue, "(%i,%i,%f,%f,%i,%i,%i,%i,%i,NULL,%i,%i,%i,%i,%f,%f,%f,%f)",
 		//		     m, iModle, CETA, c2, iSum_TuplesCount, iALL_TickCount, (iALL_TickCount-iSum_TickCount), iSearchZero, (iCLSsearch+iSearchZero),
 		//			 N_Tuple, N_ALLTick, N_ExtraTick,N_IO_Num,
 		//			 C_Ex_All_Tick, C_N_Tuple, C_N_ALLTick, C_N_IO_Num);
@@ -32039,14 +32025,14 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 		 //shortTicks = GetTickCount() - shortTicks;
 
 		//-- test 
-		//sprintf(temp, " 6.  zlExeInsertTable Ticks = %i ", shortTicks);
+		//sprintf_s(temp, " 6.  zlExeInsertTable Ticks = %i ", shortTicks);
 		//AfxMessageBox(temp);
        //-- test 
 
 		//longTicks =  GetTickCount() - longTicks;
 
        //-- test 
-		//sprintf(temp, " All  Ticks = %i ", longTicks);
+		//sprintf_s(temp, " All  Ticks = %i ", longTicks);
 		//AfxMessageBox(temp);
        //-- test 
 	
@@ -32060,7 +32046,7 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 
 int CMainFrame::zlSelectAllFromKB(char *KBTableName)
 {
-
+	AfxMessageBox("进入函数 zlSelectAllFromKB!");
 	/*
 	if(!zlOpenDB())
 	{
@@ -33653,8 +33639,6 @@ bool CMainFrame::zlUpdateKBProfile(QUERY Qry)
 	return bReturn;
 }
 
-
-
 int CMainFrame::zlExeSelect(QUERY Query)
 {
 
@@ -34029,7 +34013,6 @@ int CMainFrame::zlGettheIntersection(ZLRECT * cell, QUERY Query, int n)
 	return SectNum;
 
 }
-
 
 int CMainFrame::LearningHD(int partNum, ZLRECT *T, int n, int m, ZLRECT **pointcell)
 {    

@@ -170,9 +170,9 @@ int Numofworkld;
 BOOL CLearnIing6App::InitInstance()
 {
 
-	strcpy((char *)sz_DSN , "DSN_Selectivity"); //DSN_QueryStream, DSN_MULTopN, DSN_Census2D
+	strcpy((char *)sz_DSN , "DD"); //DSN_QueryStream, DSN_MULTopN, DSN_Census2D
 	strcpy((char *)sz_UID , "sa");
-	strcpy((char *)sz_PWD , "123"); //txgstxh
+	strcpy((char *)sz_PWD , "sql"); //txgstxh // Edit by David  2018.6.26
 
 	//get table names
 	bool bReturn = false;
@@ -457,7 +457,7 @@ strcpy(szSql, "USE master \
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-AfxMessageBox("Please Press Menu LRC_Method !!!!!");
+    //AfxMessageBox("Please Press Menu LRC_Method !!!!!");
 	return TRUE;
 
 }
