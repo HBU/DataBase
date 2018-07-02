@@ -524,10 +524,9 @@ int CLearnIing6App::zlPartion_tt(ZLRECT Rect, int Dimention, ZLRECT * T, int T_N
 }
 
 
-//for 2D
+//For 2D
 int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num, int PartNum)
 {
-
 	int n = Dimention, m = T_Num;
 	int i, j, k, idx[65];
 	bool bInterable = false;
@@ -537,12 +536,11 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
     int partmin;
 	int SumNum=0;
     bool  bpartion = true;
-
+	//AfxMessageBox("二维分割开始");
 	//ZLRECT part[13]; //we use 1-12
 	ZLRECT part[65]; //we use 1-64
 	ZLRECT scr;
   //  ZLRECT box[65];
-
 	
 	scr = Rect;
 
@@ -554,10 +552,8 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 
 	//int * a = new int[n+1];
 	double * a = new double[n+1];
-
 	double * d = new double[n+1];
 	int alfa;
-
 
 	//int bsn[1024 +1];
 	//int bsn[WORKLOAD_NUM +1]; //the Big Set Number
@@ -570,10 +566,8 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 		bsn[i] = -1;
 	}
 
-
 	//int index[101][101];
-	//int index[101][WORKLOAD_NUM +1];
-	
+	//int index[101][WORKLOAD_NUM +1];	
 	int * * index; 
 
 	index = new (int *[101]);
@@ -594,9 +588,6 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 	
    int l3 =0, l4=0;
    int Numcell =0;   //this is p
-
-
-
 	
     //if(scr.b[1] - scr.a[1] <= scr.b[2] - scr.a[2] )
     if(scr.b[1] - scr.a[1] < scr.b[2] - scr.a[2] )
@@ -618,19 +609,14 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
                 l3 =3;
 				l4 =4;
 		   }
-
 		}
-
 		d[1] = (scr.b[1] - scr.a[1])/l3; 	
 		d[2] = ( scr.b[2] - scr.a[2])/l4; 
-
-
 	}
 	else if(scr.b[1] - scr.a[1] > scr.b[2] - scr.a[2] )
 	{
 		a[1] = scr.a[1]; 
 		a[2] = scr.a[2]; 
-
         if( (scr.b[1] - scr.a[1])/(scr.b[2] - scr.a[2]) >=64 )
 		{
            l3 =64;
@@ -645,10 +631,7 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
                 l4 =3;
 				l3 =4;
 		   }
-
 		}
-
-
 		d[1] = (scr.b[1] - scr.a[1])/l3; 	
 		d[2] = ( scr.b[2] - scr.a[2])/l4; 
 	}
@@ -680,7 +663,6 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 							alfa = j-1;
 							break;
 						}
-
 				}
 				part[(i-1)*l4+j].a[k] = a[k]+ alfa*d[k];
 				part[(i-1)*l4+j].b[k] = a[k]+ alfa*d[k] + d[k];
@@ -699,8 +681,7 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 	
 	}*/
 
-	// we use the method of "Center IN " to clustering
-	
+	// we use the method of "Center IN " to clustering	
 	//ZLRECT * partT[101];
 	//int clsNum =12; ////2005.3.24 , only for intersections
 
@@ -725,18 +706,15 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 
 ////// ~~~~~~~~ Finding all T[j]'s that center are in part[i].
 	//for(i= 1; i<=12; i++)
-	for(j= 1; j <=m ; j++) // m is the number of T[i]'s
-	{
-    			
+	for(j= 1; j <=m ; j++) // m is the number of T[i]'s //  经测试m值大于 100W，会发生out of memory错误 （作者原论文20W数据）
+	{    			
 		if(T[j].bsn <=0 ) //?? add .cn !=0 , Not, repeat
 		{				 //YES! do it here
 			for(i= 1; i<=Numcell; i++)
 			{
 				for(k=1; k<=n; k++) //n is the number of dimensions 
-				{
-				
+				{				
 					center = (double)(T[j].a[k] + T[j].b[k])/2.0;
-
 					 //the Center in the part[i]
 					if( (part[i].a[k]<=center) && (center < part[i].b[k]) ) //the Center in the part[i]
 					{
@@ -747,79 +725,55 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 						bInterable = false;
 						break;   //break k, because there is i0 such that p[i0] >=q[i0]  
 					}
-
 				}//for(k=1; k<=n; k++)
 
 				if(bInterable) //if intersectable
 				{
-
 					idx[i]++;   
-					index[i][idx[i]] = j;   //idx = 2 to ...
-					
-					
-					
+					index[i][idx[i]] = j;   //idx = 2 to ...	
 					bsn[ index[i][idx[i]] ]=T[j].bsn; // save the old bsn of  T[j] , the cluster number
-
-					T[j].bsn = PartNum +1; 
-				
+					T[j].bsn = PartNum +1; 				
                    /* for(k=1; k<=n; k++)
 					{
 					 box[i].a[k] = min(box[i].a[k], T[j].a[k]);
 					 box[i].b[k] = max(box[i].b[k], T[j].b[k]);
-					}*/
-					
+					}*/					
 				}//if(bInterable) //if intersectable					 
-			}//if(T[j].cn <=0 )
-         
-			//################
-
-		}//for(j= 1; j <=m ; j++)v
-      
-
-
+			}//if(T[j].cn <=0 )         
+		}//for(j= 1; j <=m ; j++)v  
 	}//for(i= 1; i<=12; i++)
 
-	  partmax=idx[1];
-      partmin=idx[2];
-	   
-       
-         for (i=1;i<=Numcell;i++)
-        {
+	 partmax=idx[1];
+     partmin=idx[2];   
+     for (i=1;i<=Numcell;i++)
+      {
           SumNum+=idx[i];
           partmin = min(partmin, idx[i]);
 		  partmax = max(partmax, idx[i]);
-        }
-		 if (partmin==0)
+      }
+	if (partmin==0)
 		 {
 			 partmin=1;
 		 }
 
-
-          if (partmax < 5* partmin || SumNum <100) 
+    if (partmax < 5* partmin || SumNum <100) 
 		  {
 			  bpartion=false; 
-
 		  }
-          else
+    else
 		  {
 			  bpartion=true;
 		  }
-
 	
-		if(!bpartion )//&& SumNum<2100)///here, need to change, let m0= 2100, 1000
+	if(!bpartion )//&& SumNum<2100)///here, need to change, let m0= 2100, 1000
 		{
 			if( 1<=SumNum )
             {
-
 			     PartNum++; 
-
-			}
-
-		
+			}		
 		}
-		else 
-		{
-          
+	else 
+		{          
 		   for(i=1;i<=Numcell;i++)
 		   {
 				for(k =1; k<=idx[i]; k++ )
@@ -830,48 +784,28 @@ int CLearnIing6App::zlPartion( ZLRECT Rect, int Dimention, ZLRECT * T, int T_Num
 		   for (i=1;i<=Numcell;i++)
 		   {
                if(idx[i]!=0)
-			   {
-				  
-			   
+			   {  
 				PartNum = zlPartion(part[i], n, T, T_Num, PartNum);
 			   }
 		   }
 		}
 
-  
-		
-
-
-	
-
-
-//test ---1133--
-	//CFile file;
-	//if(file.Open("E:\\Paper2\\CLMB_census2D\\zlClusterPart.txt", CFile::modeCreate | CFile::modeReadWrite ) != 0)
-	//{
-	//	file.Write(cstrMarc, cstrMarc.GetLength() +1 );
-	//}
-	//file.Close();
-//test ---1133--
-
-
 	delete [] a ;
 	delete [] d ;
-
 	//delete [] scr.a;
 	//delete [] scr.b;
 
 	for(i= 0; i<=100; i++)
 		delete [] index[i];
-    delete [] index;
-    
+    delete [] index;    
 	delete [] bsn;
-
 	return PartNum;
 
 }
+//======End of Partion2D=======
 
-//to calculate the Diffensence between S and T , that is S-T = U(ss[i]) 
+
+//To calculate the Diffensence between S and T , that is S-T = U(ss[i]) 
 int CLearnIing6App::zlDiffRects(ZLRECT S, ZLRECT T, int Dimension )
 {
 	int p =0;
@@ -918,8 +852,7 @@ int CLearnIing6App::zlDiffRects(ZLRECT S, ZLRECT T, int Dimension )
 	return p;
 }
 
-
-// for 3_104D 
+// For 3_104D 
 int CLearnIing6App::zlPartion3D(ZLRECT * Rect, int Dimention, ZLRECT * T, int T_Num, int PartNum,int deepNum)
 {
 //----using T[j].bsn = i,  is in Part[i]
@@ -1515,7 +1448,6 @@ int CLearnIing6App::zlPartion3D(ZLRECT * Rect, int Dimention, ZLRECT * T, int T_
 		
 
 }
-
 
 int CLearnIing6App::zlClusterPart(ZLRECT **T, int l, ZLRECT *S, int m, int Current_clsNum, int dim_num, int PartNum, double xi)
 {

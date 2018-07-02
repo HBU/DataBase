@@ -115,6 +115,11 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>.\Debug\LearnIing6.exe</OutputFile>
       <AdditionalDependencies>odbc32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <HeapReserveSize>12000000</HeapReserveSize>
+      <HeapCommitSize>12000000</HeapCommitSize>
+      <StackReserveSize>12000000</StackReserveSize>
+      <StackCommitSize>12000000</StackCommitSize>
+      <LargeAddressAware>true</LargeAddressAware>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

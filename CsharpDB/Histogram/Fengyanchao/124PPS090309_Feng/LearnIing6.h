@@ -31,7 +31,7 @@
 
 //_______________ zl add start____
 
-#define COL_NUM		     3//3 //4 //50 //25 //2 -- //3 //4 //25 //--//4 //104 //3 //2 //3 //4 //25 //50 //104 //2  	//zl for LSI SAME CASE
+#define COL_NUM		     2//3 //4 //50 //25 //2 -- //3 //4 //25 //--//4 //104 //3 //2 //3 //4 //25 //50 //104 //2  	//zl for LSI SAME CASE
 #define DIS_NUM           -1 //2 //-1 //2 //1 == L1; 2 == L2; -1 =Linf distances
 #define WORKLOAD_NUM	2000 //400 //2000//1000//400    //... //100 //909  //100
 #define MAX_SVR_MEM	    4 //4 //4 //8

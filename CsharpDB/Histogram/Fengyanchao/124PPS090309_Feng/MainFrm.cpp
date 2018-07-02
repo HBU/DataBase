@@ -31073,8 +31073,8 @@ void CMainFrame::OnMenuLRC()  // for get histogram
 	CLearnIing6App * pApp = (CLearnIing6App * ) AfxGetApp();
 	
 	//Set the text of dialog 
-	//m_DataSetTable = pApp->TableName; //Census2D
-	m_DataSetTable = "Attr_Census2D";//Add by david
+	m_DataSetTable = pApp->TableName; //Census2D
+	//m_DataSetTable = "Attr_Census2D";//Add by david
 	m_InsertTable =  pApp->szOutputTableName;
 	m_KBProfileTable =pApp->szInputTableName;
 	m_WorkloadTable = pApp->m_WorkloadTable;
@@ -31129,10 +31129,10 @@ void CMainFrame::OnMenuLRC()  // for get histogram
 	//		iSizeofKB  = zlSelectAllFromKB(m_KBProfileTable.GetBuffer(iCStrLenth) );
 	
 	//-- here use : m_DataSetTable
-	iCStrLenth = m_DataSetTable.GetLength() + 1;		
+	AfxMessageBox("第一步：载入数据集。时间较长，请耐心等待。");
+	iCStrLenth = m_DataSetTable.GetLength() + 1;	
 	iSizeofKB  = zlSelectAllFromKB(m_DataSetTable.GetBuffer(iCStrLenth) );
     // here: iSizeofKB is the size of DB, not KB, for this program, //2009.2.14
-	
 	if( iSizeofKB <= 0)
 	{
 		AfxMessageBox(" 警告: Call zlSelectAllFromKB( ) Error !!!!!!");
@@ -31140,46 +31140,37 @@ void CMainFrame::OnMenuLRC()  // for get histogram
 	else
 	{
 		//sprintf_s(temp, " 2. iSizeofKB = %i, Ticks = %i ", iSizeofKB, shortTicks);
-		sprintf_s(temp, " zlSelect All tuples ,  iSizeofKB = %i", iSizeofKB);
-		//AfxMessageBox(temp);
+		sprintf_s(temp, " 数据集载入完毕 , 共  %i 条记录", iSizeofKB);
+		AfxMessageBox(temp);
 	}
 //1. partion the domain of the dataset
 //  division the biggest scr into 12 = 4*3 partition or more ----
 //            select * From each partition,
-
+	AfxMessageBox("第二步：分割数据集。时间较长，请耐心等待。");
 
 	ZLRECT scr;  //This is the BIG scr that covers all tuples, i.e., the domian rect 
 	int		iPartNum = 1;
-	int m; //the number of all tuple in a relation  
-
+	int m;	//the number of all tuple in a relation  
+	m = iSizeofKB; // the size of DB
+	ZLRECT * T = new ZLRECT[m + 1]; /////this should be golable
 	double dMin[COL_NUM+1]; 
 	double dMax[COL_NUM+1];
-        scr.v=1;
+    scr.v=1;
    // get domain rect
+	//AfxMessageBox("ZLRECT空间申请完毕");
 	for(i=1; i<=n; i++ )
 	{
 		scr.a[i] = pApp->dMin[i]; 
 		scr.b[i] = pApp->dMax[i];  
-
 		dMin[i] = pApp->dMin[i];
 		dMax[i] = pApp->dMax[i];
          if(scr.b[i] > scr.a[i])
-			scr.v *=  scr.b[i]-scr.a[i];
-		
+			scr.v *=  scr.b[i]-scr.a[i];		
 	}
-	double  v1=scr.v;
-       
-//		scr.a[2] = 0; 
-//		scr.b[2] =160000 ;
-
-
-   // get tuples in domain, but we use the old struct, 
-	
-    m = iSizeofKB; // the size of DB
-    ZLRECT * T = new ZLRECT[m+1]; /////this should be golable
-
-	pApp->clsNum =0;
-
+	double  v1=scr.v;   //		scr.a[2] = 0; //		scr.b[2] =160000 ;
+	//AfxMessageBox("scr初始化完毕");
+   // get tuples in domain, but we use the old struct, 获取区域内的元组，但我们使用旧的结构体    
+	pApp->clsNum =0;	
 	for(i=1; i<=m; i++)
 	{
 		for(j= 1; j <=n; j++)
@@ -31187,62 +31178,53 @@ void CMainFrame::OnMenuLRC()  // for get histogram
 			T[i].a[j] = Z[i-1].x[j-1]; 
 			T[i].b[j] = Z[i-1].x[j-1];
 		}
-
 		T[i].cn = 0;
 		T[i].bsn = 0;
 		T[i].tplNum = Z[i].tid;
 		T[i].suf1st=0;
 	}
-  int deepNum=1;
-
-	if(n==2) //only for 2_dimensional
+	AfxMessageBox("ZLRECT T 初始化完毕");
+	int deepNum=1;
+	if(n==2) //only for 2_dimensional 对二维数据分割
 		iPartNum = pApp->zlPartion(scr, n, T, m, iPartNum);
-	else	 //for 3,4, 25,50,and 104 dimensions
+	else	 //for 3,4, 25,50,and 104 dimensions 对三维及更高维数据分割
 		iPartNum = pApp->zlPartion3D(&scr, n, T, m, iPartNum,deepNum);
 
 //int s1=0,s2=0,f1=0,f2=0,f3=0;
 
 //2. get the histogram
-int Num=iPartNum;
-
-int ss=0;
-
-    ZLRECT * cell ; // ;
-cell=CountCell( T, iPartNum, m, n);
-int iTplNum = pApp->clsNum;
- iTplNum =0;
-for(k=1; k<=iPartNum; k++)
-{
-     iTplNum = iTplNum + cell[k].cn;
-	
-}
-//int m1=0;
-
-for(i=1;i<=Num;i++)
-{
-	if(cell->cn>100)
+	AfxMessageBox("第三步：获取直方图。时间较长，请耐心等待。");
+	int Num=iPartNum;
+	int ss=0;
+    ZLRECT * cell ; 
+	cell=CountCell( T, iPartNum, m, n);
+	int iTplNum = pApp->clsNum;
+	 iTplNum =0;
+	for(k=1; k<=iPartNum; k++)
 	{
-	for(j=1;j<=m;j++)
-	{   
-		
-		if(T[j].bsn==i)
-		{
-			T[j].bsn=-1;
-			 ss++;
-			 T[j].suf1st=-1;
+		 iTplNum = iTplNum + cell[k].cn;	
+	}
+//int m1=0;
+	for(i=1;i<=Num;i++)
+	{
+		if(cell->cn>100)
+		{		
+			for(j=1;j<=m;j++)		
+			{   			
+				if(T[j].bsn==i)			
+				{
+				T[j].bsn=-1;
+				 ss++;
+				 T[j].suf1st=-1;
+				}
+			}
+		deepNum=i;
+		//m1=cell[i].cn;
+	
+		iPartNum = pApp->zlPartion3D(&cell[i], n, T, m, iPartNum,deepNum);
+
 		}
 	}
-	deepNum=i;
-    //m1=cell[i].cn;
-	
-	iPartNum = pApp->zlPartion3D(&cell[i], n, T, m, iPartNum,deepNum);
-
-	}
-}
-
-
-
-
 /*    int j0 =0;
     for(j=1;j<=m;j++)
 	{  
@@ -31293,8 +31275,6 @@ for(i=1;i<=Num;i++)
 }*/
 	cell=CountCell( T, iPartNum, m, n);
 ///////////
-     
-
 //--***debug****
 //int iTplNum = pApp->clsNum;
   iTplNum =0;
@@ -31304,8 +31284,8 @@ for(k=1; k<=iPartNum; k++)
 }
 //--***debug****
 
-//3. Select all queires from workload table 
-
+//3. Select all queires from workload table 从worklord表载入全部查询
+AfxMessageBox("第？步：载入查询测试集。时间较长，请耐心等待。");
 ////^^^^^^^
 // 2.-----------  Select all queires from workload table ---------------
 	//-----   Call function: int zlSelectAllFromWorkload(char * )
@@ -32046,14 +32026,20 @@ void CMainFrame::OnMenuLRC_old() //this is old, not used for selectivy
 
 int CMainFrame::zlSelectAllFromKB(char *KBTableName)
 {
-	AfxMessageBox("进入函数 zlSelectAllFromKB!");
-	/*
+	//AfxMessageBox("进入函数 zlSelectAllFromKB!");
+
 	if(!zlOpenDB())
 	{
 		AfxMessageBox("zlOpenDB() err!");
 		//zlCloseDB();
 	}
-    */
+	else
+	{
+		//AfxMessageBox("zlOpenDB() correct!");
+	}
+
+	//AfxMessageBox(KBTableName);
+  
 	int iRowCnt = -1;
     int iTupleNum;
 
@@ -32082,13 +32068,13 @@ int CMainFrame::zlSelectAllFromKB(char *KBTableName)
 	char szLocalSql[2048] = ""; 
 	strcpy(szLocalSql, "SELECT * FROM ");	
 	strcat(szLocalSql, KBTableName);	
-
+	//AfxMessageBox(szLocalSql);
 	retcode = SQLExecDirect(hstmt, (unsigned char *)szLocalSql, SQL_NTS);  //2005.02.07
 	//retcode = SQLExecDirect(hstmt, (unsigned char *)szSql, SQL_NTS);  //2005.02.07
 			
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)
 	{  //	retcode = SQLExecDirect
-
+		//AfxMessageBox("if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO)");
 		int iRowCount;
 		SDWORD *  RowCountPtr = new SDWORD ;
 		retcode = SQLRowCount(hstmt, RowCountPtr);						 
