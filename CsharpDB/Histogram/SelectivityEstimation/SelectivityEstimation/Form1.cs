@@ -68,7 +68,6 @@ namespace SelectivityEstimation
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             comboBox1.SelectedIndex = 0;
         }
     
@@ -116,56 +115,53 @@ namespace SelectivityEstimation
         {
             if (comboBox1.SelectedIndex == 0) COL_NUM = 2;
             if (comboBox1.SelectedIndex == 1) COL_NUM = 3;
-            String ResultSize = "";
                         
            ////////////////////////////////////////////////////////////////////////////////////////////////////
           // 输出给定数据集的名称、元组数、列数
           ////////////////////////////////////////////////////////////////////////////////////////////////////
-          string DataSetTable = comboBox1.Text;
-          string select_all = "select count(*) from " + DataSetTable;
-          iSizeofDataSetTable = DavidSelect(select_all);
-          labelResult.Text = " DataSet:\"" + DataSetTable + "\"---SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;
+            string DataSetTable = comboBox1.Text;
+            string select_all = "select count(*) from " + DataSetTable;
+            iSizeofDataSetTable = DavidSelect(select_all);
+            labelResult.Text = " DataSet:\"" + DataSetTable + "\"---SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;
           ////////////////////////////////////////////////////////////////////////////////////////////////////
           // 调用"划分函数"，进行数据清洗，得出干净数据集以及数据节点表
           ////////////////////////////////////////////////////////////////////////////////////////////////////
           //定义变量
-          double []dMin = new double[COL_NUM + 1];
-          double []dMax = new double[COL_NUM + 1];
-          int T_Num = 24;
-          int PartNum = 0;
+            double []dMin = new double[COL_NUM + 1];
+            double []dMax = new double[COL_NUM + 1];
+            int T_Num = 24;
+            int PartNum = 0;
           //找数据表中的最大值最小值（根节点，总体范围）dMax,dMin
-           string select_max = "select max(attr0) from " + DataSetTable;                
-          dMax[0] = DavidSelect(select_max)+1;                
-          string select_max1 = "select max(attr1) from " + DataSetTable;
-          dMax[1] = DavidSelect(select_max1)+1;
-          string select_min = "select min(attr0) from " + DataSetTable;
-          dMin[0] = DavidSelect(select_min)-1; 
-          string select_min1 = "select min(attr1) from " + DataSetTable;
-          dMin[1] = DavidSelect(select_min1)-1;
-          labelMaxMin.Text = "(" + dMax[0] + "," + dMax[1] + ")"+ "(" + dMin[0] + "," + dMin[1] + ")"; ;
-          if(COL_NUM == 3)
-          {
+            string select_max = "select max(attr0) from " + DataSetTable;                
+            dMax[0] = DavidSelect(select_max)+1;                
+            string select_max1 = "select max(attr1) from " + DataSetTable;
+            dMax[1] = DavidSelect(select_max1)+1;
+            string select_min = "select min(attr0) from " + DataSetTable;
+            dMin[0] = DavidSelect(select_min)-1; 
+            string select_min1 = "select min(attr1) from " + DataSetTable;
+            dMin[1] = DavidSelect(select_min1)-1;
+            labelMaxMin.Text = "(" + dMax[0] + "," + dMax[1] + ")"+ "(" + dMin[0] + "," + dMin[1] + ")"; ;
+            if(COL_NUM == 3)
+            {
               string select_max2 = "select max(attr2) from " + DataSetTable;
               dMax[2] = DavidSelect(select_max2) + 1;
               string select_min2 = "select min(attr2) from " + DataSetTable;
               dMin[2] = DavidSelect(select_min2) - 1;
               labelMaxMin.Text = "(" + dMax[0] + "," + dMax[1] + "," + dMax[2] + ")" + "(" + dMin[0] + "," + dMin[1] + "," + dMin[2] + ")";
-          }
+            }
           //定义变量结束
 
-          //测试时间函数 开始 // Stopwatch 方法 毫秒级
-          System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-          stopwatch.Start();
-          string select_time = "SELECT top 100000 * FROM Attr_Census2D  where Census2DID  > 0 and Census2DID  < 100001 " ;
-            String conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
+          //测试时间函数 开始
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch(); // Stopwatch 方法 毫秒级
+            stopwatch.Start();
+            string select_time = "SELECT top 100000 * FROM Attr_Census2D  where Census2DID  > 0 and Census2DID  < 100001 " ;
+            string conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
             DataSet dataSet = new DataSet();
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(select_time,conn);
             sqlDataAdapter.Fill(dataSet,"TableName");
-            //MessageBox.Show(dataSet.Tables["TableName"].Rows[0][0].ToString());
             stopwatch.Stop();
             long TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
             labelTime.Text = " Read 100000 turples ,used time:" + TheTime + "ms";
-
             
             //切块 1： rect加载数据
             ZLRECT[] rect = new ZLRECT[NUM_ID];
@@ -174,7 +170,7 @@ namespace SelectivityEstimation
                 rect[i] = new ZLRECT(); //初始化                   
             }
 
-            for (int k = 0; k < NUM_ID; k++)    //rect赋值
+            for (int k = 0; k < NUM_ID; k++)    //rect赋值(查询结果集DataSet 写到 数组rect)
             {
                 for (int i = 0; i < COL_NUM; i++)
                 {
@@ -183,20 +179,18 @@ namespace SelectivityEstimation
                 rect[k].ID = Convert.ToInt32(dataSet.Tables["TableName"].Rows[k][COL_NUM]);
             }
 
-            for (int i = 0; i < COL_NUM; i++)   //rect中a[i],b[i]赋值
+            for (int i = 0; i < COL_NUM; i++)   //rect中a[i],b[i]赋值（a是最小值，b是最大值）
             {
                 rect[0].a[i + 1] = dMin[i];
                 rect[0].b[i + 1] = dMax[i];
             }
 
-           //MessageBox.Show("rect loaded  ~" );
             //labelRect.Text = " rect - x[i],id[i]:" + rect[0].x[0] + "--" + rect[0].x[1] + "--" + rect[0].ID +""
             //    + "\n rect - a[i],b[i]:" + rect[0].a[1] + "--" + rect[0].b[1];
             labelRect.Text = "rect loaded." ;
 
             //切块 2： 初始化midRectNode
-            
-            for (int i = 0; i < 13; i++)
+           for (int i = 0; i < 13; i++)
             {
                 midRectNode[i] = new ZLRECT(); //初始化                   
             }
@@ -208,7 +202,7 @@ namespace SelectivityEstimation
             midRectNode[0].count = NUM_ID;
             for (int t = 1; t <= 12; t++)
             {
-                NODE[] MyNodes = new NODE[NUM_ID];
+                NODE[] MyNodes = new NODE[NUM_ID];//初始化  
                 midRectNode[t].node = MyNodes;
             }
             for (int i = 0; i < COL_NUM; i++)       //初始化midRectNode[s].a[i]、midRectNode[s].b[i]
@@ -217,8 +211,8 @@ namespace SelectivityEstimation
                 midRectNode[0].b[i] = dMax[i];
             }
             //MessageBox.Show("midRectNode loaded！");
-            labelRect.Text += "\nmidRectNode loaded.";
-            //切块 3： t[]存取所有节点
+            labelRect.Text += "\tmidRectNode loaded.";
+            //切块 3： tNode存取所有节点
             int sumNode = 1 + 12 + 12 * 12 + 12 * 12 * 12 + 1;
             ZLRECT[] tNode = new ZLRECT[sumNode];
             for (int i = 0; i < sumNode; i++)
@@ -235,17 +229,18 @@ namespace SelectivityEstimation
             tNode[tNum].tfloor = 1;                  //根节点为第一层t[tNum].tfloor = 1;  
             tNum++;
             //MessageBox.Show("tNode loaded！");
-            labelRect.Text += "\ntNode loaded.";
+            labelRect.Text += "\ttNode loaded.";
             for (int s = 1; s <= 12; s++)          //初始化midRectNode[s].count
             {
                 midRectNode[s].count = 0;
             }
             //切块 4： 第一次划分，划分为12块
-            if (midRectNode[0].count > 5)
+            if (midRectNode[0].count > 5)//大于5是什么意思？
             {
-                zlPartionpa2(rect, COL_NUM, T_Num, PartNum);
-                
+                zlPartionpa2(rect, COL_NUM, T_Num, PartNum);//2D 切块函数，切为 3*4形状
+
                 //记录第二层节点以及各个节点的数量
+                labelRect.Text += "\n============== Node[1]-[12] of Second Layer ==============";
                 for (int tn = 1; tn <= 12; tn++)               
                 {
                     for (int ti = 0; ti < COL_NUM; ti++)
@@ -254,7 +249,15 @@ namespace SelectivityEstimation
                         tNode[tNum].b[ti] = midRectNode[tn].b[ti];
                     }
                     tNode[tNum].count = midRectNode[tn].count;
-                    labelRect.Text += "\ntNode["+tNum+"].count=" + tNode[tNum].count;
+                    tNode[tNum].nodeId = midRectNode[tn].nodeId;
+
+                    string nodeIdPrint = tNode[tNum].nodeId;//查看该Node中包含的数据ID号集合
+                    if (nodeIdPrint == null)
+                        nodeIdPrint = "Empty Data";
+                    else if (nodeIdPrint.Length > 30)
+                        nodeIdPrint = nodeIdPrint.Substring(0, 30)+"......"+ nodeIdPrint.Substring(nodeIdPrint.Length - 30);
+                    
+                    labelRect.Text += "\n------tNode["+tNum+"].count=" + tNode[tNum].count+"------\nID:"+ nodeIdPrint;
                     tNode[tNum].tfloor = 2;
                     tNum++;
                 }
@@ -270,11 +273,6 @@ namespace SelectivityEstimation
                     RectNode[r].count = midRectNode[r].count;
                     for (int n = 0; n < midRectNode[r].count; n++)
                     {
-                        //for (int w = 0; w < COL_NUM; w++)
-                        //{
-                        //    RectNode[r].node[n].x[w] = midRectNode[r].node[n].x[w];
-                        //}
-                        //RectNode[r].node[n].ID = midRectNode[r].node[n].ID;
                         RectNode[r].nodeId = midRectNode[r].nodeId;
                     }                    
                 }
@@ -333,7 +331,7 @@ namespace SelectivityEstimation
             a[dim[2]] = scr[0].a[dim[2]];
             d[dim[2]] = (scr[0].b[dim[2]] - scr[0].a[dim[2]]) / 3;   //第二条边分成3份
            
-            labelRect.Text += "\nlong edge:" + d[dim[1]] * 4 + "---Short edge:" + d[dim[2]] * 3;
+            labelRect.Text += "\nLong edge:" + d[dim[1]] * 4 + "---Short edge:" + d[dim[2]] * 3;
 
             for (i = 1; i <= 3; i++)
             {
@@ -378,21 +376,12 @@ namespace SelectivityEstimation
             double d31 = d[dim[2]] + midRectNode[0].a[dim[2] - 1];                                    
             double d32 = d[dim[2]] * 2 + midRectNode[0].a[dim[2] - 1];
             double d33 = midRectNode[0].b[dim[2] - 1];
+
             labelRect.Text += "\nDivided long edge:" + Convert.ToInt32(d41) + "---" + Convert.ToInt32(d42) + "---" + Convert.ToInt32(d43) + "---" + Convert.ToInt32(d44);
             labelRect.Text += "\nDivided short edge:" + Convert.ToInt32(d31) + "---" + Convert.ToInt32(d32) + "---" + Convert.ToInt32(d33) ;
 
-            int num1 = 0;
-            int num2 = 0;
-            int num3 = 0;
-            int num4 = 0;
-            int num5 = 0;
-            int num6 = 0;
-            int num7 = 0;
-            int num8 = 0;
-            int num9 = 0;
-            int num10 = 0;
-            int num11 = 0;
-            int num12 = 0;
+            int num1 = 0;            int num2 = 0;            int num3 = 0;            int num4 = 0;            int num5 = 0;            int num6 = 0;
+            int num7 = 0;            int num8 = 0;            int num9 = 0;            int num10 = 0;          int num11 = 0;          int num12 = 0;
 
             int d1 = dim[1] - 1;//最长边
             int d2 = dim[2] - 1;//
@@ -401,19 +390,18 @@ namespace SelectivityEstimation
 
             for (m = 0; m < midRectNode[0].count; m++)
             {
-                if (Rect[m].x[d1] <= d41)
+                if (Rect[m].x[d1] <= d41)// 00-41
                 {
-                    if (Rect[m].x[d2] <= d31)
+                    if (Rect[m].x[d2] <= d31)// 00-31
                     {
-                        midRectNode[1].count++;      //计算第一块中元组数目
-
+                        midRectNode[1].count++;      //计算第一块(00-41 , 00-31)中含有的元组个数
                         //for (int y = 0; y < COL_NUM; y++)       //放入第1块中的元组
                         //{
                         //    midRectNode[1].node[num1].x[y] = Rect[m].x[y];
                         //}
-                        midRectNode[1].nodeId += Rect[m].ID.ToString()+";";
+                        midRectNode[1].nodeId += Rect[m].ID.ToString()+";";//放入第1块的各元组的ID集合
                         num1++;
-                        midRectNode[1].count = num1;
+                        midRectNode[1].count = num1;//统计放入第1块的元组ID数
                         //MessageBox.Show(midRectNode[1].nodeId);
                     }
                     else if (Rect[m].x[d2] <= d32 && Rect[m].x[d2] > d31)
