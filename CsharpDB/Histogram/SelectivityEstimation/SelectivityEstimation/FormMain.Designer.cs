@@ -1,6 +1,6 @@
 ﻿namespace SelectivityEstimation
 {
-    partial class Form1
+    partial class FormMain
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -58,13 +58,13 @@
             // buttonRUN
             // 
             this.buttonRUN.Font = new System.Drawing.Font("Cambria", 15F);
-            this.buttonRUN.Location = new System.Drawing.Point(1266, 704);
+            this.buttonRUN.Location = new System.Drawing.Point(1266, 53);
             this.buttonRUN.Name = "buttonRUN";
             this.buttonRUN.Size = new System.Drawing.Size(88, 38);
             this.buttonRUN.TabIndex = 13;
             this.buttonRUN.Text = "RUN";
             this.buttonRUN.UseVisualStyleBackColor = true;
-            this.buttonRUN.Click += new System.EventHandler(this.button1_Click);
+            this.buttonRUN.Click += new System.EventHandler(this.buttonRun_Click);
             // 
             // label4
             // 
@@ -105,13 +105,13 @@
             // buttonClose
             // 
             this.buttonClose.Font = new System.Drawing.Font("Cambria", 15F);
-            this.buttonClose.Location = new System.Drawing.Point(1266, 756);
+            this.buttonClose.Location = new System.Drawing.Point(1266, 105);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(88, 38);
             this.buttonClose.TabIndex = 14;
             this.buttonClose.Text = "CLOSE";
             this.buttonClose.UseVisualStyleBackColor = true;
-            this.buttonClose.Click += new System.EventHandler(this.button2_Click);
+            this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
             // 
             // comboBox2
             // 
@@ -174,7 +174,7 @@
             this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.groupBox1.Location = new System.Drawing.Point(505, 20);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(10, 761);
+            this.groupBox1.Size = new System.Drawing.Size(10, 694);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
             // 
@@ -215,18 +215,18 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label8.Location = new System.Drawing.Point(30, 719);
+            this.label8.Location = new System.Drawing.Point(542, 20);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(176, 23);
+            this.label8.Size = new System.Drawing.Size(106, 23);
             this.label8.TabIndex = 26;
-            this.label8.Text = "Time function test";
+            this.label8.Text = "Time used";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label9.Location = new System.Drawing.Point(546, 20);
+            this.label9.Location = new System.Drawing.Point(542, 198);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(100, 23);
             this.label9.TabIndex = 27;
@@ -314,7 +314,7 @@
             // 
             this.labelTime.AutoSize = true;
             this.labelTime.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelTime.Location = new System.Drawing.Point(30, 756);
+            this.labelTime.Location = new System.Drawing.Point(542, 61);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(0, 23);
             this.labelTime.TabIndex = 35;
@@ -323,16 +323,16 @@
             // 
             this.labelRect.AutoSize = true;
             this.labelRect.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelRect.Location = new System.Drawing.Point(546, 62);
+            this.labelRect.Location = new System.Drawing.Point(542, 239);
             this.labelRect.Name = "labelRect";
             this.labelRect.Size = new System.Drawing.Size(0, 23);
             this.labelRect.TabIndex = 36;
             // 
-            // Form1
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1366, 803);
+            this.ClientSize = new System.Drawing.Size(1366, 728);
             this.Controls.Add(this.labelRect);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.labelMaxMin);
@@ -360,10 +360,10 @@
             this.Controls.Add(this.label3);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "Form1";
+            this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Selectivity Estimation";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

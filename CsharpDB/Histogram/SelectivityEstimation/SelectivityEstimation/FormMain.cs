@@ -12,10 +12,10 @@ using System.Windows.Forms;
 
 namespace SelectivityEstimation
 {
-       public partial class Form1 : Form
+       public partial class FormMain : Form
     {
         static int COL_NUM ;//3 //4 //50 //25 //2 -- //3 //4 //25 //--//4 //104 //3 //2 //3 //4 //25 //50 //104 //2  	//zl for LSI SAME CASE
-        static long NUM_ID = 100000;   //2000000  Cover10D,Cover4D,    //62D 500000
+        //static long NUM_ID = 1000000;   //2000000  Cover10D,Cover4D,    //62D 500000
         static long iSizeofDataSetTable = 0;
         ZLRECT[] midRectNode = new ZLRECT[13];
         public class ZLRECT
@@ -23,7 +23,7 @@ namespace SelectivityEstimation
             public double[] a = new double[COL_NUM + 1]; //
             public double[] b = new double[COL_NUM + 1]; //b[i] means bi
             public double v ;  // volume of the rectangle
-            public char[] suffix = new char[1000];
+            //public char[] suffix = new char[1000];
             public int suf1st;      // the first suffix that is 1 in (1,3,4,5)
             public int sufend;      // the end suffix that is 5 in (1,3,4,5)
             public int cn;          // class number or cluster number
@@ -61,15 +61,15 @@ namespace SelectivityEstimation
             public double attrZeroF;               //the most near zero from the left;
         };
 
-        public Form1()
+        public FormMain()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+         private void FormMain_Load(object sender, EventArgs e)
         {
             comboBox1.SelectedIndex = 0;
-        }
+        }  
     
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -80,7 +80,7 @@ namespace SelectivityEstimation
             comboBox6.SelectedIndex = comboBox1.SelectedIndex;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
@@ -111,7 +111,7 @@ namespace SelectivityEstimation
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonRun_Click(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex == 0) COL_NUM = 2;
             if (comboBox1.SelectedIndex == 1) COL_NUM = 3;
@@ -122,11 +122,11 @@ namespace SelectivityEstimation
             string DataSetTable = comboBox1.Text;
             string select_all = "select count(*) from " + DataSetTable;
             iSizeofDataSetTable = DavidSelect(select_all);
-            labelResult.Text = " DataSet:\"" + DataSetTable + "\"---SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;
-          ////////////////////////////////////////////////////////////////////////////////////////////////////
-          // 调用"划分函数"，进行数据清洗，得出干净数据集以及数据节点表
-          ////////////////////////////////////////////////////////////////////////////////////////////////////
-          //定义变量
+            labelResult.Text = " DataSet:\"" + DataSetTable + "\"---SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;            
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            // 调用"划分函数"，进行数据清洗，得出干净数据集以及数据节点表
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            //定义变量
             double []dMin = new double[COL_NUM + 1];
             double []dMax = new double[COL_NUM + 1];
             int T_Num = 24;
@@ -149,28 +149,33 @@ namespace SelectivityEstimation
               dMin[2] = DavidSelect(select_min2) - 1;
               labelMaxMin.Text = "(" + dMax[0] + "," + dMax[1] + "," + dMax[2] + ")" + "(" + dMin[0] + "," + dMin[1] + "," + dMin[2] + ")";
             }
-          //定义变量结束
+            //定义变量结束
 
-          //测试时间函数 开始
+            MessageBox.Show("准备加载数据，时间较长，请耐心等待  ~");
+
+            //测试时间函数 开始
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch(); // Stopwatch 方法 毫秒级
             stopwatch.Start();
-            string select_time = "SELECT top 100000 * FROM Attr_Census2D  where Census2DID  > 0 and Census2DID  < 100001 " ;
+            string select_time = "SELECT  * FROM   "+DataSetTable ;
             string conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
             DataSet dataSet = new DataSet();
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(select_time,conn);
             sqlDataAdapter.Fill(dataSet,"TableName");
             stopwatch.Stop();
             long TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
-            labelTime.Text = " Read 100000 turples ,used time:" + TheTime + "ms";
-            
-            //切块 1： rect加载数据
-            ZLRECT[] rect = new ZLRECT[NUM_ID];
-            for (int i = 0; i < NUM_ID; i++)
+            labelTime.Text = "Read "+ iSizeofDataSetTable+" turples to DataSet ,used time:" + TheTime + "ms";
+
+            #region  切块
+
+            #region//切块 1： rect加载数据
+            stopwatch.Restart();
+            ZLRECT[] rect = new ZLRECT[iSizeofDataSetTable];
+            for (int i = 0; i < iSizeofDataSetTable; i++)
             {
                 rect[i] = new ZLRECT(); //初始化                   
             }
 
-            for (int k = 0; k < NUM_ID; k++)    //rect赋值(查询结果集DataSet 写到 数组rect)
+            for (int k = 0; k < iSizeofDataSetTable; k++)    //rect赋值(查询结果集DataSet 写到 数组rect)
             {
                 for (int i = 0; i < COL_NUM; i++)
                 {
@@ -185,12 +190,14 @@ namespace SelectivityEstimation
                 rect[0].b[i + 1] = dMax[i];
             }
 
-            //labelRect.Text = " rect - x[i],id[i]:" + rect[0].x[0] + "--" + rect[0].x[1] + "--" + rect[0].ID +""
-            //    + "\n rect - a[i],b[i]:" + rect[0].a[1] + "--" + rect[0].b[1];
-            labelRect.Text = "rect loaded." ;
+            stopwatch.Stop();
+            TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
+            labelTime.Text += "\nDataSet to Array(rect) ,used time:" + TheTime + "ms";
+            #endregion
 
-            //切块 2： 初始化midRectNode
-           for (int i = 0; i < 13; i++)
+            #region//切块 2： 初始化midRectNode
+            stopwatch.Restart();
+            for (int i = 0; i < 13; i++)
             {
                 midRectNode[i] = new ZLRECT(); //初始化                   
             }
@@ -199,10 +206,10 @@ namespace SelectivityEstimation
             {
                 RectNode[i] = new ZLRECT(); //初始化                   
             }
-            midRectNode[0].count = NUM_ID;
+            midRectNode[0].count = iSizeofDataSetTable;
             for (int t = 1; t <= 12; t++)
             {
-                NODE[] MyNodes = new NODE[NUM_ID];//初始化  
+                NODE[] MyNodes = new NODE[iSizeofDataSetTable];//初始化  
                 midRectNode[t].node = MyNodes;
             }
             for (int i = 0; i < COL_NUM; i++)       //初始化midRectNode[s].a[i]、midRectNode[s].b[i]
@@ -211,8 +218,14 @@ namespace SelectivityEstimation
                 midRectNode[0].b[i] = dMax[i];
             }
             //MessageBox.Show("midRectNode loaded！");
-            labelRect.Text += "\tmidRectNode loaded.";
-            //切块 3： tNode存取所有节点
+            //labelRect.Text += "\tmidRectNode loaded.";
+            stopwatch.Stop();
+            TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
+            labelTime.Text += "\nmidRectNode initialized ,used time:" + TheTime + "ms";
+            #endregion
+
+            #region  //切块 3： tNode存取所有节点
+            stopwatch.Restart();
             int sumNode = 1 + 12 + 12 * 12 + 12 * 12 * 12 + 1;
             ZLRECT[] tNode = new ZLRECT[sumNode];
             for (int i = 0; i < sumNode; i++)
@@ -225,22 +238,37 @@ namespace SelectivityEstimation
                 tNode[tNum].a[i] = dMin[i];
                 tNode[tNum].b[i] = dMax[i];
             }
-            tNode[tNum].count = NUM_ID;
+            tNode[tNum].count = iSizeofDataSetTable;
             tNode[tNum].tfloor = 1;                  //根节点为第一层t[tNum].tfloor = 1;  
             tNum++;
             //MessageBox.Show("tNode loaded！");
-            labelRect.Text += "\ttNode loaded.";
+            //labelRect.Text += "\ttNode loaded.";
             for (int s = 1; s <= 12; s++)          //初始化midRectNode[s].count
             {
                 midRectNode[s].count = 0;
             }
-            //切块 4： 第一次划分，划分为12块
+            stopwatch.Stop();
+            TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
+            labelTime.Text += "\ntNode initialized ,used time:" + TheTime + "ms";
+            #endregion
+
+            #region//切块 4： 第一次划分，划分为12块
+            stopwatch.Restart();
             if (midRectNode[0].count > 5)//大于5是什么意思？
             {
-                zlPartionpa2(rect, COL_NUM, T_Num, PartNum);//2D 切块函数，切为 3*4形状
+                if (COL_NUM == 2)
+                {
+                    labelRect.Text = "2D Divided ~ ";
+                    zlPartionpa2(rect, COL_NUM, T_Num, PartNum);//2D 切块函数，切为 3*4形状
+                }
+                if (COL_NUM == 3)
+                {
+                    labelRect.Text = "3D Divided ~ ";
+                }
 
                 //记录第二层节点以及各个节点的数量
                 labelRect.Text += "\n============== Node[1]-[12] of Second Layer ==============";
+                long TotalCount = 0;
                 for (int tn = 1; tn <= 12; tn++)               
                 {
                     for (int ti = 0; ti < COL_NUM; ti++)
@@ -250,18 +278,20 @@ namespace SelectivityEstimation
                     }
                     tNode[tNum].count = midRectNode[tn].count;
                     tNode[tNum].nodeId = midRectNode[tn].nodeId;
+                    TotalCount += tNode[tNum].count;
+                    //string nodeIdPrint = tNode[tNum].nodeId;//查看该Node中包含的数据ID号集合
+                    //if (nodeIdPrint == null)
+                    //    nodeIdPrint = "Empty Data";
+                    //else if (nodeIdPrint.Length > 30)
+                    //    nodeIdPrint = nodeIdPrint.Substring(0, 30)+"......"+ nodeIdPrint.Substring(nodeIdPrint.Length - 30);
 
-                    string nodeIdPrint = tNode[tNum].nodeId;//查看该Node中包含的数据ID号集合
-                    if (nodeIdPrint == null)
-                        nodeIdPrint = "Empty Data";
-                    else if (nodeIdPrint.Length > 30)
-                        nodeIdPrint = nodeIdPrint.Substring(0, 30)+"......"+ nodeIdPrint.Substring(nodeIdPrint.Length - 30);
-                    
-                    labelRect.Text += "\n------tNode["+tNum+"].count=" + tNode[tNum].count+"------\nID:"+ nodeIdPrint;
+                    labelRect.Text += "\n------tNode["+tNum+"].count=" + tNode[tNum].count;                    
                     tNode[tNum].tfloor = 2;
                     tNum++;
                 }
+                labelRect.Text += "\n------Total Count=" + TotalCount;
                 //把midRectNode[1-12]中数据复制到RectNode【1-12】中
+
                 for (int r = 1; r <= 12; r++)
                 {
                     RectNode[r].node = new NODE[midRectNode[r].count];
@@ -271,30 +301,35 @@ namespace SelectivityEstimation
                         RectNode[r].b[p] = midRectNode[r].b[p];
                     }
                     RectNode[r].count = midRectNode[r].count;
+                   
                     for (int n = 0; n < midRectNode[r].count; n++)
                     {
                         RectNode[r].nodeId = midRectNode[r].nodeId;
                     }                    
-                }
-                MessageBox.Show("Work recode 2018.7.2 ~");
+                }                
             }
             else
             {                
                 MessageBox.Show("完成划分，共划分1组");
             }
-            //去重
+            stopwatch.Stop();
+            TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
+            labelTime.Text += "\nDivided to 12 blocks ,used time:" + TheTime + "ms";
+            #endregion
+
+            #endregion
         }
 
         //For 2D 
         int zlPartionpa2(ZLRECT[] Rect, int Dimention,  int T_Num, int PartNum)
         {
-            labelRect.Text += "\nzlPartionpa2() implemented. Dimention = "+Dimention+ ",T_Num="+ T_Num;
+            labelRect.Text += "zlPartionpa2() implemented. \nDimention = "+Dimention+ ",T_Num="+ T_Num;
             int n = Dimention, m = T_Num;
             int h, i, j, k, idx;
             bool bInterable = false;
             string cstrMarc;
             ZLRECT[] part = new ZLRECT[13];
-            ZLRECT[] scr = new ZLRECT[NUM_ID];
+            ZLRECT[] scr = new ZLRECT[iSizeofDataSetTable];
 
             int[] dim = new int[3]; //dim[1], [2], [3] are the biggest value of all dimensens
             double dMaxInterval = 0.0;
@@ -386,7 +421,7 @@ namespace SelectivityEstimation
             int d1 = dim[1] - 1;//最长边
             int d2 = dim[2] - 1;//
 
-            MessageBox.Show("Run the Divide Progress, Need some time, Please wait patiently  ~");
+            
 
             for (m = 0; m < midRectNode[0].count; m++)
             {
@@ -399,7 +434,7 @@ namespace SelectivityEstimation
                         //{
                         //    midRectNode[1].node[num1].x[y] = Rect[m].x[y];
                         //}
-                        midRectNode[1].nodeId += Rect[m].ID.ToString()+";";//放入第1块的各元组的ID集合
+                        //midRectNode[1].nodeId += Rect[m].ID.ToString()+";";//放入第1块的各元组的ID集合
                         num1++;
                         midRectNode[1].count = num1;//统计放入第1块的元组ID数
                         //MessageBox.Show(midRectNode[1].nodeId);
@@ -407,13 +442,12 @@ namespace SelectivityEstimation
                     else if (Rect[m].x[d2] <= d32 && Rect[m].x[d2] > d31)
                     {
                         midRectNode[5].count++;      //计算第7块中元组数目
-
                         //for (int y = 0; y < COL_NUM; y++)       //放入第5块中的元组
                         //{
                         //    midRectNode[5].node[num5].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[5].node[num5].ID = Rect[m].ID;
-                        midRectNode[5].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[5].nodeId += Rect[m].ID.ToString() + ";";
                         num5++;
                         midRectNode[5].count = num5;
                         //MessageBox.Show(midRectNode[5].nodeId);
@@ -427,7 +461,7 @@ namespace SelectivityEstimation
                         //    midRectNode[9].node[num9].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[9].node[num9].ID = Rect[m].ID;
-                        midRectNode[9].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[9].nodeId += Rect[m].ID.ToString() + ";";
                         num9++;
                         midRectNode[9].count = num9;
                     }
@@ -444,7 +478,7 @@ namespace SelectivityEstimation
                         //    midRectNode[2].node[num2].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[2].node[num2].ID = Rect[m].ID;
-                        midRectNode[2].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[2].nodeId += Rect[m].ID.ToString() + ";";
                         num2++;
                         midRectNode[2].count = num2;
                     }
@@ -457,7 +491,7 @@ namespace SelectivityEstimation
                         //    midRectNode[6].node[num6].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[6].node[num6].ID = Rect[m].ID;
-                        midRectNode[6].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[6].nodeId += Rect[m].ID.ToString() + ";";
                         num6++;
                         midRectNode[6].count = num6;
                     }
@@ -470,7 +504,7 @@ namespace SelectivityEstimation
                         //    midRectNode[10].node[num10].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[10].node[num10].ID = Rect[m].ID;
-                        midRectNode[10].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[10].nodeId += Rect[m].ID.ToString() + ";";
                         num10++;
                         midRectNode[10].count = num10;
                     }
@@ -487,7 +521,7 @@ namespace SelectivityEstimation
                         //    midRectNode[3].node[num3].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[3].node[num3].ID = Rect[m].ID;
-                        midRectNode[3].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[3].nodeId += Rect[m].ID.ToString() + ";";
                         num3++;
                         midRectNode[3].count = num3;
                     }
@@ -500,7 +534,7 @@ namespace SelectivityEstimation
                         //    midRectNode[7].node[num7].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[7].node[num7].ID = Rect[m].ID;
-                        midRectNode[7].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[7].nodeId += Rect[m].ID.ToString() + ";";
                         num7++;
                         midRectNode[7].count = num7;
                     }
@@ -513,7 +547,7 @@ namespace SelectivityEstimation
                         //    midRectNode[11].node[num11].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[11].node[num11].ID = Rect[m].ID;
-                        midRectNode[11].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[11].nodeId += Rect[m].ID.ToString() + ";";
                         num11++;
                         midRectNode[11].count = num11;
                     }
@@ -530,7 +564,7 @@ namespace SelectivityEstimation
                         //    midRectNode[4].node[num4].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[4].node[num4].ID = Rect[m].ID;
-                        midRectNode[1].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[1].nodeId += Rect[m].ID.ToString() + ";";
                         num4++;
                         midRectNode[4].count = num4;
                     }
@@ -543,7 +577,7 @@ namespace SelectivityEstimation
                         //    midRectNode[8].node[num8].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[8].node[num8].ID = Rect[m].ID;
-                        midRectNode[8].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[8].nodeId += Rect[m].ID.ToString() + ";";
                         num8++;
                         midRectNode[8].count = num8;
                     }
@@ -556,7 +590,7 @@ namespace SelectivityEstimation
                         //    midRectNode[12].node[num12].x[y] = Rect[m].x[y];
                         //}
                         //midRectNode[12].node[num12].ID = Rect[m].ID;
-                        midRectNode[12].nodeId += Rect[m].ID.ToString() + ";";
+                        //midRectNode[12].nodeId += Rect[m].ID.ToString() + ";";
                         num12++;
                         midRectNode[12].count = num12;
                     }
@@ -633,5 +667,7 @@ namespace SelectivityEstimation
             return result;
 
         }
+
+
     }
 }
