@@ -99,7 +99,7 @@
             "Census3DID"});
             this.comboBox3.Location = new System.Drawing.Point(30, 280);
             this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(454, 31);
+            this.comboBox3.Size = new System.Drawing.Size(328, 31);
             this.comboBox3.TabIndex = 17;
             // 
             // buttonClose
@@ -123,7 +123,7 @@
             "Attr_Census3D_time"});
             this.comboBox2.Location = new System.Drawing.Point(30, 198);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(454, 31);
+            this.comboBox2.Size = new System.Drawing.Size(328, 31);
             this.comboBox2.TabIndex = 16;
             // 
             // label1
@@ -145,7 +145,7 @@
             "Attr_Census3D"});
             this.comboBox1.Location = new System.Drawing.Point(30, 116);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(454, 31);
+            this.comboBox1.Size = new System.Drawing.Size(328, 31);
             this.comboBox1.TabIndex = 15;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
@@ -172,7 +172,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.groupBox1.Location = new System.Drawing.Point(505, 20);
+            this.groupBox1.Location = new System.Drawing.Point(388, 23);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(10, 694);
             this.groupBox1.TabIndex = 20;
@@ -204,7 +204,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label5.Location = new System.Drawing.Point(30, 645);
+            this.label5.Location = new System.Drawing.Point(30, 704);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(88, 23);
             this.label5.TabIndex = 25;
@@ -215,7 +215,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label8.Location = new System.Drawing.Point(542, 20);
+            this.label8.Location = new System.Drawing.Point(425, 23);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(106, 23);
             this.label8.TabIndex = 26;
@@ -226,7 +226,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label9.Location = new System.Drawing.Point(542, 198);
+            this.label9.Location = new System.Drawing.Point(425, 201);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(100, 23);
             this.label9.TabIndex = 27;
@@ -272,7 +272,7 @@
             "Attr_Census3D_Count"});
             this.comboBox4.Location = new System.Drawing.Point(30, 362);
             this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(454, 31);
+            this.comboBox4.Size = new System.Drawing.Size(328, 31);
             this.comboBox4.TabIndex = 31;
             // 
             // comboBox5
@@ -285,7 +285,7 @@
             "Attr_Census3D_Index"});
             this.comboBox5.Location = new System.Drawing.Point(30, 444);
             this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(454, 31);
+            this.comboBox5.Size = new System.Drawing.Size(328, 31);
             this.comboBox5.TabIndex = 32;
             // 
             // comboBox6
@@ -298,14 +298,14 @@
             "Attr_Census3D_CLean"});
             this.comboBox6.Location = new System.Drawing.Point(30, 526);
             this.comboBox6.Name = "comboBox6";
-            this.comboBox6.Size = new System.Drawing.Size(454, 31);
+            this.comboBox6.Size = new System.Drawing.Size(328, 31);
             this.comboBox6.TabIndex = 33;
             // 
             // labelMaxMin
             // 
             this.labelMaxMin.AutoSize = true;
             this.labelMaxMin.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelMaxMin.Location = new System.Drawing.Point(30, 682);
+            this.labelMaxMin.Location = new System.Drawing.Point(30, 741);
             this.labelMaxMin.Name = "labelMaxMin";
             this.labelMaxMin.Size = new System.Drawing.Size(0, 23);
             this.labelMaxMin.TabIndex = 34;
@@ -314,7 +314,7 @@
             // 
             this.labelTime.AutoSize = true;
             this.labelTime.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelTime.Location = new System.Drawing.Point(542, 61);
+            this.labelTime.Location = new System.Drawing.Point(425, 64);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(0, 23);
             this.labelTime.TabIndex = 35;
@@ -322,17 +322,17 @@
             // labelRect
             // 
             this.labelRect.AutoSize = true;
-            this.labelRect.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelRect.Location = new System.Drawing.Point(542, 239);
+            this.labelRect.Font = new System.Drawing.Font("Cambria", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelRect.Location = new System.Drawing.Point(425, 242);
             this.labelRect.Name = "labelRect";
-            this.labelRect.Size = new System.Drawing.Size(0, 23);
+            this.labelRect.Size = new System.Drawing.Size(0, 19);
             this.labelRect.TabIndex = 36;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1366, 728);
+            this.ClientSize = new System.Drawing.Size(1366, 791);
             this.Controls.Add(this.labelRect);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.labelMaxMin);

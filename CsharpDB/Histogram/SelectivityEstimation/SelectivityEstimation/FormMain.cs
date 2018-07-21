@@ -23,7 +23,7 @@ namespace SelectivityEstimation
             public double[] a = new double[COL_NUM + 1]; //
             public double[] b = new double[COL_NUM + 1]; //b[i] means bi
             public double v ;  // volume of the rectangle
-            //public char[] suffix = new char[1000];
+            //public char[] suffix = new char[1000]; //Delete by David 2018.7.20
             public int suf1st;      // the first suffix that is 1 in (1,3,4,5)
             public int sufend;      // the end suffix that is 5 in (1,3,4,5)
             public int cn;          // class number or cluster number
@@ -41,7 +41,7 @@ namespace SelectivityEstimation
         };
         public class NODE
         {
-            public double[] x = new double[COL_NUM];  // the ith axis of date
+            public int[] x = new int[COL_NUM];  // the ith axis of date
             public int ID;         // the ID of the date
         };
         public class luTUPLE
@@ -122,7 +122,7 @@ namespace SelectivityEstimation
             string DataSetTable = comboBox1.Text;
             string select_all = "select count(*) from " + DataSetTable;
             iSizeofDataSetTable = DavidSelect(select_all);
-            labelResult.Text = " DataSet:\"" + DataSetTable + "\"---SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;            
+            labelResult.Text = " DataSet:\"" + DataSetTable + "\n\"SIZE:"+ iSizeofDataSetTable + "---COLUM:"+COL_NUM;            
             ////////////////////////////////////////////////////////////////////////////////////////////////////
             // 调用"划分函数"，进行数据清洗，得出干净数据集以及数据节点表
             ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ namespace SelectivityEstimation
             string select_min1 = "select min(attr1) from " + DataSetTable;
             dMin[1] = DavidSelect(select_min1)-1;
             labelMaxMin.Text = "(" + dMax[0] + "," + dMax[1] + ")"+ "(" + dMin[0] + "," + dMin[1] + ")"; ;
-            if(COL_NUM == 3)
+            if(COL_NUM == 3) // 3D need more attribute
             {
               string select_max2 = "select max(attr2) from " + DataSetTable;
               dMax[2] = DavidSelect(select_max2) + 1;
@@ -153,21 +153,21 @@ namespace SelectivityEstimation
 
             MessageBox.Show("准备加载数据，时间较长，请耐心等待  ~");
 
-            //测试时间函数 开始
+            //测试时间函数 
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch(); // Stopwatch 方法 毫秒级
-            stopwatch.Start();
+            stopwatch.Start();//开始
             string select_time = "SELECT  * FROM   "+DataSetTable ;
             string conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
             DataSet dataSet = new DataSet();
             SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(select_time,conn);
             sqlDataAdapter.Fill(dataSet,"TableName");
-            stopwatch.Stop();
+            stopwatch.Stop();//结束
             long TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
             labelTime.Text = "Read "+ iSizeofDataSetTable+" turples to DataSet ,used time:" + TheTime + "ms";
 
-            #region  切块
+            // 切块
 
-            #region//切块 1： rect加载数据
+            #region//切块准备工作 1： rect加载数据
             stopwatch.Restart();
             ZLRECT[] rect = new ZLRECT[iSizeofDataSetTable];
             for (int i = 0; i < iSizeofDataSetTable; i++)
@@ -195,7 +195,7 @@ namespace SelectivityEstimation
             labelTime.Text += "\nDataSet to Array(rect) ,used time:" + TheTime + "ms";
             #endregion
 
-            #region//切块 2： 初始化midRectNode
+            #region//切块准备工作 2： 初始化midRectNode
             stopwatch.Restart();
             for (int i = 0; i < 13; i++)
             {
@@ -224,7 +224,7 @@ namespace SelectivityEstimation
             labelTime.Text += "\nmidRectNode initialized ,used time:" + TheTime + "ms";
             #endregion
 
-            #region  //切块 3： tNode存取所有节点
+            #region  //切块准备工作 3： tNode存取所有节点
             stopwatch.Restart();
             int sumNode = 1 + 12 + 12 * 12 + 12 * 12 * 12 + 1;
             ZLRECT[] tNode = new ZLRECT[sumNode];
@@ -252,7 +252,7 @@ namespace SelectivityEstimation
             labelTime.Text += "\ntNode initialized ,used time:" + TheTime + "ms";
             #endregion
 
-            #region//切块 4： 第一次划分，划分为12块
+            #region//开始切块 ： 
             stopwatch.Restart();
             if (midRectNode[0].count > 5)//大于5是什么意思？
             {
@@ -266,7 +266,8 @@ namespace SelectivityEstimation
                     labelRect.Text = "3D Divided ~ ";
                 }
 
-                //记录第二层节点以及各个节点的数量
+                #region //第一次划分，划分为12块 (第二层)//记录第二层节点以及各个节点的数量
+                
                 labelRect.Text += "\n============== Node[1]-[12] of Second Layer ==============";
                 long TotalCount = 0;
                 for (int tn = 1; tn <= 12; tn++)               
@@ -306,7 +307,148 @@ namespace SelectivityEstimation
                     {
                         RectNode[r].nodeId = midRectNode[r].nodeId;
                     }                    
-                }                
+                }
+                #endregion
+
+                #region //第二次划分，划分为12 * 12 块 （第三层）
+                MessageBox.Show("第三层划分开始！");
+                ZLRECT[] LRect3 = new ZLRECT[12 * 12 + 1];   //第三层节点LRect3[1-12*12]
+                for (int i = 0; i < 12 * 12 + 1; i++)
+                {
+                    LRect3[i] = new ZLRECT(); //初始化                   
+                }
+                int numL3 = 1;                    //从1开始(第三层计数)
+                string Layer3NameAndCount = "";
+                for (int x = 1; x <= 12; x++)
+                {
+                    //ZLRECT[] midRectNode = new ZLRECT[13];
+                    for (int i = 0; i < 13; i++)
+                    {
+                        midRectNode[i] = new ZLRECT(); //初始化                   
+                    }
+                    midRectNode[0].count = RectNode[x].count;      //初始化midRectNode[0].a[i]、midRectNode[0].b[i]
+                    for (int m = 0; m < COL_NUM; m++)
+                    {
+                        midRectNode[0].a[m] = RectNode[x].a[m];
+                        midRectNode[0].b[m] = RectNode[x].b[m];
+                    }
+
+                    for (int t = 1; t <= 12; t++)                //每次循环创建12个包含元组的midRectNode[t].node块
+                    {
+                        midRectNode[t].node = new NODE[RectNode[x].count];
+                    }
+
+                    if (RectNode[x].count > 0)              //开始划分，块中有元组，Rectnode[x].count！=0;
+                    {
+                        //rect=rectNode[x]
+                        //ZLRECT[] rect = new ZLRECT[RectNode[x].count];
+                        for (int i = 0; i < RectNode[x].count; i++)
+                        {
+                            rect[i] = new ZLRECT(); //初始化                   
+                        }
+                        for (int y = 0; y < RectNode[x].count; y++)      //rect 赋值
+                        {
+                            for (int z = 0; z < COL_NUM; z++)
+                            {
+                                rect[y].a[z + 1] = RectNode[x].a[z];
+                                rect[y].b[z + 1] = RectNode[x].b[z];
+                                //rect[y].x[z] = RectNode[x].node[y].x[z];
+                            }
+                            //rect[y].ID = RectNode[x].node[y].ID;
+                        }
+                        //调用划分函数
+                        zlPartionpa2(rect, COL_NUM, T_Num, PartNum);   //调用划分函数
+
+                    }
+                    else                   //只划分，块中没有元组，Rectnode[x].count=0; 
+                    {
+                        //块儿中没有元组，为什么要划分？划分的原则是什么？ David 2018.7.21
+                        rect = new ZLRECT[1];
+                        for (int z = 0; z < COL_NUM; z++)
+                        {
+                            rect[0].a[z + 1] = RectNode[x].a[z];
+                            rect[0].b[z + 1] = RectNode[x].b[z];
+                        }
+                        //zlPartionpa2_empty(rect, COL_NUM, T_Num, PartNum);                        
+                    }
+
+                    //保存第三层节点LRect3[12*12]
+                    
+                    for (int r = 1; r <= 12; r++)                                            //保存第三层节点LRect3[12*12],midRectNode[r].count!=0时；              
+                    {
+                        if (midRectNode[r].count > 0)
+                        {
+                            LRect3[numL3].node = new NODE[midRectNode[r].count];
+                            for (int p = 0; p < COL_NUM; p++)
+                            {
+                                LRect3[numL3].a[p] = midRectNode[r].a[p];
+                                LRect3[numL3].b[p] = midRectNode[r].b[p];
+
+                                tNode[tNum].a[p] = midRectNode[r].a[p];             //存储第三层节点 t[13-12*12]
+                                tNode[tNum].b[p] = midRectNode[r].b[p];
+                            }
+                            LRect3[numL3].count = midRectNode[r].count;
+
+                            Layer3NameAndCount += "ID:"+ numL3 +"\t-"+ LRect3[numL3].count + "\t";
+                            if (numL3 % 12 == 0)
+                            {
+                                Layer3NameAndCount += "\n";
+                            }
+                            tNode[tNum].count = midRectNode[r].count;                  //存储第三层节点 t[13-12*12]
+                            tNode[tNum].tfloor = 3;
+                            for (int n = 0; n < midRectNode[r].count; n++)
+                            {
+                                for (int w = 0; w < COL_NUM; w++)
+                                {
+                                    //LRect3[numL3].node[n].x[w] = midRectNode[r].node[n].x[w];
+                                }
+                                //LRect3[numL3].node[n].ID = midRectNode[r].node[n].ID;
+                            }
+
+                            numL3++;
+                            tNum++;
+                            
+                            //保存第三层节点LRect3[12*12]
+                        }//end if
+                        else if (midRectNode[r].count == 0)
+                        {
+                            //LRect3[numL3].node = new NODE[midRectNode[r].count];
+                            //for (int p = 0; p < COL_NUM; p++)
+                            //{
+                            //    LRect3[numL3].a[p] = midRectNode[r].a[p];
+                            //    LRect3[numL3].b[p] = midRectNode[r].b[p];
+
+                            //    tNode[tNum].a[p] = midRectNode[r].a[p];             //存储第三层节点 t[13-12*12]
+                            //    tNode[tNum].b[p] = midRectNode[r].b[p];
+                            //}
+                            LRect3[numL3].count = midRectNode[r].count;
+                       
+                            Layer3NameAndCount += "ID:" + numL3 + "\t-" + LRect3[numL3].count + "\t";
+                            if (numL3 % 12 == 0)
+                            {
+                                Layer3NameAndCount += "\n";
+                            }
+                            tNode[tNum].count = midRectNode[r].count;                  //存储第三层节点 t[13-12*12]
+                            tNode[tNum].tfloor = 3;
+                            numL3++;
+                            tNum++;                            
+                            //保存第三层节点LRect3[12*12]                           
+                        }
+                        else
+                        {
+                            MessageBox.Show(" 存储第三层节点时出错 !!!!!!");
+                        }
+                    }
+
+                }
+
+                //MessageBox.Show(Layer3NameAndCount);
+                labelRect.Text = Layer3NameAndCount;
+                #endregion
+
+                #region //第三次划分，划分为12 * 12 * 12 块 （第四层）
+
+                #endregion
             }
             else
             {                
@@ -317,7 +459,7 @@ namespace SelectivityEstimation
             labelTime.Text += "\nDivided to 12 blocks ,used time:" + TheTime + "ms";
             #endregion
 
-            #endregion
+           
         }
 
         //For 2D 
