@@ -204,7 +204,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label5.Location = new System.Drawing.Point(30, 704);
+            this.label5.Location = new System.Drawing.Point(30, 655);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(88, 23);
             this.label5.TabIndex = 25;
@@ -217,9 +217,9 @@
             this.label8.ForeColor = System.Drawing.Color.SteelBlue;
             this.label8.Location = new System.Drawing.Point(425, 23);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(106, 23);
+            this.label8.Size = new System.Drawing.Size(202, 23);
             this.label8.TabIndex = 26;
-            this.label8.Text = "Time used";
+            this.label8.Text = "Load Data Time used";
             // 
             // label9
             // 
@@ -228,9 +228,9 @@
             this.label9.ForeColor = System.Drawing.Color.SteelBlue;
             this.label9.Location = new System.Drawing.Point(425, 201);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(100, 23);
+            this.label9.Size = new System.Drawing.Size(228, 23);
             this.label9.TabIndex = 27;
-            this.label9.Text = "Load data";
+            this.label9.Text = "Divided Data Time used";
             // 
             // label10
             // 
@@ -305,7 +305,7 @@
             // 
             this.labelMaxMin.AutoSize = true;
             this.labelMaxMin.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelMaxMin.Location = new System.Drawing.Point(30, 741);
+            this.labelMaxMin.Location = new System.Drawing.Point(30, 692);
             this.labelMaxMin.Name = "labelMaxMin";
             this.labelMaxMin.Size = new System.Drawing.Size(0, 23);
             this.labelMaxMin.TabIndex = 34;
@@ -322,10 +322,10 @@
             // labelRect
             // 
             this.labelRect.AutoSize = true;
-            this.labelRect.Font = new System.Drawing.Font("Cambria", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelRect.Font = new System.Drawing.Font("Cambria", 15F);
             this.labelRect.Location = new System.Drawing.Point(425, 242);
             this.labelRect.Name = "labelRect";
-            this.labelRect.Size = new System.Drawing.Size(0, 19);
+            this.labelRect.Size = new System.Drawing.Size(0, 23);
             this.labelRect.TabIndex = 36;
             // 
             // FormMain
