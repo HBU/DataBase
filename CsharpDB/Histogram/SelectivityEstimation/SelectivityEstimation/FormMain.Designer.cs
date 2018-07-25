@@ -53,6 +53,8 @@
             this.labelMaxMin = new System.Windows.Forms.Label();
             this.labelTime = new System.Windows.Forms.Label();
             this.labelRect = new System.Windows.Forms.Label();
+            this.labelDuplicated = new System.Windows.Forms.Label();
+            this.labelRD = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonRUN
@@ -186,9 +188,9 @@
             this.label6.ForeColor = System.Drawing.Color.SteelBlue;
             this.label6.Location = new System.Drawing.Point(436, 23);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(80, 23);
+            this.label6.Size = new System.Drawing.Size(86, 23);
             this.label6.TabIndex = 23;
-            this.label6.Text = "Dataset";
+            this.label6.Text = "Dataset:";
             // 
             // label5
             // 
@@ -197,31 +199,31 @@
             this.label5.ForeColor = System.Drawing.Color.SteelBlue;
             this.label5.Location = new System.Drawing.Point(436, 148);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(235, 23);
+            this.label5.Size = new System.Drawing.Size(241, 23);
             this.label5.TabIndex = 25;
-            this.label5.Text = "MaxPonint and MinPoint";
+            this.label5.Text = "MaxPonint and MinPoint:";
             // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label8.Location = new System.Drawing.Point(436, 271);
+            this.label8.Location = new System.Drawing.Point(436, 256);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(202, 23);
+            this.label8.Size = new System.Drawing.Size(213, 23);
             this.label8.TabIndex = 26;
-            this.label8.Text = "Load Data Time used";
+            this.label8.Text = "Load Data, Time used:";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.SteelBlue;
-            this.label9.Location = new System.Drawing.Point(436, 417);
+            this.label9.Location = new System.Drawing.Point(436, 402);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(228, 23);
+            this.label9.Size = new System.Drawing.Size(239, 23);
             this.label9.TabIndex = 27;
-            this.label9.Text = "Divided Data Time used";
+            this.label9.Text = "Divided Data, Time used:";
             // 
             // label10
             // 
@@ -296,7 +298,7 @@
             // 
             this.labelTime.AutoSize = true;
             this.labelTime.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelTime.Location = new System.Drawing.Point(436, 312);
+            this.labelTime.Location = new System.Drawing.Point(436, 297);
             this.labelTime.Name = "labelTime";
             this.labelTime.Size = new System.Drawing.Size(0, 23);
             this.labelTime.TabIndex = 35;
@@ -305,16 +307,38 @@
             // 
             this.labelRect.AutoSize = true;
             this.labelRect.Font = new System.Drawing.Font("Cambria", 15F);
-            this.labelRect.Location = new System.Drawing.Point(436, 458);
+            this.labelRect.Location = new System.Drawing.Point(436, 443);
             this.labelRect.Name = "labelRect";
             this.labelRect.Size = new System.Drawing.Size(0, 23);
             this.labelRect.TabIndex = 36;
+            // 
+            // labelDuplicated
+            // 
+            this.labelDuplicated.AutoSize = true;
+            this.labelDuplicated.Font = new System.Drawing.Font("Cambria", 15F);
+            this.labelDuplicated.Location = new System.Drawing.Point(436, 535);
+            this.labelDuplicated.Name = "labelDuplicated";
+            this.labelDuplicated.Size = new System.Drawing.Size(0, 23);
+            this.labelDuplicated.TabIndex = 38;
+            // 
+            // labelRD
+            // 
+            this.labelRD.AutoSize = true;
+            this.labelRD.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelRD.ForeColor = System.Drawing.Color.SteelBlue;
+            this.labelRD.Location = new System.Drawing.Point(436, 494);
+            this.labelRD.Name = "labelRD";
+            this.labelRD.Size = new System.Drawing.Size(344, 23);
+            this.labelRD.TabIndex = 37;
+            this.labelRD.Text = "Remove duplicated Data, Time used:";
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1231, 626);
+            this.Controls.Add(this.labelDuplicated);
+            this.Controls.Add(this.labelRD);
             this.Controls.Add(this.labelRect);
             this.Controls.Add(this.labelTime);
             this.Controls.Add(this.labelMaxMin);
@@ -378,6 +402,8 @@
         private System.Windows.Forms.Label labelMaxMin;
         private System.Windows.Forms.Label labelTime;
         private System.Windows.Forms.Label labelRect;
+        private System.Windows.Forms.Label labelDuplicated;
+        private System.Windows.Forms.Label labelRD;
     }
 }
 

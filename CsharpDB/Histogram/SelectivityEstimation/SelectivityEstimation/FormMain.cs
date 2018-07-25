@@ -15,10 +15,8 @@ namespace SelectivityEstimation
 {
        public partial class FormMain : Form
     {
-        static int COL_NUM ;//3 //4 //50 //25 //2 -- //3 //4 //25 //--//4 //104 //3 //2 //3 //4 //25 //50 //104 //2  	//zl for LSI SAME CASE
-        //static long NUM_ID = 1000000;   //2000000  Cover10D,Cover4D,    //62D 500000
-        static long iSizeofDataSetTable = 0;
-        ZLRECT[] midRectNode = new ZLRECT[13];
+        static int COL_NUM ;
+        static long iSizeofDataSetTable = 0;        
         public class ZLRECT
         {
             public double[] a = new double[COL_NUM + 1]; //
@@ -61,6 +59,7 @@ namespace SelectivityEstimation
             public double attrZeroZ;           // the most near zero from the right;
             public double attrZeroF;               //the most near zero from the left;
         };
+        ZLRECT[] midRectNode = new ZLRECT[13];
 
         public FormMain()
         {
@@ -81,22 +80,21 @@ namespace SelectivityEstimation
     
         private void buttonRun_Click(object sender, EventArgs e)
         {
+            #region //初始化COL_NUM，校验数据集
             if (comboBox1.Text == "Attr_Census2D") COL_NUM = 2;
             if (comboBox1.Text == "Attr_Census3D") COL_NUM = 3;
             if (comboBox1.Text == "Attr_Cover4D") COL_NUM = 4;
             if (comboBox1.Text == "HW_20D_Clean") COL_NUM = 20;
             if (comboBox1.Text == "Attr_Census2D_Test") COL_NUM = 2;
             if (comboBox1.Text == "Attr_Census3D_TestDavid") COL_NUM = 3;
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // 输出给定数据集的名称、元组数、列数
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
             string DataSetTable = comboBox1.Text;
+
+            // 校验给定数据集的名称、元组数、列数            
             string select_all = "select count(*) from " + DataSetTable;
             iSizeofDataSetTable = DavidSelect(select_all);
             labelResult.Text = "DataSet:\"" + DataSetTable + "\"\nSIZE:" + iSizeofDataSetTable + "\nCOLUM:"+COL_NUM;
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            // 调用"划分函数"，进行数据清洗，得出干净数据集以及数据节点表
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            #endregion
+
             #region//定义变量//找数据表中的最大值最小值（根节点，总体范围）dMax,dMin
             double[]dMin = new double[COL_NUM + 1];
             double []dMax = new double[COL_NUM + 1];
@@ -113,11 +111,10 @@ namespace SelectivityEstimation
                 Min3d += dMin[eee]+ ",";
             }
             labelMaxMin.Text = "(" + Max3d.Substring(0,Max3d.Length-1) + ")" + "\n" + "(" + Min3d.Substring(0,Min3d.Length - 1) + ")";
-             #endregion
-
-             MessageBox.Show("加载数据，时间较长，请耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            #endregion
 
             #region //数据库数据加载到本地数据集，并记录时间 
+            MessageBox.Show("加载数据，时间较长，请耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch(); // Stopwatch 方法 毫秒级
             stopwatch.Start();//开始
             string select_time = "";
@@ -131,8 +128,6 @@ namespace SelectivityEstimation
             long TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
             labelTime.Text = "Read "+ iSizeofDataSetTable+" turples to DataSet ,used time:" + TheTime + "ms";
             #endregion
-
-            // 切块
 
             #region//切块准备工作 1：本地数据集 复制到 数组 rect，并记录时间
             stopwatch.Restart();
@@ -219,10 +214,11 @@ namespace SelectivityEstimation
             TheTime = stopwatch.ElapsedMilliseconds; //这里是输出的总运行秒数,精确到毫秒的                
             labelTime.Text += "\ntNode initialized ,used time:" + TheTime + "ms";
             #endregion
-            
-            //开始切块 ： 
+
+            #region//调用"切块函数"切块：共划分三次，1 -> 12 -> 12*12 -> 12*12*12 = 1728 
             MessageBox.Show("开始切块，时间更长，更需耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             stopwatch.Restart();// 开始计时
+            ZLRECT[] LRect4 = new ZLRECT[12 * 12 * 12 + 1];   //第三层节点LRect3[1-12*12]
             if (midRectNode[0].count > 5)//大于5是什么意思？
             {
                 #region //第一次划分，划分为12块 (第二层)
@@ -473,7 +469,7 @@ namespace SelectivityEstimation
                 #region //第三次划分，划分为12 * 12 * 12 块 （第四层）
                 //MessageBox.Show("第四层划分开始！");
                 //LRect4 = new luRect[12 * 12 * 12 + 1];   //第四层节点LRect4[1-12*12*12]
-                ZLRECT[] LRect4 = new ZLRECT[12 * 12 * 12 + 1];   //第三层节点LRect3[1-12*12]
+                
                 string Layer4NameAndCount = "";
                 long TotalCountLayer4 = 0;
                 for (int i = 0; i < 12 * 12 * 12 + 1; i++)
@@ -661,9 +657,32 @@ namespace SelectivityEstimation
             stopwatch.Stop();//计时结束
             TheTime = stopwatch.ElapsedMilliseconds; //总运行秒数, 精确到毫秒
             labelRect.Text = "Divided to 12*12*12 blocks ,used time:" + TheTime + "ms";
-            
+            long sum1 = 0;
+            for (int d = 1; d <= 1728; d++)
+            {
+                sum1 += LRect4[d].count;
+            }
+            MessageBox.Show("切块完毕！\n共"+ sum1 + "个元组。\n请在下列文件中查看结果: \nD:\\Layer2.txt，Layer3.txt，Layer4.txt " +
+                "\n数据清洗，时间较长，请继续等待", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            #endregion
 
-            MessageBox.Show("切块完毕！\n请在下列文件中查看结果: \nD:\\Layer2.txt，Layer3.txt，Layer4.txt  ~","NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            #region// 去重：进行数据清洗，得出干净数据集以及数据节点表
+            stopwatch.Restart();//计时开始
+
+            //DupRemove(LRect4);  //调用"去重函数"，进行数据清洗
+
+            stopwatch.Stop();//计时结束
+            TheTime = stopwatch.ElapsedMilliseconds; //总运行秒数, 精确到毫秒          
+            labelDuplicated.Text = "Remove duplicated data ,used time:" + TheTime + "ms";
+            long sum = 0;
+            for (int d = 1; d <= 1728; d++)
+            {
+                sum += LRect4[d].count;
+            }
+            //CleanCount[CleanCountnum] = sum; // 什么作用？？2018.7.25
+            //CleanCountnum++;
+            MessageBox.Show("程序执行完毕 ~ \n去重前元组数：" + sum1 + "\n去重后元组数："+sum, "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            #endregion
         }
 
         //For 2D 
@@ -1680,6 +1699,120 @@ namespace SelectivityEstimation
             }
             return 0;
         }
+
+        //Remove duplicated data
+        void DupRemove(ZLRECT[] lurect)
+        {
+            int Cluster_lIdx = 0;
+            //int itplIdx = 0;          // count for have been seen tuples, i.e., tpl[]	 
+            //int iTopN = lurect[1].count;
+            int i, j, k, k1;
+            luTUPLE tt;
+            int itplIdx = 0;
+
+            for (int e = 1; e <= 1728; e++)
+            {
+                itplIdx = 0;
+                if (lurect[e].count == 0)
+                {
+                    //LRect4[e].count = 0;
+                    LRect4[e].spaceSize = 0;
+                    continue;
+                }
+                else
+                {                   
+                    int iTopN = lurect[e].count; // count for have been seen tuples, i.e., tpl[]	
+                    lutpl = new luTUPLE[lurect[e].count];   //candidate tuples for tpl[].bOK = true//iSizeofDataSetTable + 1
+
+                    for (i = 0; i < (lurect[e].count); i++)         //干净数据集初始化为0
+                    {
+                        memset(&lutpl[i], 0, sizeof(luTUPLE));
+                    }
+
+                    for (int m = 0; m < lurect[e].count; m++)
+                    {
+                        for (int q = 0; q < COL_NUM; q++)      //将一条数据数据复制给tt
+                        {
+                            tt.x[q] = lurect[e].node[m].x[q];
+                        }
+                        tt.ID = lurect[e].node[m].ID;
+
+                        bool jug = true;          //初始化为true
+
+                        if (itplIdx == 0)           //干净数据集中没有数据时直接插入
+                        {
+                            lutpl[0] = tt;
+                            lutpl[0].Tnum = 1;
+                            lutpl[0].Tid[0] = tt.ID;
+                            itplIdx++;
+                            continue;
+                        }
+                        for (k = 0; k < itplIdx; k++)  //找到tpl[k].d>tt.d位置 
+                        {
+                            if (lutpl[k].x[0] > tt.x[0])                   ////=============================
+                                break;
+                        }
+                        for (int k1 = k - 1; k1 >= 0; k1--)//向上遍历看是否存在和tt相同的点
+                        {
+                            if (lutpl[k1].x[0] == tt.x[0])//如果点的距离相等那么比较点的坐标 ////=============================
+                            {
+                                int a;
+                                for (a = 1; a < COL_NUM; a++)
+                                {
+                                    if (lutpl[k1].x[a] != tt.x[a])
+                                        break;
+                                }
+                                if (a == COL_NUM)
+                                {
+                                    jug = false;
+                                    Cluster_lIdx = lutpl[k1].ID;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        if (jug)//没有相同的点，然后直接插入
+                        {
+                            for (int k1 = itplIdx; k1 > k; k1--)
+                            {
+                                lutpl[k1] = lutpl[k1 - 1];
+                            }
+                            lutpl[k] = tt;
+                            //tpl[k].Tnum=1;
+                            //tpl[k].Tid[0]=tt.ID;
+                            lutpl[k].Tnum = 1;
+                            lutpl[k].Tid[0] = tt.ID;
+                            itplIdx++;
+                            //iTopN--;
+                        }
+                        if (!jug)
+                        {
+                            for (int i = 0; i < itplIdx; i++)
+                            {
+                                if (lutpl[i].ID == Cluster_lIdx)
+                                {
+                                    lutpl[i].Tnum++;
+                                    lutpl[i].Tid[lutpl[i].Tnum - 1] = tt.ID;
+                                }
+                            }
+                        }
+                    }
+                    //-------------------------------------------
+                    LRect4[e].clTuplu = new luTUPLE[itplIdx];
+                    LRect4[e].spaceSize = itplIdx;
+                    for (int p = 0; p < itplIdx; p++)
+                    {
+                        LRect4[e].clTuplu[p] = lutpl[p];
+                    }
+                    LRect4[e].count = itplIdx;
+                }
+            }
+        }
+
+
 
         int DavidSelect(string sql)
         {
