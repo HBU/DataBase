@@ -20,23 +20,27 @@ namespace NewTable
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=MrDavid;User ID=sa;Password=sql");
+            SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=BlockIndex;User ID=sa;Password=sql");
             try
             {
                 con.Open();
-                string deleteStr = "Delete from C2d";
+                string deleteStr = "Delete from Attr_Census3D_TestDavid";
                 SqlCommand cmd = new SqlCommand(deleteStr, con);
                 cmd.ExecuteNonQuery();
-                double c = 1;
+                double d = 1;
                 string insertStr;
-                for (int a = 0; a < 27; a++)
+                for (int a = 0; a < 8; a++)
                 {
-                    for (int b = 0; b < 64; b++)
+                    for (int b = 0; b < 27; b++)
                     {
-                        insertStr = "insert into C2D values("+ a +"," + b + "," + c +")";
-                        c++;
-                        cmd = new SqlCommand(insertStr, con);
-                        cmd.ExecuteNonQuery();
+                        for(int c = 0; c<8; c++)
+                        {
+                            insertStr = "insert into Attr_Census3D_TestDavid values(" + a +"," + b + "," + c + ","+ d +")";
+                            d++;
+                            cmd = new SqlCommand(insertStr, con);
+                            cmd.ExecuteNonQuery();
+                        }
+
                     }
                 }
             }
