@@ -36,7 +36,7 @@ namespace SelectivityEstimation
             public int spaceSize;
             public string nodeId;
             public NODE[] node;
-            public luTUPLE clTuplu = new luTUPLE() ;
+            public luTUPLE[] clTuplu;
         };
         public class NODE
         {
@@ -49,8 +49,19 @@ namespace SelectivityEstimation
             public int num;            // the number of this tuples in topN
             public int ID;             // the ID of the tuple
             public int Tnum;
-            public int[] Tid = new int[200];
+            public int[] Tid = new int[666];// 200 需要动态变化？
             public double count;
+        };
+        public class luRect
+        {
+            public double[] a = new double[COL_NUM + 1]; //a[i] means ai
+            public double[] b = new double[COL_NUM + 1]; //b[i] means bi            
+            public NODE[] node;
+            public int count;
+            public int dupcount;
+            public int spaceSize;
+            //TUPLE  * clTup;
+            public luTUPLE[] clTuplu;
         };
         public class MostVal
         {
@@ -60,6 +71,7 @@ namespace SelectivityEstimation
             public double attrZeroF;               //the most near zero from the left;
         };
         ZLRECT[] midRectNode = new ZLRECT[13];
+        ZLRECT[] LRect4 = new ZLRECT[12 * 12 * 12 + 1];   //第三层节点LRect3[1-12*12]
 
         public FormMain()
         {
@@ -72,9 +84,19 @@ namespace SelectivityEstimation
             comboBox1.Items.Add("Attr_Census2D");
             comboBox1.Items.Add("Attr_Census3D");
             comboBox1.Items.Add("Attr_Cover4D");
-            comboBox1.Items.Add("HW_20D_Clean");
+            comboBox1.Items.Add("HW_20D_dirty");
             comboBox1.Items.Add("Attr_Census2D_Test");
-            comboBox1.Items.Add("Attr_Census3D_TestDavid");         
+            comboBox1.Items.Add("Attr_Census3D_TestDavid");
+            comboBox1.Items.Add("Attr_Census2D1");
+
+            comboBox4.Items.Add("Attr_Census2D_CLean");
+            comboBox4.Items.Add("CLean_Attr_Census3D");
+            comboBox4.Items.Add("Clean_Attr_Cover4D");
+            comboBox4.Items.Add("HW_20D_Clean");
+            comboBox4.Items.Add("Attr_Census2D_CLean");
+            comboBox4.Items.Add("CLean_Attr_Census3D");
+            comboBox4.Items.Add("Attr_Census2D_CLean");
+
             comboBox1.SelectedIndex = 0;
         }  
     
@@ -84,10 +106,12 @@ namespace SelectivityEstimation
             if (comboBox1.Text == "Attr_Census2D") COL_NUM = 2;
             if (comboBox1.Text == "Attr_Census3D") COL_NUM = 3;
             if (comboBox1.Text == "Attr_Cover4D") COL_NUM = 4;
-            if (comboBox1.Text == "HW_20D_Clean") COL_NUM = 20;
+            if (comboBox1.Text == "HW_20D_dirty") COL_NUM = 20;
             if (comboBox1.Text == "Attr_Census2D_Test") COL_NUM = 2;
             if (comboBox1.Text == "Attr_Census3D_TestDavid") COL_NUM = 3;
+            if (comboBox1.Text == "Attr_Census2D1") COL_NUM = 2;
             string DataSetTable = comboBox1.Text;
+            string CleanedTable = comboBox4.Text;
 
             // 校验给定数据集的名称、元组数、列数            
             string select_all = "select count(*) from " + DataSetTable;
@@ -104,7 +128,7 @@ namespace SelectivityEstimation
             for (int eee = 0; eee < COL_NUM; eee++)
             {
                 string select_max = "select max(attr"+eee+") from " + DataSetTable;
-                dMax[eee] = DavidSelect(select_max) + 1;
+                dMax[eee] = DavidSelect(select_max) ;
                 Max3d += dMax[eee] + ",";
                 string select_min = "select min(attr"+eee+") from " + DataSetTable;
                 dMin[eee] = DavidSelect(select_min) - 1;
@@ -114,7 +138,7 @@ namespace SelectivityEstimation
             #endregion
 
             #region //数据库数据加载到本地数据集，并记录时间 
-            MessageBox.Show("加载数据，时间较长，请耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //MessageBox.Show("加载数据，时间较长，请耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch(); // Stopwatch 方法 毫秒级
             stopwatch.Start();//开始
             string select_time = "";
@@ -216,9 +240,9 @@ namespace SelectivityEstimation
             #endregion
 
             #region//调用"切块函数"切块：共划分三次，1 -> 12 -> 12*12 -> 12*12*12 = 1728 
-            MessageBox.Show("开始切块，时间更长，更需耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //MessageBox.Show("开始切块，时间更长，更需耐心等待  ~", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             stopwatch.Restart();// 开始计时
-            ZLRECT[] LRect4 = new ZLRECT[12 * 12 * 12 + 1];   //第三层节点LRect3[1-12*12]
+            
             if (midRectNode[0].count > 5)//大于5是什么意思？
             {
                 #region //第一次划分，划分为12块 (第二层)
@@ -261,9 +285,7 @@ namespace SelectivityEstimation
                 }
                 Layer2NameAndCount += "\r\nTotal Count=" + TotalCount;
                 Layer2NameAndCount += "\r\n=============================" ;
-                StreamWriter sw2 = new StreamWriter("D:\\Layer2.txt", false, Encoding.GetEncoding("gb2312"));
-                sw2.WriteLine(Layer2NameAndCount);
-                sw2.Close();
+
                 //把midRectNode[1-12]中数据复制到RectNode【1-12】中
                 for (int r = 1; r <= 12; r++)
                 {                    
@@ -291,7 +313,10 @@ namespace SelectivityEstimation
                     //    RectNode[r].nodeId = midRectNode[r].nodeId;
                     //}                    
                 }
-
+                Layer2NameAndCount += "RectNode[r].nodeId" + RectNode[0].nodeId;
+                StreamWriter sw2 = new StreamWriter("D:\\Layer2.txt", false, Encoding.GetEncoding("gb2312"));
+                sw2.WriteLine(Layer2NameAndCount);
+                sw2.Close();
                 #endregion
 
                 #region //第二次划分，划分为12 * 12 块 （第三层）
@@ -337,7 +362,7 @@ namespace SelectivityEstimation
                                 rect3[y].b[z + 1] = RectNode[x].b[z];
                                 rect3[y].x[z] = RectNode[x].node[y].x[z];
                             }
-                            //rect3[y].ID = RectNode[x].node[y].ID;
+                            rect3[y].ID = RectNode[x].node[y].ID;
                         }
                         //调用划分函数//zlPartionpa2(rect3, COL_NUM, T_Num, PartNum);   //调用划分函数
                         if (COL_NUM == 2)
@@ -354,7 +379,6 @@ namespace SelectivityEstimation
                         //块儿中没有元组，为什么要划分？划分的原则是什么？ David 2018.7.21 记录边界值？
                         rect3 = new ZLRECT[1];
                         rect3[0] = new ZLRECT();
-                        //zlPartionpa2_empty(rect, COL_NUM, T_Num, PartNum);
                         if (COL_NUM == 2)
                         {
                             for (int z = 0; z < COL_NUM; z++)
@@ -397,14 +421,8 @@ namespace SelectivityEstimation
                             LRect3[numL3].count = midRectNode[r].count;
                             TotalCountOfLayer3 += LRect3[numL3].count;
                             Layer3NameAndCount += "\t"+ LRect3[numL3].count + "\t";
-                            if (numL3 % 4 == 0)
-                            {
-                                Layer3NameAndCount += "\r\n";
-                            }
-                            if (numL3 % 12 == 0)
-                            {
-                                Layer3NameAndCount += "\r\n";
-                            }
+                            
+                            
                             tNode[tNum].count = midRectNode[r].count;                  //存储第三层节点 t[13-12*12]
                             tNode[tNum].tfloor = 3;                                                 
 
@@ -415,9 +433,17 @@ namespace SelectivityEstimation
                                 {                                   
                                     LRect3[numL3].node[n].x[w] = midRectNode[r].node[n].x[w];
                                 }
-                                //LRect3[numL3].node[n].ID = midRectNode[r].node[n].ID;
+                                LRect3[numL3].node[n].ID = midRectNode[r].node[n].ID;
                             }
-
+                            Layer3NameAndCount += "\tnode[0].ID:" + LRect3[numL3].node[0].ID + "\t";
+                            if (numL3 % 4 == 0)
+                                                        {
+                                                            Layer3NameAndCount += "\r\n";
+                                                        }
+                             if (numL3 % 12 == 0)
+                                                        {
+                                                            Layer3NameAndCount += "\r\n";
+                                                        }
                             numL3++;
                             tNum++;
                             
@@ -440,6 +466,7 @@ namespace SelectivityEstimation
                             Layer3NameAndCount += "(" + StringA.Substring(0, StringA.Length - 1) + ")" + "(" + StringB.Substring(0, StringB.Length - 1) + ")";
                             LRect3[numL3].count = midRectNode[r].count;                       
                             Layer3NameAndCount += "\t" + LRect3[numL3].count + "\t";
+                            
                             if (numL3 % 4 == 0)
                             {
                                 Layer3NameAndCount += "\r\n";
@@ -512,7 +539,7 @@ namespace SelectivityEstimation
                                 rect4[y].b[z + 1] = LRect3[x].b[z];
                                 rect4[y].x[z] = LRect3[x].node[y].x[z];
                             }
-                           // rect[y].ID = LRect3[x].node[y].ID;
+                           rect4[y].ID = LRect3[x].node[y].ID;
                         }
                         //调用划分函数                        zlPartionpa2(rect4, COL_NUM, T_Num, PartNum);   //调用划分函数   
                         if (COL_NUM == 2)
@@ -571,7 +598,23 @@ namespace SelectivityEstimation
                             LRect4[numL4].count = midRectNode[r].count;
                             TotalCountLayer4 += LRect4[numL4].count;
                             Layer4NameAndCount += "\t" + LRect4[numL4].count + "\t";
+                            
+                            tNode[tNum].count = midRectNode[r].count;                  //存储第四层节点 t[13-12*12]
+                            tNode[tNum].tfloor = 4;
 
+                            for (int n = 0; n < midRectNode[r].count; n++)
+                            {
+                                LRect4[numL4].node[n] = new NODE();
+                                for (int w = 0; w < COL_NUM; w++)
+                                {                                    
+                                    LRect4[numL4].node[n].x[w] = midRectNode[r].node[n].x[w];
+                                }
+                                LRect4[numL4].node[n].ID = midRectNode[r].node[n].ID;
+                            }
+                            //Layer4NameAndCount += "\tnode[n].ID:" + LRect4[numL4].node[0].ID + "\t";
+                            
+
+                            //保存第4层节点LRect3[12*12]
                             if (numL4 % 4 == 0)
                             {
                                 Layer4NameAndCount += "\r\n";
@@ -584,23 +627,9 @@ namespace SelectivityEstimation
                             {
                                 Layer4NameAndCount += "\r\n";
                             }
-                            tNode[tNum].count = midRectNode[r].count;                  //存储第四层节点 t[13-12*12]
-                            tNode[tNum].tfloor = 4;
 
-                            for (int n = 0; n < midRectNode[r].count; n++)
-                            {
-                                LRect4[numL4].node[n] = new NODE();
-                                for (int w = 0; w < COL_NUM; w++)
-                                {                                    
-                                    LRect4[numL4].node[n].x[w] = midRectNode[r].node[n].x[w];
-                                }
-                                //LRect4[numL4].node[n].ID = midRectNode[r].node[n].ID;
-                            }
                             numL4++;
                             tNum++;
-                            
-                            //保存第4层节点LRect3[12*12]
-
                         }//end if
                         else if (midRectNode[r].count == 0)
                         {
@@ -662,26 +691,79 @@ namespace SelectivityEstimation
             {
                 sum1 += LRect4[d].count;
             }
+
             MessageBox.Show("切块完毕！\n共"+ sum1 + "个元组。\n请在下列文件中查看结果: \nD:\\Layer2.txt，Layer3.txt，Layer4.txt " +
-                "\n数据清洗，时间较长，请继续等待", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "\n数据去重，时间较长，请继续等待", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
             #endregion
 
-            #region// 去重：进行数据清洗，得出干净数据集以及数据节点表
+            #region//去重：进行数据清洗，得出干净数据集以及数据节点表,去重后元组插入数据库。
             stopwatch.Restart();//计时开始
 
-            //DupRemove(LRect4);  //调用"去重函数"，进行数据清洗
+            DupRemove(LRect4);  //调用"去重函数"，进行数据清洗
 
             stopwatch.Stop();//计时结束
             TheTime = stopwatch.ElapsedMilliseconds; //总运行秒数, 精确到毫秒          
             labelDuplicated.Text = "Remove duplicated data ,used time:" + TheTime + "ms";
-            long sum = 0;
+            long sum = 0;            
             for (int d = 1; d <= 1728; d++)
             {
-                sum += LRect4[d].count;
+                sum += LRect4[d].count;      
             }
             //CleanCount[CleanCountnum] = sum; // 什么作用？？2018.7.25
             //CleanCountnum++;
-            MessageBox.Show("程序执行完毕 ~ \n去重前元组数：" + sum1 + "\n去重后元组数："+sum, "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("去重前元组数：" + sum1 + "\n去重后元组数："+sum+"\n", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            //写入数据库
+            MessageBox.Show("去重后元组插入数据库。", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            DavidExecuteNonQuery("Delete from  " + CleanedTable);
+            stopwatch.Restart();//计时开始
+            DataTable dt = new DataTable();
+            string[] attri = new string[COL_NUM];
+            for (int ha = 0; ha < COL_NUM ; ha++)
+            {
+                attri[ha] = "attr" + ha;
+                dt.Columns.Add(attri[ha]);
+            }
+            dt.Columns.Add("TheID");
+            dt.Columns.Add("repeatNumber");
+            dt.Columns.Add("repeatID");
+
+            for (int d = 1; d <= 1728; d++)
+            {
+                sum += LRect4[d].count;
+                for (int m = 0; m < LRect4[d].count; m++)
+                {
+                    DataRow dr = dt.NewRow();
+                    for (int ha = 0; ha < COL_NUM; ha++)
+                    {
+                        attri[ha] = "attr" + ha;
+                        dr[attri[ha]] = (int)LRect4[d].clTuplu[m].x[ha];
+                    }
+                    dr["TheID"] = "111";
+                    dr["repeatNumber"] = "222";
+                    dr["repeatID"] = "333";
+
+                    dt.Rows.Add(dr);
+                }
+            }
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn))
+            {
+                bulkCopy.DestinationTableName = CleanedTable;
+                for (int ha = 0; ha < COL_NUM; ha++)
+                {
+                    attri[ha] = "attr" + ha;
+                    bulkCopy.ColumnMappings.Add(attri[ha], attri[ha]);
+                }
+                bulkCopy.ColumnMappings.Add("TheID", "TheID");
+                bulkCopy.ColumnMappings.Add("repeatNumber", "repeatNumber");
+                bulkCopy.ColumnMappings.Add("repeatID", "repeatID");
+                bulkCopy.WriteToServer(dt);
+            }
+            stopwatch.Stop();//计时结束
+            TheTime = stopwatch.ElapsedMilliseconds; //总运行秒数, 精确到毫秒          
+            labelDB.Text = "Insert into database ,used time:" + TheTime + "ms";
+            MessageBox.Show("程序执行完毕。", "NOTICE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             #endregion
         }
 
@@ -813,6 +895,7 @@ namespace SelectivityEstimation
                         {                            
                             midRectNode[1].node[num1].x[y] = Rect[m].x[y];// 此处，赋值，node.x = 1,2 丢失。Bug Find by LuWP 2018.7.24.
                         }
+                        midRectNode[1].node[num1].ID = Rect[m].ID;
                         //midRectNode[1].nodeId += Rect[m].ID.ToString()+";";//放入第1块的各元组的ID集合
                         num1++;
                         midRectNode[1].count = num1;//统计放入第1块的元组ID数
@@ -826,7 +909,7 @@ namespace SelectivityEstimation
                         {
                             midRectNode[5].node[num5].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[5].node[num5].ID = Rect[m].ID;
+                        midRectNode[5].node[num5].ID = Rect[m].ID;
                         //midRectNode[5].nodeId += Rect[m].ID.ToString() + ";";
                         num5++;
                         midRectNode[5].count = num5;
@@ -840,7 +923,7 @@ namespace SelectivityEstimation
                         {                            
                             midRectNode[9].node[num9].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[9].node[num9].ID = Rect[m].ID;
+                        midRectNode[9].node[num9].ID = Rect[m].ID;
                         //midRectNode[9].nodeId += Rect[m].ID.ToString() + ";";
                         num9++;
                         midRectNode[9].count = num9;
@@ -858,7 +941,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[2].node[num2].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[2].node[num2].ID = Rect[m].ID;
+                        midRectNode[2].node[num2].ID = Rect[m].ID;
                         //midRectNode[2].nodeId += Rect[m].ID.ToString() + ";";
                         num2++;
                         midRectNode[2].count = num2;
@@ -872,7 +955,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[6].node[num6].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[6].node[num6].ID = Rect[m].ID;
+                        midRectNode[6].node[num6].ID = Rect[m].ID;
                         //midRectNode[6].nodeId += Rect[m].ID.ToString() + ";";
                         num6++;
                         midRectNode[6].count = num6;
@@ -886,7 +969,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[10].node[num10].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[10].node[num10].ID = Rect[m].ID;
+                        midRectNode[10].node[num10].ID = Rect[m].ID;
                         //midRectNode[10].nodeId += Rect[m].ID.ToString() + ";";
                         num10++;
                         midRectNode[10].count = num10;
@@ -904,7 +987,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[3].node[num3].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[3].node[num3].ID = Rect[m].ID;
+                        midRectNode[3].node[num3].ID = Rect[m].ID;
                         //midRectNode[3].nodeId += Rect[m].ID.ToString() + ";";
                         num3++;
                         midRectNode[3].count = num3;
@@ -918,7 +1001,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[7].node[num7].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[7].node[num7].ID = Rect[m].ID;
+                        midRectNode[7].node[num7].ID = Rect[m].ID;
                         //midRectNode[7].nodeId += Rect[m].ID.ToString() + ";";
                         num7++;
                         midRectNode[7].count = num7;
@@ -932,7 +1015,7 @@ namespace SelectivityEstimation
                            
                             midRectNode[11].node[num11].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[11].node[num11].ID = Rect[m].ID;
+                        midRectNode[11].node[num11].ID = Rect[m].ID;
                         //midRectNode[11].nodeId += Rect[m].ID.ToString() + ";";
                         num11++;
                         midRectNode[11].count = num11;
@@ -950,7 +1033,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[4].node[num4].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[4].node[num4].ID = Rect[m].ID;
+                        midRectNode[4].node[num4].ID = Rect[m].ID;
                         //midRectNode[1].nodeId += Rect[m].ID.ToString() + ";";
                         num4++;
                         midRectNode[4].count = num4;
@@ -964,7 +1047,7 @@ namespace SelectivityEstimation
                            
                             midRectNode[8].node[num8].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[8].node[num8].ID = Rect[m].ID;
+                        midRectNode[8].node[num8].ID = Rect[m].ID;
                         //midRectNode[8].nodeId += Rect[m].ID.ToString() + ";";
                         num8++;
                         midRectNode[8].count = num8;
@@ -978,7 +1061,7 @@ namespace SelectivityEstimation
                             
                             midRectNode[12].node[num12].x[y] = Rect[m].x[y];
                         }
-                        //midRectNode[12].node[num12].ID = Rect[m].ID;
+                        midRectNode[12].node[num12].ID = Rect[m].ID;
                         //midRectNode[12].nodeId += Rect[m].ID.ToString() + ";";
                         num12++;
                         midRectNode[12].count = num12;
@@ -1703,45 +1786,44 @@ namespace SelectivityEstimation
         //Remove duplicated data
         void DupRemove(ZLRECT[] lurect)
         {
-            int Cluster_lIdx = 0;
-            //int itplIdx = 0;          // count for have been seen tuples, i.e., tpl[]	 
-            //int iTopN = lurect[1].count;
-            int i, j, k, k1;
-            luTUPLE tt;
+            int k, k1;
+            luTUPLE tt = new luTUPLE();
+            luTUPLE[] lutpl;
             int itplIdx = 0;
+            int Cluster_lIdx = 0;
 
             for (int e = 1; e <= 1728; e++)
             {
                 itplIdx = 0;
                 if (lurect[e].count == 0)
                 {
-                    //LRect4[e].count = 0;
-                    LRect4[e].spaceSize = 0;
+                    LRect4[e].spaceSize = 0;                    //LRect4[e].count = 0;
                     continue;
                 }
                 else
                 {                   
-                    int iTopN = lurect[e].count; // count for have been seen tuples, i.e., tpl[]	
+                    long iTopN = lurect[e].count; // 当前区域内数据个数（去重前）	
                     lutpl = new luTUPLE[lurect[e].count];   //candidate tuples for tpl[].bOK = true//iSizeofDataSetTable + 1
-
-                    for (i = 0; i < (lurect[e].count); i++)         //干净数据集初始化为0
+                    for (int ddd = 0; ddd < lurect[e].count; ddd++)
                     {
-                        memset(&lutpl[i], 0, sizeof(luTUPLE));
+                        lutpl[ddd] = new luTUPLE();
                     }
-
                     for (int m = 0; m < lurect[e].count; m++)
                     {
-                        for (int q = 0; q < COL_NUM; q++)      //将一条数据数据复制给tt
+                        for (int q = 0; q < COL_NUM; q++)      
                         {
-                            tt.x[q] = lurect[e].node[m].x[q];
+                            tt.x[q] = lurect[e].node[m].x[q];//XXXXXXXX 7.26 Fixed by LuWP
                         }
                         tt.ID = lurect[e].node[m].ID;
 
                         bool jug = true;          //初始化为true
 
                         if (itplIdx == 0)           //干净数据集中没有数据时直接插入
-                        {
-                            lutpl[0] = tt;
+                        {                            
+                            for (int q = 0; q < COL_NUM; q++)      //将一条数据数据复制给tt
+                            {
+                               lutpl[0].x[q] = tt.x[q];//XXXXXXXX 7.26 By LuWP
+                            }
                             lutpl[0].Tnum = 1;
                             lutpl[0].Tid[0] = tt.ID;
                             itplIdx++;
@@ -1749,12 +1831,12 @@ namespace SelectivityEstimation
                         }
                         for (k = 0; k < itplIdx; k++)  //找到tpl[k].d>tt.d位置 
                         {
-                            if (lutpl[k].x[0] > tt.x[0])                   ////=============================
+                            if (lutpl[k].x[0] > tt.x[0])                   ////=======
                                 break;
                         }
-                        for (int k1 = k - 1; k1 >= 0; k1--)//向上遍历看是否存在和tt相同的点
+                        for (k1 = k - 1; k1 >= 0; k1--)//向上遍历看是否存在和tt相同的点
                         {
-                            if (lutpl[k1].x[0] == tt.x[0])//如果点的距离相等那么比较点的坐标 ////=============================
+                            if (lutpl[k1].x[0] == tt.x[0])//如果相等，那么继续比较点的坐标 
                             {
                                 int a;
                                 for (a = 1; a < COL_NUM; a++)
@@ -1765,7 +1847,6 @@ namespace SelectivityEstimation
                                 if (a == COL_NUM)
                                 {
                                     jug = false;
-                                    Cluster_lIdx = lutpl[k1].ID;
                                     break;
                                 }
                             }
@@ -1774,28 +1855,36 @@ namespace SelectivityEstimation
                                 break;
                             }
                         }
+
                         if (jug)//没有相同的点，然后直接插入
                         {
-                            for (int k1 = itplIdx; k1 > k; k1--)
+                            for (k1 = itplIdx; k1 > k; k1--)
                             {
-                                lutpl[k1] = lutpl[k1 - 1];
+                                for (int qq = 0; qq < COL_NUM; qq++)
+                                {
+                                        lutpl[k1].x[qq] = lutpl[k1 - 1].x[qq];
+                                }
+                               // lutpl[k1].cou = lutpl[k1 - 1].x[qq];
+
                             }
-                            lutpl[k] = tt;
-                            //tpl[k].Tnum=1;
-                            //tpl[k].Tid[0]=tt.ID;
+                            //lutpl[k] = tt;
+                            for (int q = 0; q < COL_NUM; q++)      //将一条数据数据复制给tt
+                            {
+                                lutpl[k].x[q] = tt.x[q];//XXXXXXXX 7.26
+                            }
                             lutpl[k].Tnum = 1;
                             lutpl[k].Tid[0] = tt.ID;
                             itplIdx++;
-                            //iTopN--;
                         }
-                        if (!jug)
+
+                        if (!jug)//有重复数据
                         {
                             for (int i = 0; i < itplIdx; i++)
                             {
-                                if (lutpl[i].ID == Cluster_lIdx)
+                                 if (lutpl[i].ID == Cluster_lIdx)
                                 {
                                     lutpl[i].Tnum++;
-                                    lutpl[i].Tid[lutpl[i].Tnum - 1] = tt.ID;
+                                    //lutpl[i].Tid[lutpl[i].Tnum - 1] = tt.ID;//记录重复ID， 此处有BUG
                                 }
                             }
                         }
@@ -1805,15 +1894,19 @@ namespace SelectivityEstimation
                     LRect4[e].spaceSize = itplIdx;
                     for (int p = 0; p < itplIdx; p++)
                     {
-                        LRect4[e].clTuplu[p] = lutpl[p];
+                        LRect4[e].clTuplu[p] = new luTUPLE();
+                        for (int qq = 0; qq < COL_NUM; qq++)
+                        {
+                            LRect4[e].clTuplu[p].x[qq] = lutpl[p].x[qq];    //==============================================
+                        }
+                       // LRect4[e].clTuplu[p] = lutpl[p];
                     }
                     LRect4[e].count = itplIdx;
                 }
             }
+            
         }
-
-
-
+        
         int DavidSelect(string sql)
         {
             String conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
@@ -1828,12 +1921,25 @@ namespace SelectivityEstimation
             return result;
 
         }
-        
+
+        int DavidExecuteNonQuery(string sql)
+        {
+            String conn = ConfigurationManager.ConnectionStrings["myconn"].ConnectionString;
+            SqlConnection sqlConnection = new SqlConnection(conn);  //实例化连接对象
+            sqlConnection.Open();
+
+            SqlCommand cmd = new SqlCommand(sql, sqlConnection);
+            cmd.ExecuteNonQuery();
+
+            sqlConnection.Close();
+            return 0;
+        }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             //comboBox2.SelectedIndex = comboBox1.SelectedIndex;
             //comboBox3.SelectedIndex = comboBox1.SelectedIndex;       
-            //comboBox4.SelectedIndex = comboBox1.SelectedIndex;
+            comboBox4.SelectedIndex = comboBox1.SelectedIndex;
             //comboBox5.SelectedIndex = comboBox1.SelectedIndex;
             //comboBox6.SelectedIndex = comboBox1.SelectedIndex;
         }

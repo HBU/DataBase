@@ -55,12 +55,14 @@
             this.labelRect = new System.Windows.Forms.Label();
             this.labelDuplicated = new System.Windows.Forms.Label();
             this.labelRD = new System.Windows.Forms.Label();
+            this.labelDB = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonRUN
             // 
             this.buttonRUN.Font = new System.Drawing.Font("Cambria", 15F);
-            this.buttonRUN.Location = new System.Drawing.Point(1000, 566);
+            this.buttonRUN.Location = new System.Drawing.Point(1010, 631);
             this.buttonRUN.Name = "buttonRUN";
             this.buttonRUN.Size = new System.Drawing.Size(88, 38);
             this.buttonRUN.TabIndex = 13;
@@ -104,7 +106,7 @@
             // buttonClose
             // 
             this.buttonClose.Font = new System.Drawing.Font("Cambria", 15F);
-            this.buttonClose.Location = new System.Drawing.Point(1110, 566);
+            this.buttonClose.Location = new System.Drawing.Point(1120, 631);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(88, 38);
             this.buttonClose.TabIndex = 14;
@@ -332,11 +334,33 @@
             this.labelRD.TabIndex = 37;
             this.labelRD.Text = "Remove duplicated Data, Time used:";
             // 
+            // labelDB
+            // 
+            this.labelDB.AutoSize = true;
+            this.labelDB.Font = new System.Drawing.Font("Cambria", 15F);
+            this.labelDB.Location = new System.Drawing.Point(436, 622);
+            this.labelDB.Name = "labelDB";
+            this.labelDB.Size = new System.Drawing.Size(0, 23);
+            this.labelDB.TabIndex = 40;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Cambria", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.SteelBlue;
+            this.label13.Location = new System.Drawing.Point(436, 581);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(425, 23);
+            this.label13.TabIndex = 39;
+            this.label13.Text = "Insert cleaned data into database, Time used:";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1231, 626);
+            this.ClientSize = new System.Drawing.Size(1231, 698);
+            this.Controls.Add(this.labelDB);
+            this.Controls.Add(this.label13);
             this.Controls.Add(this.labelDuplicated);
             this.Controls.Add(this.labelRD);
             this.Controls.Add(this.labelRect);
@@ -404,6 +428,8 @@
         private System.Windows.Forms.Label labelRect;
         private System.Windows.Forms.Label labelDuplicated;
         private System.Windows.Forms.Label labelRD;
+        private System.Windows.Forms.Label labelDB;
+        private System.Windows.Forms.Label label13;
     }
 }
 
