@@ -85,6 +85,7 @@ namespace SelectivityEstimation
             comboBox1.Items.Add("Attr_Census3D");
             comboBox1.Items.Add("Attr_Cover4D");
             comboBox1.Items.Add("HW_20D_dirty");
+            comboBox1.Items.Add("HW_120D_dirty");
             comboBox1.Items.Add("Attr_Census2D_Test");
             comboBox1.Items.Add("Attr_Census3D_TestDavid");
             comboBox1.Items.Add("Attr_Census2D1");
@@ -92,7 +93,8 @@ namespace SelectivityEstimation
             comboBox4.Items.Add("Attr_Census2D_CLean");
             comboBox4.Items.Add("CLean_Attr_Census3D");
             comboBox4.Items.Add("Clean_Attr_Cover4D");
-            comboBox4.Items.Add("HW_20D_Clean");
+            comboBox4.Items.Add("HW_20D_Clean");//
+            comboBox4.Items.Add("HW_120D_Clean");
             comboBox4.Items.Add("Attr_Census2D_CLean");
             comboBox4.Items.Add("CLean_Attr_Census3D");
             comboBox4.Items.Add("Attr_Census2D_CLean");
@@ -107,6 +109,7 @@ namespace SelectivityEstimation
             if (comboBox1.Text == "Attr_Census3D") COL_NUM = 3;
             if (comboBox1.Text == "Attr_Cover4D") COL_NUM = 4;
             if (comboBox1.Text == "HW_20D_dirty") COL_NUM = 20;
+            if (comboBox1.Text == "HW_120D_dirty") COL_NUM = 120;
             if (comboBox1.Text == "Attr_Census2D_Test") COL_NUM = 2;
             if (comboBox1.Text == "Attr_Census3D_TestDavid") COL_NUM = 3;
             if (comboBox1.Text == "Attr_Census2D1") COL_NUM = 2;
@@ -1783,7 +1786,7 @@ namespace SelectivityEstimation
             return 0;
         }
 
-        //Remove duplicated data
+        //去除重复数据（Code by LuWP, Edit by David ）
         void DupRemove(ZLRECT[] lurect)
         {
             int k, k1;
