@@ -15,6 +15,3 @@ CRUD 学习增删改查操作。代码较多，但操作并不复杂。
 ---------------------------------
 
 
-Python 访问 SQLserver ：
-
-https://github.com/HBU/Jupyter/tree/master/08Pyqt5/09PyQt5SqlServer
