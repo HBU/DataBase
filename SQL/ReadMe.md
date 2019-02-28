@@ -1,7 +1,7 @@
 # 教学相关SQL语句
 ### [Transact-SQL 语句 官方帮助文档](https://docs.microsoft.com/zh-cn/sql/t-sql/language-reference)
 
-### RDBMS: SQLserver 2017 Developer 官网下载地址：https://www.microsoft.com/zh-cn/sql-server/sql-server-downloads
+### RDBMS: SQLserver 2017 Developer [官网下载](https://www.microsoft.com/zh-cn/sql-server/sql-server-downloads)
 
 SQL Server 2017 Developer 是一个全功能免费版本，许可在非生产环境下用作开发和测试数据库。
 
