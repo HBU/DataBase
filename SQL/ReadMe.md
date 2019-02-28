@@ -3,6 +3,26 @@
 
 RDBMS: SQLserver 2017
 
+CREATE-INSERT	
+
+INSERT-UPDATE-DELETE	
+
+PROCEDURE		
+
+SELECT	
+
+Trigger	
+
+VIEW	
+
+CURSOR.sql	
+
+Chapter03.sql	
+
+Login_With_sa .md	新装SQLserver没有开放sa登录，需要自己配置的解决方案
+
+OneKeyCreateThreeTable.sql
+
 Database:
 
 ![](https://github.com/HBU/DataBase/blob/master/SQL/pic/database.jpg)
