@@ -1,7 +1,11 @@
 # 教学相关SQL语句
 ### [Transact-SQL 语句 官方帮助文档](https://docs.microsoft.com/zh-cn/sql/t-sql/language-reference)
 
-### RDBMS: SQLserver 2017
+### RDBMS: SQLserver 2017 Developer 官网下载地址：https://www.microsoft.com/zh-cn/sql-server/sql-server-downloads
+
+SQL Server 2017 Developer 是一个全功能免费版本，许可在非生产环境下用作开发和测试数据库。
+
+-------------
 
 CREATE-INSERT 创建教材上的三张表：学生表、课程表、选课表；在三张表中插入数据；创建模式。
 
