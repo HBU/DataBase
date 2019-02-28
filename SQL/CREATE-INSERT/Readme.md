@@ -16,13 +16,14 @@
 
 插入数据：
 
-INSERT-INTO-Course.sql	表名+属性
+学生表：INSERT-INTO-Student.sql	 表名+属性
 
-INSERT-INTO-SC.sql	 表名+属性
+课程表：INSERT-INTO-Course.sql	表名+属性
 
-INSERT-INTO-Student.sql	 表名+属性
+选课表：INSERT-INTO-SC.sql	 表名+属性
 
-INSERT-INTO-Student1.sql 只有表名
+
+学生表：INSERT-INTO-Student1.sql 另一种方法，只有表名
 
 
 
