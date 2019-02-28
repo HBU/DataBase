@@ -1,4 +1,4 @@
-T-SQL标准
+# T-SQL标准
 
 
 OneKeyCreateDB.sql 创建数据库
@@ -15,9 +15,13 @@ Create_Schema_Table.sql 创建模式
 
 
 插入数据：
+
 INSERT-INTO-Course.sql	表名+属性
+
 INSERT-INTO-SC.sql	 表名+属性
+
 INSERT-INTO-Student.sql	 表名+属性
+
 INSERT-INTO-Student1.sql 只有表名
 
 
