@@ -1,4 +1,4 @@
-# T-SQL标准
+# T-SQL标准，部分细节内容可能与课本上的标准SQL不同
 
 
 创建数据库：OneKeyCreateDB.sql 
