@@ -21,12 +21,15 @@ Trigger	触发器 使用说明及例题
 
 CURSOR.sql 游标	
 
-Chapter03.sql 部分第三章课后题答案	
-
-Login_With_sa .md	新装SQLserver没有开放sa登录，需要自己配置的解决方案
-
 OneKeyCreateThreeTable.sql 创建教材上的三张表：学生表、课程表、选课表，并插入全部教材实例数据 
 
+--------------------------------
+Chapter03.sql 部分第三章课后题答案	
+
+------------------------------
+Login_With_sa.md	新装SQLserver没有开放sa登录，需要自己配置的解决方案
+
+----------------------
 Database:
 
 ![](https://github.com/HBU/DataBase/blob/master/SQL/pic/database.jpg)
