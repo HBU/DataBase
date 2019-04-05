@@ -23,7 +23,7 @@ namespace WindowsFormsApp4
         {
             try
             {
-                string connString = "Data Source=.;Initial Catalog=TEST1;User ID=sa;Password=sql";//数据库连接字符串
+                string connString = "Data Source=.;Initial Catalog=TEST;User ID=sa;Password=sql";//数据库连接字符串
                 SqlConnection connection = new SqlConnection(connString);//创建connection对象
 
 
@@ -62,7 +62,7 @@ namespace WindowsFormsApp4
         {
             try
             {
-                string connString = "Data Source=.;Initial Catalog=TEST1;User ID=sa;Password=sql";//数据库连接字符串
+                string connString = "Data Source=.;Initial Catalog=TEST;User ID=sa;Password=sql";//数据库连接字符串
                 SqlConnection connection = new SqlConnection(connString);//创建connection对象
 
                 //打开数据库连接
