@@ -22,19 +22,17 @@ namespace School
         {
             // TODO: 这行代码将数据加载到表“mrDavidDataSet.Student”中。您可以根据需要移动或删除它。
             this.studentTableAdapter.Fill(this.mrDavidDataSet.Student);
-
-
         }
 
  
 
-        private void Button1_Click_1(object sender, EventArgs e)
+        private void ButtonInsert_Click(object sender, EventArgs e)
         {
-                String StuID = textBox1.Text.Trim();
-                String StuName = textBox2.Text.Trim();
-                String StuSex = textBox3.Text.Trim();
-                String StuSdept = textBox4.Text.Trim();
-                String StuAge = textBox5.Text.Trim();
+                String StuID = textBoxSno.Text.Trim();
+                String StuName = textBoxSname.Text.Trim();
+                String StuSex = textBoxSsex.Text.Trim();
+                String StuSdept = textBoxSage.Text.Trim();
+                String StuAge = textBoxSdept.Text.Trim();
                 SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=MrDavid;User ID=sa;Password=sql");
                 try
                 {
@@ -56,7 +54,7 @@ namespace School
            
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        private void ButtonDelete_Click(object sender, EventArgs e)
         {
             SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=MrDavid;User ID=sa;Password=sql");
             try
@@ -78,10 +76,10 @@ namespace School
             this.studentTableAdapter.Fill(this.mrDavidDataSet.Student);
         }
 
-        private void Button3_Click(object sender, EventArgs e)
+        private void ButtonUpdate_Click(object sender, EventArgs e)
         {
-            String StuID = textBox1.Text.Trim();
-            String StuName = textBox2.Text.Trim();
+            String StuID = textBoxSno.Text.Trim();
+            String StuName = textBoxSname.Text.Trim();
 
             SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=MrDavid;User ID=sa;Password=sql");
             try
@@ -102,9 +100,9 @@ namespace School
             this.studentTableAdapter.Fill(this.mrDavidDataSet.Student);
         }
 
-        private void Button4_Click(object sender, EventArgs e)
+        private void ButtonQuery_Click(object sender, EventArgs e)
         {
-            String StuID = textBox1.Text.Trim();
+            String StuID = textBoxSno.Text.Trim();
             String conn = "Data Source=.;Initial Catalog=MrDavid;User ID=sa;Password=sql";
             SqlConnection sqlConnection = new SqlConnection(conn);  //实例化连接对象
             try
@@ -113,8 +111,9 @@ namespace School
                 String select_by_id = "select * from Student where Sno='" + StuID + "'";
                 SqlCommand sqlCommand = new SqlCommand(select_by_id, sqlConnection);
                 SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-                BindingSource bindingSource = new BindingSource();
-                bindingSource.DataSource = sqlDataReader;
+                BindingSource bindingSource = new BindingSource() { DataSource = sqlDataReader };
+                //bindingSource.DataSource = sqlDataReader;
+                //https://developercommunity.visualstudio.com/content/problem/70962/bogus-ide0017-c-object-initialization-can-be-simpl.html
                 dataGridView1.DataSource = bindingSource;
             }
             catch
@@ -127,9 +126,10 @@ namespace School
             }
         }
 
-        private void Button5_Click(object sender, EventArgs e)
+        private void ButtonClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
     }
 }

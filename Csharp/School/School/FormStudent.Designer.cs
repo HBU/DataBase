@@ -30,34 +30,34 @@
         {
             this.components = new System.ComponentModel.Container();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.mrDavidDataSet = new School.MrDavidDataSet();
-            this.mrDavidDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.studentTableAdapter = new School.MrDavidDataSetTableAdapters.StudentTableAdapter();
             this.snoDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.snameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ssexDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sageDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sdeptDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.studentBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.mrDavidDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.mrDavidDataSet = new School.MrDavidDataSet();
+            this.studentTableAdapter = new School.MrDavidDataSetTableAdapters.StudentTableAdapter();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.textBoxSdept = new System.Windows.Forms.TextBox();
+            this.textBoxSage = new System.Windows.Forms.TextBox();
+            this.textBoxSsex = new System.Windows.Forms.TextBox();
+            this.textBoxSname = new System.Windows.Forms.TextBox();
+            this.textBoxSno = new System.Windows.Forms.TextBox();
+            this.buttonClose = new System.Windows.Forms.Button();
+            this.buttonQuery = new System.Windows.Forms.Button();
+            this.buttonUpdate = new System.Windows.Forms.Button();
+            this.buttonDelete = new System.Windows.Forms.Button();
+            this.buttonInsert = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSet)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSetBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSetBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSet)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -71,30 +71,11 @@
             this.sageDataGridViewTextBoxColumn,
             this.sdeptDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.studentBindingSource;
-            this.dataGridView1.Location = new System.Drawing.Point(109, 56);
+            this.dataGridView1.Location = new System.Drawing.Point(39, 22);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.Size = new System.Drawing.Size(608, 150);
+            this.dataGridView1.Size = new System.Drawing.Size(727, 276);
             this.dataGridView1.TabIndex = 0;
-            // 
-            // mrDavidDataSet
-            // 
-            this.mrDavidDataSet.DataSetName = "MrDavidDataSet";
-            this.mrDavidDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // mrDavidDataSetBindingSource
-            // 
-            this.mrDavidDataSetBindingSource.DataSource = this.mrDavidDataSet;
-            this.mrDavidDataSetBindingSource.Position = 0;
-            // 
-            // studentBindingSource
-            // 
-            this.studentBindingSource.DataMember = "Student";
-            this.studentBindingSource.DataSource = this.mrDavidDataSetBindingSource;
-            // 
-            // studentTableAdapter
-            // 
-            this.studentTableAdapter.ClearBeforeFill = true;
             // 
             // snoDataGridViewTextBoxColumn
             // 
@@ -126,10 +107,29 @@
             this.sdeptDataGridViewTextBoxColumn.HeaderText = "Sdept";
             this.sdeptDataGridViewTextBoxColumn.Name = "sdeptDataGridViewTextBoxColumn";
             // 
+            // studentBindingSource
+            // 
+            this.studentBindingSource.DataMember = "Student";
+            this.studentBindingSource.DataSource = this.mrDavidDataSetBindingSource;
+            // 
+            // mrDavidDataSetBindingSource
+            // 
+            this.mrDavidDataSetBindingSource.DataSource = this.mrDavidDataSet;
+            this.mrDavidDataSetBindingSource.Position = 0;
+            // 
+            // mrDavidDataSet
+            // 
+            this.mrDavidDataSet.DataSetName = "MrDavidDataSet";
+            this.mrDavidDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // studentTableAdapter
+            // 
+            this.studentTableAdapter.ClearBeforeFill = true;
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(676, 247);
+            this.label6.Location = new System.Drawing.Point(669, 320);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 15);
@@ -139,7 +139,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(530, 247);
+            this.label5.Location = new System.Drawing.Point(523, 320);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 15);
@@ -149,7 +149,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(379, 247);
+            this.label4.Location = new System.Drawing.Point(372, 320);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(37, 15);
@@ -159,7 +159,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(227, 247);
+            this.label3.Location = new System.Drawing.Point(220, 320);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(37, 15);
@@ -169,107 +169,107 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(79, 247);
+            this.label2.Location = new System.Drawing.Point(72, 320);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 15);
             this.label2.TabIndex = 27;
             this.label2.Text = "学号";
             // 
-            // textBox5
+            // textBoxSdept
             // 
-            this.textBox5.Location = new System.Drawing.Point(643, 269);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(123, 25);
-            this.textBox5.TabIndex = 26;
+            this.textBoxSdept.Location = new System.Drawing.Point(636, 342);
+            this.textBoxSdept.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSdept.Name = "textBoxSdept";
+            this.textBoxSdept.Size = new System.Drawing.Size(123, 25);
+            this.textBoxSdept.TabIndex = 26;
             // 
-            // textBox4
+            // textBoxSage
             // 
-            this.textBox4.Location = new System.Drawing.Point(494, 269);
-            this.textBox4.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(123, 25);
-            this.textBox4.TabIndex = 25;
+            this.textBoxSage.Location = new System.Drawing.Point(487, 342);
+            this.textBoxSage.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSage.Name = "textBoxSage";
+            this.textBoxSage.Size = new System.Drawing.Size(123, 25);
+            this.textBoxSage.TabIndex = 25;
             // 
-            // textBox3
+            // textBoxSsex
             // 
-            this.textBox3.Location = new System.Drawing.Point(344, 269);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(123, 25);
-            this.textBox3.TabIndex = 24;
+            this.textBoxSsex.Location = new System.Drawing.Point(337, 342);
+            this.textBoxSsex.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSsex.Name = "textBoxSsex";
+            this.textBoxSsex.Size = new System.Drawing.Size(123, 25);
+            this.textBoxSsex.TabIndex = 24;
             // 
-            // textBox2
+            // textBoxSname
             // 
-            this.textBox2.Location = new System.Drawing.Point(195, 269);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(123, 25);
-            this.textBox2.TabIndex = 23;
+            this.textBoxSname.Location = new System.Drawing.Point(188, 342);
+            this.textBoxSname.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSname.Name = "textBoxSname";
+            this.textBoxSname.Size = new System.Drawing.Size(123, 25);
+            this.textBoxSname.TabIndex = 23;
             // 
-            // textBox1
+            // textBoxSno
             // 
-            this.textBox1.Location = new System.Drawing.Point(46, 269);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(123, 25);
-            this.textBox1.TabIndex = 22;
+            this.textBoxSno.Location = new System.Drawing.Point(39, 342);
+            this.textBoxSno.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxSno.Name = "textBoxSno";
+            this.textBoxSno.Size = new System.Drawing.Size(123, 25);
+            this.textBoxSno.TabIndex = 22;
             // 
-            // button5
+            // buttonClose
             // 
-            this.button5.Location = new System.Drawing.Point(643, 321);
-            this.button5.Margin = new System.Windows.Forms.Padding(4);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(127, 26);
-            this.button5.TabIndex = 21;
-            this.button5.Text = "关闭";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.Button5_Click);
+            this.buttonClose.Location = new System.Drawing.Point(636, 394);
+            this.buttonClose.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonClose.Name = "buttonClose";
+            this.buttonClose.Size = new System.Drawing.Size(127, 26);
+            this.buttonClose.TabIndex = 21;
+            this.buttonClose.Text = "关闭";
+            this.buttonClose.UseVisualStyleBackColor = true;
+            this.buttonClose.Click += new System.EventHandler(this.ButtonClose_Click);
             // 
-            // button4
+            // buttonQuery
             // 
-            this.button4.Location = new System.Drawing.Point(494, 321);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(124, 26);
-            this.button4.TabIndex = 20;
-            this.button4.Text = "查";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.Button4_Click);
+            this.buttonQuery.Location = new System.Drawing.Point(487, 394);
+            this.buttonQuery.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonQuery.Name = "buttonQuery";
+            this.buttonQuery.Size = new System.Drawing.Size(124, 26);
+            this.buttonQuery.TabIndex = 20;
+            this.buttonQuery.Text = "查";
+            this.buttonQuery.UseVisualStyleBackColor = true;
+            this.buttonQuery.Click += new System.EventHandler(this.ButtonQuery_Click);
             // 
-            // button3
+            // buttonUpdate
             // 
-            this.button3.Location = new System.Drawing.Point(344, 321);
-            this.button3.Margin = new System.Windows.Forms.Padding(4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(124, 26);
-            this.button3.TabIndex = 19;
-            this.button3.Text = "改";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            this.buttonUpdate.Location = new System.Drawing.Point(337, 394);
+            this.buttonUpdate.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonUpdate.Name = "buttonUpdate";
+            this.buttonUpdate.Size = new System.Drawing.Size(124, 26);
+            this.buttonUpdate.TabIndex = 19;
+            this.buttonUpdate.Text = "改";
+            this.buttonUpdate.UseVisualStyleBackColor = true;
+            this.buttonUpdate.Click += new System.EventHandler(this.ButtonUpdate_Click);
             // 
-            // button2
+            // buttonDelete
             // 
-            this.button2.Location = new System.Drawing.Point(195, 321);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(124, 26);
-            this.button2.TabIndex = 18;
-            this.button2.Text = "删";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.buttonDelete.Location = new System.Drawing.Point(188, 394);
+            this.buttonDelete.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonDelete.Name = "buttonDelete";
+            this.buttonDelete.Size = new System.Drawing.Size(124, 26);
+            this.buttonDelete.TabIndex = 18;
+            this.buttonDelete.Text = "删";
+            this.buttonDelete.UseVisualStyleBackColor = true;
+            this.buttonDelete.Click += new System.EventHandler(this.ButtonDelete_Click);
             // 
-            // button1
+            // buttonInsert
             // 
-            this.button1.Location = new System.Drawing.Point(46, 321);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(124, 26);
-            this.button1.TabIndex = 17;
-            this.button1.Text = "增";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click_1);
+            this.buttonInsert.Location = new System.Drawing.Point(39, 394);
+            this.buttonInsert.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonInsert.Name = "buttonInsert";
+            this.buttonInsert.Size = new System.Drawing.Size(124, 26);
+            this.buttonInsert.TabIndex = 17;
+            this.buttonInsert.Text = "增";
+            this.buttonInsert.UseVisualStyleBackColor = true;
+            this.buttonInsert.Click += new System.EventHandler(this.ButtonInsert_Click);
             // 
             // FormStudent
             // 
@@ -282,16 +282,16 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox5);
-            this.Controls.Add(this.textBox4);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.textBoxSdept);
+            this.Controls.Add(this.textBoxSage);
+            this.Controls.Add(this.textBoxSsex);
+            this.Controls.Add(this.textBoxSname);
+            this.Controls.Add(this.textBoxSno);
+            this.Controls.Add(this.buttonClose);
+            this.Controls.Add(this.buttonQuery);
+            this.Controls.Add(this.buttonUpdate);
+            this.Controls.Add(this.buttonDelete);
+            this.Controls.Add(this.buttonInsert);
             this.Controls.Add(this.dataGridView1);
             this.Name = "FormStudent";
             this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
@@ -299,9 +299,9 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormStudent_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSet)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSetBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.studentBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSetBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mrDavidDataSet)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -324,15 +324,15 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBoxSdept;
+        private System.Windows.Forms.TextBox textBoxSage;
+        private System.Windows.Forms.TextBox textBoxSsex;
+        private System.Windows.Forms.TextBox textBoxSname;
+        private System.Windows.Forms.TextBox textBoxSno;
+        private System.Windows.Forms.Button buttonClose;
+        private System.Windows.Forms.Button buttonQuery;
+        private System.Windows.Forms.Button buttonUpdate;
+        private System.Windows.Forms.Button buttonDelete;
+        private System.Windows.Forms.Button buttonInsert;
     }
 }

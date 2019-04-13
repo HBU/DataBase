@@ -67,22 +67,22 @@ namespace School
 
         private void 学生ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormStudent formStudent = new FormStudent();
-            formStudent.MdiParent = this;
+            FormStudent formStudent = new FormStudent() { MdiParent = this };
+            //formStudent.MdiParent = this;
             ShowOnce(formStudent);
         }
 
         private void 课程ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormCourse formCourse = new FormCourse();
-            formCourse.MdiParent = this;
+            FormCourse formCourse = new FormCourse() { MdiParent = this };
+            //formCourse.MdiParent = this;
             ShowOnce(formCourse);
         }
 
         private void 选课ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FormSC formSC = new FormSC();
-            formSC.MdiParent = this;
+            FormSC formSC = new FormSC() { MdiParent = this };
+            //formSC.MdiParent = this;
             ShowOnce(formSC);
         }
     }
