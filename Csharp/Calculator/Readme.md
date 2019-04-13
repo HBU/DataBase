@@ -6,3 +6,4 @@ Tools：visual studio 2019
 
 代码较为精简，但程序健壮性不够，例如：对于“错误输入”未做处理。
 
+![](https://github.com/HBU/DataBase/blob/master/Csharp/Calculator/calculator.jpg)
