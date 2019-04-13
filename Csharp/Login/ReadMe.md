@@ -1,10 +1,32 @@
-### 选课管理系统
+### 登录
 Tools：visual studio 2019
 
-数据库操作
+简单的登录实例
 
-- 采用MDI窗体实现。
-- 仅制作了学生表，课程表和选课表代码类似学生表，请同学们完成。
-- 未涉及 聚集函数、分组查询、模糊查询、触发器、存储过程的使用，建议同学们增加这部分的操作。
+连接后台数据库，验证用户名和密码（假设数据库的用户表已经存在：用户 abc，密码 123）
 
-![](https://github.com/HBU/DataBase/blob/master/Csharp/School/school_UI.jpg)
+![](https://github.com/HBU/DataBase/blob/master/Csharp/Login/Pic1.jpg)
+
+登录成功：
+
+![](https://github.com/HBU/DataBase/blob/master/Csharp/Login/Pic2.jpg)
+
+登录失败：
+
+![](https://github.com/HBU/DataBase/blob/master/Csharp/Login/Pic3.jpg)
+
+
+SQLserver数据库新建表，并插入一条数据
+```
+CREATE TABLE [dbo].[usertable](
+	[userid] [nchar](10) NOT NULL,
+	[password] [nchar](10) NOT NULL
+)
+
+INSERT INTO [dbo].[usertable] ([userid] ,[password])
+     VALUES   ('abc' ,'123')
+```
+
+C#代码中，更改数据库连接为自己的数据库
+```
+例如：Data Source=.;Initial Catalog=Test;Persist Security Info=True;User ID=sa;Password=sql
