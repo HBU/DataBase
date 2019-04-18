@@ -102,6 +102,7 @@ namespace Calculator
             textBox1.Text = "";
         }
 
+        
 
         private void ButtonRec_Click(object sender, EventArgs e)
         {
@@ -128,6 +129,29 @@ namespace Calculator
                     break;
             }
             textBox1.Text = Result.ToString();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)//键盘操作
+            {
+                case Keys.NumPad0: Button0_Click(sender, e); break;
+                case Keys.NumPad1: Button1_Click(sender, e); break;
+                case Keys.NumPad2: Button2_Click(sender, e); break;
+                case Keys.NumPad3: Button3_Click(sender, e); break;
+                case Keys.NumPad4: Button4_Click(sender, e); break;
+                case Keys.NumPad5: Button5_Click(sender, e); break;
+                case Keys.NumPad6: Button6_Click(sender, e); break;
+                case Keys.NumPad7: Button7_Click(sender, e); break;
+                case Keys.NumPad8: Button8_Click(sender, e); break;
+                case Keys.NumPad9: Button9_Click(sender, e); break;
+                case Keys.C: ButtonClear_Click(sender, e); break;
+                //case Keys.Add: ButtonAdd_Click(sender, e); break;
+                //case Keys.Subtract: ButtonSub_Click(sender, e); break;
+                //case Keys.Multiply: ButtonMul_Click(sender, e); break;
+                //case Keys.Divide: ButtonDiv_Click(sender, e); break;
+                //case Keys.Enter: ButtonEquals_Click(sender, e); break;
+            }
         }
 
     }
