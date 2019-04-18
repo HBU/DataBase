@@ -30,3 +30,8 @@ values ('95007211','李勇11','F','19','IS')
 select * from Student
 select * from View_Stu_1
 select * from View_Stu_2
+
+-- 结论：
+-- 标准SQL中，view 定义中有 with check option，insert 语句可以自动加条件 Sdept = IS，并最终写入表Student。
+-- TSQL中，view 定义中有 with check option，insert并不能完成标准SQL的操作，执行语句会报错；仅能完成对 Sdept的 检查。
+-- 也就是说，TSQL中，insert必须写Sdept。当 Sdept = IS 时，正确；Sdept = CS 时，报错。
