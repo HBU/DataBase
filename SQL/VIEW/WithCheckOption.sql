@@ -15,11 +15,14 @@ with check option;
 
 go
 
-insert into View_Stu_1(Sno,Sname,Ssex,Sage)--ÎŞWith check option: Sdept»á×Ô¶¯²¹³äNull
-values ('95007111','ÕÅÀ¼11','F','19')
+insert into View_Stu_1(Sno,Sname,Ssex,Sage)--æ— With check option: Sdeptä¼šè‡ªåŠ¨è¡¥å……Null
+values ('95007111','å¼ å…°11','F','19')
 
-insert into View_Stu_2(Sno,Sname,Ssex,Sage,Sdept) --ÓĞWith check option: Èç¹ûÃ»ÓĞSdept»á±¨´í£¬²»ÄÜ¹»ÎªSdept×Ô¶¯²¹³äIS¡£
-values ('950072','ÀîÓÂ','F','19','IS')
+insert into View_Stu_2(Sno,Sname,Ssex,Sage) --æœ‰With check option: å¦‚æœæ²¡æœ‰Sdeptä¼šæŠ¥é”™ï¼Œä¸èƒ½å¤Ÿä¸ºSdeptè‡ªåŠ¨è¡¥å……ISã€‚
+values ('950072','æå‹‡','F','19')
+
+insert into View_Stu_2(Sno,Sname,Ssex,Sage,Sdept) --æœ‰With check option: æœ‰Sdeptä¸ºISï¼Œå¯ä»¥æ­£å¸¸æ‰§è¡Œã€‚
+values ('950072','æå‹‡','F','19','IS')
 
 select * from Student
 select * from View_Stu_1
