@@ -5,34 +5,51 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+    <title>SQL injection</title>
     <style type="text/css">
+        
         .auto-style1 {
-            height: 24px;
-        }
-        .auto-style2 {
-            text-decoration: underline;
+            height: 24px;color:brown;
         }
         .auto-style3 {
             font-size: xx-large;
             text-align: center;
+            height: 44px;
         }
         .auto-style4 {
             height: 27px;
         }
+        .auto-style5 {
+            	position: absolute;
+			    top: 50%;
+			    left: 50%;
+			    width: 445px;
+			    height: 262px;
+			    background-color: lightgrey;
+                transform: translate(-50%,-50%);
+            margin-bottom: 0px;
+        }
+
+        .auto-style6 {
+            width: 440px;
+            position: absolute;
+            left: 0px;
+            top: -2px;
+            height: 264px;
+        }
+
     </style>
 </head>
-<body>
+<body style="height: 378px">
     <form id="form1" runat="server">
-        <div>
-            <div style="height: 402px; width: 827px">
-                <table style="width:100%;">
+            <div  class="auto-style5">
+                <table class="auto-style6">
                     <tr>
-                        <td class="auto-style3" colspan="2">SQL injection</td>
+                        <td class="auto-style3" colspan="2">SQL注入测试</td>
                     </tr>
                     <tr>
                         <td class="auto-style4">
-                            <asp:Label ID="Label1" runat="server" Text="User Name:"></asp:Label>
+                            <asp:Label ID="Label1" runat="server" Text="用户名:"></asp:Label>
                         </td>
                         <td class="auto-style4">
                             <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
@@ -40,48 +57,37 @@
                     </tr>
                     <tr>
                         <td>
-                            <asp:Label ID="Label2" runat="server" Text="Password:"></asp:Label>
+                            <asp:Label ID="Label2" runat="server" Text="密码:"></asp:Label>
                         </td>
                         <td>
                             <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
                         </td>
                     </tr>
                     <tr>
-                        <td>&nbsp;</td>
                         <td>
-                            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Login" Width="109px" />
+                            <asp:CheckBox ID="CheckBox1" runat="server" Checked="True" Text="SQL注入" />
                         </td>
-                    </tr>
-                    <tr>
-                        <td class="auto-style1">
-                            <asp:CheckBox ID="CheckBox1" runat="server" Checked="True" Text="SQL injection" />
+                        <td>
+                            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="登录" Width="109px" />
                         </td>
-                        <td class="auto-style1">
-                            <asp:Label ID="Label3" runat="server" Text="Please input user name and password"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="auto-style1">&nbsp;</td>
-                        <td class="auto-style1">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td class="auto-style1" colspan="2">Use <span class="auto-style2"><strong>&#39; or &#39;1&#39;=&#39;1</strong></span> replace your password, push button &quot;ok&quot;, and check the result.</td>
                     </tr>
                     <tr>
                         <td class="auto-style1" colspan="2">
-                            <p style="margin: 10px auto; padding: 0px; text-indent: 0px; color: rgb(0, 0, 0); font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
-                                SQL语句变成了select * from Users Where rg_LoginName=&#39;admin&#39; and rg_LoginPwd=&#39;&#39; or &#39;1&#39;=&#39;1&#39;</p>
-                            <p style="margin: 10px auto; padding: 0px; text-indent: 0px; color: rgb(0, 0, 0); font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
-                                我们查询原本的意思是：select * from Users Where rg_LoginName=用户名 and rg_LoginPwd=密码</p>
-                            <p style="margin: 10px auto; padding: 0px; text-indent: 0px; color: rgb(0, 0, 0); font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
-                                而现在的意思就变成了 select * from Users Where rg_LoginName=&#39;admin&#39; and rg_LoginPwd=空 or &#39;1&#39;=&#39;1&#39;</p>
-                            <p style="margin: 10px auto; padding: 0px; text-indent: 0px; color: rgb(0, 0, 0); font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
-                                简单的说就是相当于用户通过输入的密码中带有SQL语义的值，变相修改了我们的查询语句，在本例中，无论用户是否知道密码，他只要在密码中输入&#39; or &#39;1&#39;=&#39;1&#39;，就一定能够登录成功，因为有了 or &#39;1&#39;=&#39;1&#39;的恒成立，所以前面的判断语句统统失效。这就是非常典型的SQL注入攻击，通过此种方法，可以进入后台，篡改数据等操作。</p>
+                            <asp:Label ID="Label3" runat="server" Font-Underline="True" ForeColor="Red"></asp:Label>
                         </td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style1" colspan="2">1.输入正确的用户名和密码</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style1" colspan="2">2.在密码框输入：' or '1'='1</td>
+                    </tr>
+                    <tr>
+                        <td class="auto-style1" colspan="2">3.复选框去掉"√"，再次测试</td>
                     </tr>
                 </table>
             </div>
-        </div>
+        
     </form>
 </body>
 </html>

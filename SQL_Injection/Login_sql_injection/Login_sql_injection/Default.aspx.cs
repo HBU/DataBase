@@ -60,11 +60,11 @@ namespace Login_sql_injection
                 SqlDataReader sqlDataReader = cmd.ExecuteReader();    //从数据库中读取数据流存入reader中                                              
                 if (sqlDataReader.Read()) //从sdr中读取下一行数据,如果没有数据,sdr.Read()返回flase 
                 {
-                    Label3.Text = "Succeed ,welcome:" + sqlDataReader[0] + "You password is:" + sqlDataReader[1];
+                    Label3.Text = "登录成功。您的用户名:" + sqlDataReader[0] + "，您的密码:" + sqlDataReader[1];
                 }
                 else
                 {
-                    Label3.Text = "输入账号或密码错误";
+                    Label3.Text = "登录失败。输入账号或密码错误";
                 }
                 sqlDataReader.Close();
 
