@@ -7,7 +7,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -19,7 +21,7 @@ namespace Curricula_Variable_System
         {
             InitializeComponent();
         }
-
+        public Byte[] mybyte = new byte[0];
         private void Button1_Click(object sender, EventArgs e)
         {
             try
@@ -30,15 +32,9 @@ namespace Curricula_Variable_System
                                                         "values (@userid, @userpassword,@userschoolid,@usermobile,@userbirthday,@useridentity,@userphoto)";
                 SqlCommand command = new SqlCommand(sql, connection);
 
-                var ms = new MemoryStream();
-                var bf = new BinaryFormatter();             
-                bf.Serialize(ms, pictureBox1.Image);           // png 可以， jpg 出错 。。。     
-                byte[] mybyte = ms.ToArray();
-                ms.Close();
-
                 SqlParameter sqlParameter = new SqlParameter("@userid",textBox1.Text);
                 command.Parameters.Add(sqlParameter);
-                sqlParameter = new SqlParameter("@userpassword", textBox2.Text);
+                sqlParameter = new SqlParameter("@userpassword", EncryptWithMD5(textBox2.Text));
                 command.Parameters.Add(sqlParameter);
                 sqlParameter = new SqlParameter("@userschoolid", textBox3.Text);
                 command.Parameters.Add(sqlParameter);
@@ -48,8 +44,7 @@ namespace Curricula_Variable_System
                 command.Parameters.Add(sqlParameter);
                 sqlParameter = new SqlParameter("@useridentity", comboBox1.Text);
                 command.Parameters.Add(sqlParameter);
-                sqlParameter = new SqlParameter
-              ("@userphoto", SqlDbType.VarBinary, mybyte.Length, ParameterDirection.Input, false, 0, 0, null, DataRowVersion.Current, mybyte);
+                sqlParameter = new SqlParameter("@userphoto", SqlDbType.VarBinary, mybyte.Length, ParameterDirection.Input, false, 0, 0, null, DataRowVersion.Current, mybyte);
                 command.Parameters.Add(sqlParameter);
 
                 //打开数据库连接
@@ -67,10 +62,7 @@ namespace Curricula_Variable_System
             this.Close();
         }
 
-        private void RichTextBox1_TextChanged(object sender, EventArgs e)
-        {
 
-        }
 
         private void Button2_Click(object sender, EventArgs e)
         {
@@ -87,11 +79,50 @@ namespace Curricula_Variable_System
             //创建FileStream对象
             FileStream fs = new FileStream(picturePath, FileMode.Open, FileAccess.Read);
             //声明Byte数组
-            Byte[] mybyte = new byte[fs.Length];
+             mybyte = new byte[fs.Length];
             //读取数据
             fs.Read(mybyte, 0, mybyte.Length);            
             pictureBox1.Image = Image.FromStream(fs);
             fs.Close();
+        }
+
+        public static string EncryptWithMD5(string source)
+        {
+            byte[] sor = Encoding.UTF8.GetBytes(source);
+            MD5 md5 = MD5.Create();
+            byte[] result = md5.ComputeHash(sor);
+            StringBuilder strbul = new StringBuilder(40);
+            for (int i = 0; i < result.Length; i++)
+            {
+                strbul.Append(result[i].ToString("x2"));//加密结果"x2"结果为32位,"x3"结果为48位,"x4"结果为64位
+            }
+            return strbul.ToString();
+        }
+
+        private void TextBox1_Leave(object sender, EventArgs e)
+        {
+ 
+
+            if (textBox1.Text.Trim() != "")
+            {
+                //使用regex进行格式设置 至少有数字、大写字母、小写字母各一个。最少3个字符、最长20个字符。
+                Regex regex = new Regex(@"(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{3,20}");
+
+                if (regex.IsMatch(textBox1.Text))//判断格式是否符合要求
+                {
+                            //MessageBox.Show("输入密码格式正确!");
+                }
+                else
+                {
+                    MessageBox.Show("至少有数字、大写字母、小写字母各一个。最少3个字符、最长20个字符！");
+                    textBox1.Focus();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please fill in the full information！");
+            }
+
         }
     }
 }

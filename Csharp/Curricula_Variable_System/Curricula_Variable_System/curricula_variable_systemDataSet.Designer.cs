@@ -1473,13 +1473,6 @@ namespace Curricula_Variable_System {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public SysLogRow FindByUserID(string UserID) {
-                return ((SysLogRow)(this.Rows.Find(new object[] {
-                            UserID})));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public override global::System.Data.DataTable Clone() {
                 SysLogDataTable cln = ((SysLogDataTable)(base.Clone()));
                 cln.InitVars();
@@ -1509,10 +1502,7 @@ namespace Curricula_Variable_System {
                 base.Columns.Add(this.columnDateAndTime);
                 this.columnUserOperation = new global::System.Data.DataColumn("UserOperation", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnUserOperation);
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnUserID}, true));
                 this.columnUserID.AllowDBNull = false;
-                this.columnUserID.Unique = true;
                 this.columnUserID.MaxLength = 20;
                 this.columnUserOperation.MaxLength = 200;
             }
@@ -4425,14 +4415,6 @@ SELECT UserID, DateAndTime, UserOperation FROM SysLog WHERE (UserID = @UserID)";
                     this.Adapter.UpdateCommand.Connection.Close();
                 }
             }
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(global::System.Nullable<global::System.DateTime> DateAndTime, string UserOperation, string Original_UserID, global::System.Nullable<global::System.DateTime> Original_DateAndTime, string Original_UserOperation) {
-            return this.Update(Original_UserID, DateAndTime, UserOperation, Original_UserID, Original_DateAndTime, Original_UserOperation);
         }
     }
     

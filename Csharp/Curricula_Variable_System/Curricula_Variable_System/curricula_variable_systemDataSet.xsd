@@ -343,7 +343,7 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
   <xs:element name="curricula_variable_systemDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="curricula_variable_systemDataSet" msprop:Generator_UserDSName="curricula_variable_systemDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Course" msprop:Generator_TableClassName="CourseDataTable" msprop:Generator_TableVarName="tableCourse" msprop:Generator_TablePropName="Course" msprop:Generator_RowDeletingName="CourseRowDeleting" msprop:Generator_RowChangingName="CourseRowChanging" msprop:Generator_RowEvHandlerName="CourseRowChangeEventHandler" msprop:Generator_RowDeletedName="CourseRowDeleted" msprop:Generator_UserTableName="Course" msprop:Generator_RowChangedName="CourseRowChanged" msprop:Generator_RowEvArgName="CourseRowChangeEvent" msprop:Generator_RowClassName="CourseRow">
+        <xs:element name="Course" msprop:Generator_TableClassName="CourseDataTable" msprop:Generator_TableVarName="tableCourse" msprop:Generator_RowChangedName="CourseRowChanged" msprop:Generator_TablePropName="Course" msprop:Generator_RowDeletingName="CourseRowDeleting" msprop:Generator_RowChangingName="CourseRowChanging" msprop:Generator_RowEvHandlerName="CourseRowChangeEventHandler" msprop:Generator_RowDeletedName="CourseRowDeleted" msprop:Generator_RowClassName="CourseRow" msprop:Generator_UserTableName="Course" msprop:Generator_RowEvArgName="CourseRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Cno" msprop:Generator_ColumnVarNameInTable="columnCno" msprop:Generator_ColumnPropNameInRow="Cno" msprop:Generator_ColumnPropNameInTable="CnoColumn" msprop:Generator_UserColumnName="Cno">
@@ -371,7 +371,7 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="SC" msprop:Generator_TableClassName="SCDataTable" msprop:Generator_TableVarName="tableSC" msprop:Generator_TablePropName="SC" msprop:Generator_RowDeletingName="SCRowDeleting" msprop:Generator_RowChangingName="SCRowChanging" msprop:Generator_RowEvHandlerName="SCRowChangeEventHandler" msprop:Generator_RowDeletedName="SCRowDeleted" msprop:Generator_UserTableName="SC" msprop:Generator_RowChangedName="SCRowChanged" msprop:Generator_RowEvArgName="SCRowChangeEvent" msprop:Generator_RowClassName="SCRow">
+        <xs:element name="SC" msprop:Generator_TableClassName="SCDataTable" msprop:Generator_TableVarName="tableSC" msprop:Generator_RowChangedName="SCRowChanged" msprop:Generator_TablePropName="SC" msprop:Generator_RowDeletingName="SCRowDeleting" msprop:Generator_RowChangingName="SCRowChanging" msprop:Generator_RowEvHandlerName="SCRowChangeEventHandler" msprop:Generator_RowDeletedName="SCRowDeleted" msprop:Generator_RowClassName="SCRow" msprop:Generator_UserTableName="SC" msprop:Generator_RowEvArgName="SCRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Sno" msprop:Generator_ColumnVarNameInTable="columnSno" msprop:Generator_ColumnPropNameInRow="Sno" msprop:Generator_ColumnPropNameInTable="SnoColumn" msprop:Generator_UserColumnName="Sno">
@@ -392,7 +392,7 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Student" msprop:Generator_TableClassName="StudentDataTable" msprop:Generator_TableVarName="tableStudent" msprop:Generator_TablePropName="Student" msprop:Generator_RowDeletingName="StudentRowDeleting" msprop:Generator_RowChangingName="StudentRowChanging" msprop:Generator_RowEvHandlerName="StudentRowChangeEventHandler" msprop:Generator_RowDeletedName="StudentRowDeleted" msprop:Generator_UserTableName="Student" msprop:Generator_RowChangedName="StudentRowChanged" msprop:Generator_RowEvArgName="StudentRowChangeEvent" msprop:Generator_RowClassName="StudentRow">
+        <xs:element name="Student" msprop:Generator_TableClassName="StudentDataTable" msprop:Generator_TableVarName="tableStudent" msprop:Generator_RowChangedName="StudentRowChanged" msprop:Generator_TablePropName="Student" msprop:Generator_RowDeletingName="StudentRowDeleting" msprop:Generator_RowChangingName="StudentRowChanging" msprop:Generator_RowEvHandlerName="StudentRowChangeEventHandler" msprop:Generator_RowDeletedName="StudentRowDeleted" msprop:Generator_RowClassName="StudentRow" msprop:Generator_UserTableName="Student" msprop:Generator_RowEvArgName="StudentRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Sno" msprop:Generator_ColumnVarNameInTable="columnSno" msprop:Generator_ColumnPropNameInRow="Sno" msprop:Generator_ColumnPropNameInTable="SnoColumn" msprop:Generator_UserColumnName="Sno">
@@ -427,7 +427,7 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="SysLog" msprop:Generator_TableClassName="SysLogDataTable" msprop:Generator_TableVarName="tableSysLog" msprop:Generator_TablePropName="SysLog" msprop:Generator_RowDeletingName="SysLogRowDeleting" msprop:Generator_RowChangingName="SysLogRowChanging" msprop:Generator_RowEvHandlerName="SysLogRowChangeEventHandler" msprop:Generator_RowDeletedName="SysLogRowDeleted" msprop:Generator_UserTableName="SysLog" msprop:Generator_RowChangedName="SysLogRowChanged" msprop:Generator_RowEvArgName="SysLogRowChangeEvent" msprop:Generator_RowClassName="SysLogRow">
+        <xs:element name="SysLog" msprop:Generator_TableClassName="SysLogDataTable" msprop:Generator_TableVarName="tableSysLog" msprop:Generator_RowChangedName="SysLogRowChanged" msprop:Generator_TablePropName="SysLog" msprop:Generator_RowDeletingName="SysLogRowDeleting" msprop:Generator_RowChangingName="SysLogRowChanging" msprop:Generator_RowEvHandlerName="SysLogRowChangeEventHandler" msprop:Generator_RowDeletedName="SysLogRowDeleted" msprop:Generator_RowClassName="SysLogRow" msprop:Generator_UserTableName="SysLog" msprop:Generator_RowEvArgName="SysLogRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="UserID" msprop:Generator_ColumnVarNameInTable="columnUserID" msprop:Generator_ColumnPropNameInRow="UserID" msprop:Generator_ColumnPropNameInTable="UserIDColumn" msprop:Generator_UserColumnName="UserID">
@@ -448,7 +448,7 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="SysUser" msprop:Generator_TableClassName="SysUserDataTable" msprop:Generator_TableVarName="tableSysUser" msprop:Generator_TablePropName="SysUser" msprop:Generator_RowDeletingName="SysUserRowDeleting" msprop:Generator_RowChangingName="SysUserRowChanging" msprop:Generator_RowEvHandlerName="SysUserRowChangeEventHandler" msprop:Generator_RowDeletedName="SysUserRowDeleted" msprop:Generator_UserTableName="SysUser" msprop:Generator_RowChangedName="SysUserRowChanged" msprop:Generator_RowEvArgName="SysUserRowChangeEvent" msprop:Generator_RowClassName="SysUserRow">
+        <xs:element name="SysUser" msprop:Generator_TableClassName="SysUserDataTable" msprop:Generator_TableVarName="tableSysUser" msprop:Generator_RowChangedName="SysUserRowChanged" msprop:Generator_TablePropName="SysUser" msprop:Generator_RowDeletingName="SysUserRowDeleting" msprop:Generator_RowChangingName="SysUserRowChanging" msprop:Generator_RowEvHandlerName="SysUserRowChangeEventHandler" msprop:Generator_RowDeletedName="SysUserRowDeleted" msprop:Generator_RowClassName="SysUserRow" msprop:Generator_UserTableName="SysUser" msprop:Generator_RowEvArgName="SysUserRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="UserID" msprop:Generator_ColumnVarNameInTable="columnUserID" msprop:Generator_ColumnPropNameInRow="UserID" msprop:Generator_ColumnPropNameInTable="UserIDColumn" msprop:Generator_UserColumnName="UserID">
@@ -506,10 +506,6 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
       <xs:selector xpath=".//mstns:Student" />
       <xs:field xpath="mstns:Sno" />
     </xs:unique>
-    <xs:unique name="SysLog_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
-      <xs:selector xpath=".//mstns:SysLog" />
-      <xs:field xpath="mstns:UserID" />
-    </xs:unique>
     <xs:unique name="SysUser_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
       <xs:selector xpath=".//mstns:SysUser" />
       <xs:field xpath="mstns:UserID" />
@@ -517,9 +513,9 @@ SELECT UserID, UserPassWord, UserSchoolID, UserMobile, UserBirthday, UserIdentit
   </xs:element>
   <xs:annotation>
     <xs:appinfo>
-      <msdata:Relationship name="FK__Course__Cpno__3E52440B" msdata:parent="Course" msdata:child="Course" msdata:parentkey="Cno" msdata:childkey="Cpno" msprop:Generator_UserChildTable="Course" msprop:Generator_ChildPropName="GetCourseRows" msprop:Generator_UserRelationName="FK__Course__Cpno__3E52440B" msprop:Generator_RelationVarName="relationFK__Course__Cpno__3E52440B" msprop:Generator_UserParentTable="Course" msprop:Generator_ParentPropName="CourseRowParent" />
-      <msdata:Relationship name="FK__SC__Cno__4222D4EF" msdata:parent="Course" msdata:child="SC" msdata:parentkey="Cno" msdata:childkey="Cno" msprop:Generator_UserChildTable="SC" msprop:Generator_ChildPropName="GetSCRows" msprop:Generator_UserRelationName="FK__SC__Cno__4222D4EF" msprop:Generator_ParentPropName="CourseRow" msprop:Generator_RelationVarName="relationFK__SC__Cno__4222D4EF" msprop:Generator_UserParentTable="Course" />
-      <msdata:Relationship name="FK__SC__Sno__412EB0B6" msdata:parent="Student" msdata:child="SC" msdata:parentkey="Sno" msdata:childkey="Sno" msprop:Generator_UserChildTable="SC" msprop:Generator_ChildPropName="GetSCRows" msprop:Generator_UserRelationName="FK__SC__Sno__412EB0B6" msprop:Generator_RelationVarName="relationFK__SC__Sno__412EB0B6" msprop:Generator_UserParentTable="Student" msprop:Generator_ParentPropName="StudentRow" />
+      <msdata:Relationship name="FK__Course__Cpno__3E52440B" msdata:parent="Course" msdata:child="Course" msdata:parentkey="Cno" msdata:childkey="Cpno" msprop:Generator_UserChildTable="Course" msprop:Generator_ChildPropName="GetCourseRows" msprop:Generator_UserRelationName="FK__Course__Cpno__3E52440B" msprop:Generator_ParentPropName="CourseRowParent" msprop:Generator_RelationVarName="relationFK__Course__Cpno__3E52440B" msprop:Generator_UserParentTable="Course" />
+      <msdata:Relationship name="FK__SC__Cno__4222D4EF" msdata:parent="Course" msdata:child="SC" msdata:parentkey="Cno" msdata:childkey="Cno" msprop:Generator_UserChildTable="SC" msprop:Generator_ChildPropName="GetSCRows" msprop:Generator_UserRelationName="FK__SC__Cno__4222D4EF" msprop:Generator_RelationVarName="relationFK__SC__Cno__4222D4EF" msprop:Generator_UserParentTable="Course" msprop:Generator_ParentPropName="CourseRow" />
+      <msdata:Relationship name="FK__SC__Sno__412EB0B6" msdata:parent="Student" msdata:child="SC" msdata:parentkey="Sno" msdata:childkey="Sno" msprop:Generator_UserChildTable="SC" msprop:Generator_ChildPropName="GetSCRows" msprop:Generator_UserRelationName="FK__SC__Sno__412EB0B6" msprop:Generator_ParentPropName="StudentRow" msprop:Generator_RelationVarName="relationFK__SC__Sno__412EB0B6" msprop:Generator_UserParentTable="Student" />
     </xs:appinfo>
   </xs:annotation>
 </xs:schema>
