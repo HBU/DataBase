@@ -49,7 +49,7 @@ namespace Curricula_Variable_System
 
             SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
 
-            if (sqlDataReader.HasRows)
+            if (sqlDataReader.HasRows && textBox3.Text == code)
             {
                 MessageBox.Show("欢迎使用！");             //登录成功
                 Main form2 = new Main();
@@ -79,6 +79,30 @@ namespace Curricula_Variable_System
                 strbul.Append(result[i].ToString("x2"));//加密结果"x2"结果为32位,"x3"结果为48位,"x4"结果为64位
             }
             return strbul.ToString();
+        }
+
+        public string code;
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+            //随机实例化 
+            Random ran = new Random();
+            int number;
+            char code1;
+            //取五个数 
+            for (int i = 0; i < 5; i++)
+            {
+                number = ran.Next();
+                if (number % 2 == 0)
+                    code1 = (char)('0' + (char)(number % 10));
+                else
+                    code1 = (char)('A' + (char)(number % 26)); //转化为字符 
+
+                this.code += code1.ToString();
+            }
+
+            label5.Text = code;
+
         }
     }
 }
