@@ -25,8 +25,6 @@ namespace WindowsFormsApp4
             {
                 string connString = "Data Source=.;Initial Catalog=TEST;User ID=sa;Password=sql";//数据库连接字符串
                 SqlConnection connection = new SqlConnection(connString);//创建connection对象
-
-
                 string sql = "insert into Images (BLOBData) values (@blobdata)";
                 SqlCommand command = new SqlCommand(sql, connection);
                 //打开浏览图片对话框
