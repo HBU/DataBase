@@ -1,0 +1,11 @@
+--[Àý4.6] 
+GRANT INSERT 
+ON  SC 
+TO U6
+WITH GRANT OPTION;
+
+ --[Àý4.7] 
+GRANT INSERT 
+ON  SC 
+TO U7;
+
