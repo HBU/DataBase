@@ -30,7 +30,7 @@ namespace MD5_test
             SqlConnection sqlConnection = new SqlConnection(myConnString);  //实例化连接对象
             sqlConnection.Open();
             password = EncryptWithMD5(password);
-            string insertStr = "INSERT INTO  usertable32 (userid,password)    " + "VALUES ('" + username + "','" + password + "')";
+            string insertStr = "INSERT INTO  usertable (userid,password)    " + "VALUES ('" + username + "','" + password + "')";
             SqlCommand cmd = new SqlCommand(insertStr, sqlConnection);
             cmd.ExecuteNonQuery();
             sqlConnection.Close();
@@ -43,7 +43,7 @@ namespace MD5_test
             username = textBox1.Text.Trim();  //取出账号
             SqlConnection sqlConnection = new SqlConnection(myConnString);  //实例化连接对象
             sqlConnection.Open();
-            string sql = "select userid,password from usertable32 where userid = '" + username + "'";
+            string sql = "select userid,password from usertable where userid = '" + username + "'";
             SqlCommand com = new SqlCommand(sql, sqlConnection);
             SqlDataReader read = com.ExecuteReader();
             while (read.Read())
