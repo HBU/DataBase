@@ -19,8 +19,8 @@ namespace DBdemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // TODO: 这行代码将数据加载到表“testDataSet.S”中。您可以根据需要移动或删除它。
-            this.sTableAdapter.Fill(this.testDataSet.S);
+            // TODO: 这行代码将数据加载到表“testDataSet.Student”中。您可以根据需要移动或删除它。
+            this.studentTableAdapter.Fill(this.testDataSet.Student);
 
         }
     }
