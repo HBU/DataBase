@@ -43,9 +43,9 @@ namespace Login
             {
                 MessageBox.Show("WELCOME！","notice",MessageBoxButtons.OK,MessageBoxIcon.Asterisk);             //登录成功
                 label1.Text = "Log in :"+username;
-                //Form2 form2 = new Form2();
-                //form2.Show();
-                //this.Hide();
+                Form2 form2 = new Form2();
+                form2.Show();
+                this.Hide();
             }
             else
             {

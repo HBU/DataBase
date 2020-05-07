@@ -2,7 +2,7 @@
 编程环境：
 - Windows 10
 - Visual Studio 2019 community （C#）
-- SQLserver 2017 Developer edition
+- SQLserver 2019 Developer edition
 
 ----------------------------
 
