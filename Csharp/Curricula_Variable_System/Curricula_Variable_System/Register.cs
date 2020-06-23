@@ -22,6 +22,7 @@ namespace Curricula_Variable_System
             InitializeComponent();
         }
         public Byte[] mybyte = new byte[0];
+
         private void Button1_Click(object sender, EventArgs e)
         {
             try
@@ -61,8 +62,6 @@ namespace Curricula_Variable_System
 
             this.Close();
         }
-
-
 
         private void Button2_Click(object sender, EventArgs e)
         {
@@ -105,7 +104,7 @@ namespace Curricula_Variable_System
 
             if (textBox1.Text.Trim() != "")
             {
-                //使用regex进行格式设置 至少有数字、大写字母、小写字母各一个。最少3个字符、最长20个字符。
+                //使用regex（正则表达式）进行格式设置 至少有数字、大写字母、小写字母各一个。最少3个字符、最长20个字符。
                 Regex regex = new Regex(@"(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{3,20}");
 
                 if (regex.IsMatch(textBox1.Text))//判断格式是否符合要求
